@@ -1,0 +1,30 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+	<Script file="AceKGUI-3.0.lua"/>
+	<!-- Container -->
+	<Script file="widgets\AceKGUIContainer-BlizOptionsGroup.lua"/>
+	<Script file="widgets\AceKGUIContainer-DropDownGroup.lua"/>
+	<Script file="widgets\AceKGUIContainer-Frame.lua"/>
+	<Script file="widgets\AceKGUIContainer-InlineGroup.lua"/>
+	<Script file="widgets\AceKGUIContainer-ScrollFrame.lua"/>
+	<Script file="widgets\AceKGUIContainer-SimpleGroup.lua"/>
+	<Script file="widgets\AceKGUIContainer-TabGroup.lua"/>
+	<Script file="widgets\AceKGUIContainer-TreeGroup.lua"/>
+	<Script file="widgets\AceKGUIContainer-Window.lua"/>
+	<!-- Widgets -->
+	<Script file="widgets\AceKGUIWidget-Button.lua"/>
+	<Script file="widgets\AceKGUIWidget-CheckBox.lua"/>
+	<Script file="widgets\AceKGUIWidget-ColorPicker.lua"/>
+	<Script file="widgets\AceKGUIWidget-DropDown.lua"/>
+	<Script file="widgets\AceKGUIWidget-DropDown-Items.lua"/>
+	<Script file="widgets\AceKGUIWidget-EditBox.lua"/>
+	<Script file="widgets\AceKGUIWidget-Heading.lua"/>
+	<Script file="widgets\AceKGUIWidget-Icon.lua"/>
+	<Script file="widgets\AceKGUIWidget-InteractiveLabel.lua"/>
+	<Script file="widgets\AceKGUIWidget-Keybinding.lua"/>
+	<Script file="widgets\AceKGUIWidget-Label.lua"/>
+	<Script file="widgets\AceKGUIWidget-MultiLineEditBox.lua"/>
+	<Script file="widgets\AceKGUIWidget-Slider.lua"/>
+	<Script file="widgets\AceKGUIWidget-SimpleHTML.lua"/>
+	<Script file="widgets\AceKGUIWidget-ProgressBar.lua"/>
+</Ui>

@@ -1,0 +1,48 @@
+#@retail@
+## Interface: 80205
+#@end-retail@
+#@non-retail@
+# ## Interface: 11302
+#@end-non-retail@
+## Author: Knoot
+## Title: |cffffff00<|r|cff16ABB5FGI|r|cffffff00>|r |cff16ABB5FastGuildInvite|r
+## Version: @project-version@
+## X-Curse-Project-ID: 313283
+## SavedVariables: FGI_DB, FGI_DEBUG
+## DefaultState: enabled
+
+FGI_Constants.lua
+Locale\Locale.xml
+
+Libs\LibStub\LibStub.lua
+Libs\AceAddon-3.0\AceAddon-3.0.xml
+Libs\AceConsole-3.0\AceConsole-3.0.xml
+Libs\AceDB-3.0\AceDB-3.0.xml
+Libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
+Libs\AceEvent-3.0\AceEvent-3.0.xml
+Libs\AceGUI-3.0\AceGUI-3.0.xml
+Libs\GUI.lua
+
+Libs\Alerts\Alerts.lua
+
+Libs\LibDataBroker-1.1\LibDataBroker-1.1.lua
+Libs\LibDBIcon-1.0\lib.xml
+
+init.lua
+
+
+
+
+functions.lua
+FGI_Core.lua
+chooseInvites.lua
+mainFrame.lua
+settings.lua
+message.lua
+keybindings.lua
+filtersFrame.lua
+Scan.lua
+blackList.lua
+customList.lua
+synch.lua
+credits.lua
