@@ -54,6 +54,7 @@ local L = {
 		["Для изменения значений используйте колесо мыши"] = "Use the mouse wheel to change the values.",
 		["Добавить"] = "Add",
 		["Добавить фильтр"] = "Add filter",
+		["Список фильтров"] = "Filter list",
 		["Запускать в фоновом режиме"] = "Run in the background",
 		["Игнорировать"] = "Ignore",
 		["Игрок не добавлен в список исключений."] = "The player is not added to the exceptions list.",

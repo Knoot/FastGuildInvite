@@ -309,20 +309,7 @@ L.settings = {
 	FontSize = 16,
 }
 
-L.credits = {
-	{L.interface["Категория"], L.interface["Имя"], L.interface["Контакт"], "Donate"},
-	{"", "", "", ""},
-	{L.interface["Автор"], "Knoot", "Knoot#7430", "paypal.me/Knoot"},
-	{"Donate", "Anchep", "-", "-"},
-	{"Donate", "dLuxian", "-", "-"},
-	{"Donate", "Zipacna (Bleeding Hollow)\n<Imperial Patent>", "-", "-"},
-	{L.interface["Перевод"].."-zhTW", "Anchep", "Services@280i.com", "paypal.me/280i"},
-	{L.interface["Тестирование"], "Shujin", "-", "-"},
-	{L.interface["Тестирование"], "StreetX", "-", "-"},
-	{L.interface["Тестирование"], "Мойгосподин", "-", "-"},
-	{L.interface["Тестирование"], "Zipacna", "-", "-"},
-	{L.interface["Другая помощь"], "(Змейталак) <Нам Везёт Мы Играем>", "-", "-"},
-}
+
 
 
 --[[-------------------------------------------------------------------------------------
