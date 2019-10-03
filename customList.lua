@@ -44,7 +44,7 @@ CustomList:AddChild(frame)
 CustomList.saveButton = GUI:Create("Button")
 local frame = CustomList.saveButton
 frame:SetText(L.interface["Сохранить"])
-fontSize(frame.text)
+-- fontSize(frame.text)
 btnText(frame)
 frame:SetWidth(size.saveButton)
 frame:SetHeight(40)

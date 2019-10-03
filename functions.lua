@@ -30,10 +30,32 @@ end});
 
 local time, next = time, next
 
-
---[[-------------------------------------------------------------------------------------
-								UNIQUE FOR CLASSIC VERSION
-]]---------------------------------------------------------------------------------------
+--@retail@
+local RaceClassCombo = {
+	Orc = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Shaman,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.DeathKnight},
+	Undead = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.DeathKnight},
+	Tauren = {CLASS.Warrior,CLASS.Paladin,CLASS.Hunter,CLASS.Priest,CLASS.Shaman,CLASS.Monk,CLASS.Druid,CLASS.DeathKnight},
+	Troll = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Shaman,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.Druid,CLASS.DeathKnight},
+	Human = {CLASS.Warrior,CLASS.Paladin,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.DeathKnight},
+	Dwarf = {CLASS.Warrior,CLASS.Paladin,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Shaman,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.DeathKnight},
+	NightElf = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Mage,CLASS.Monk,CLASS.Druid,CLASS.DemonHunter,CLASS.DeathKnight},
+	Gnome = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.DeathKnight},
+	BloodElf = {CLASS.Warrior,CLASS.Paladin,CLASS.Hunter,CLASS.Priest,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.DemonHunter,CLASS.DeathKnight},
+	Goblin = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Shaman,CLASS.Mage,CLASS.Warlock,CLASS.DeathKnight},
+	Nightborne = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Mage,CLASS.Warlock,CLASS.Monk},
+	HightmountainTauren = {CLASS.Warrior,CLASS.Hunter,CLASS.Shaman,CLASS.Monk,CLASS.Druid},
+	MagharOrc = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Shaman,CLASS.Mage,CLASS.Monk},
+	Pandaren = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Shaman,CLASS.Mage,CLASS.Monk},
+	Draenei = {CLASS.Warrior,CLASS.Paladin,CLASS.Hunter,CLASS.Priest,CLASS.Shaman,CLASS.Mage,CLASS.Monk,CLASS.DeathKnight},
+	Worgen = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Mage,CLASS.Warlock,CLASS.Druid,CLASS.DeathKnight},
+	VoidElf = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Mage,CLASS.Warlock,CLASS.Monk},
+	LightforgedDraenei = {CLASS.Warrior,CLASS.Paladin,CLASS.Hunter,CLASS.Priest,CLASS.Mage},
+	DarkIronDwarf = {CLASS.Warrior,CLASS.Paladin,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Shaman,CLASS.Mage,CLASS.Warlock,CLASS.Monk},
+	KulTiran = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Shaman,CLASS.Mage,CLASS.Monk,CLASS.Druid,},
+	ZandalariTroll = {CLASS.Warrior,CLASS.Paladin,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Shaman,CLASS.Mage,CLASS.Monk,CLASS.Druid,},	
+}
+--@end-retail@
+--[===[@non-retail@
 local RaceClassCombo = {
 	Orc = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Shaman,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.DeathKnight},
 	Undead = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.DeathKnight},
@@ -44,7 +66,7 @@ local RaceClassCombo = {
 	NightElf = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Mage,CLASS.Monk,CLASS.Druid,CLASS.DemonHunter,CLASS.DeathKnight},
 	Gnome = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.DeathKnight},
 }
-
+--@end-non-retail@]===]
 function fn:FilterChange(id)
 	local filtersFrame = interface.settings.filters.content.filtersFrame
 	local addfilterFrame = interface.settings.filters.content.addfilterFrame
@@ -55,9 +77,11 @@ function fn:FilterChange(id)
 	filtersFrame.frame:Hide()
 	addfilterFrame.frame:Show()
 	
+	
 	if not class then
 		addfilterFrame.classesCheckBoxIgnore:SetValue(true)
 	else
+		--@retail@
 		addfilterFrame.classesCheckBoxIgnore:SetValue(false)
 		addfilterFrame.classesCheckBoxDruid:SetValue(class[CLASS.Druid] or false)
 		addfilterFrame.classesCheckBoxHunter:SetValue(class[CLASS.Hunter] or false)
@@ -68,7 +92,24 @@ function fn:FilterChange(id)
 		addfilterFrame.classesCheckBoxShaman:SetValue(class[CLASS.Shaman] or false)
 		addfilterFrame.classesCheckBoxWarlock:SetValue(class[CLASS.Warlock] or false)
 		addfilterFrame.classesCheckBoxWarrior:SetValue(class[CLASS.Warrior] or false)
+		addfilterFrame.classesCheckBoxDeathKnight:SetValue(class[CLASS.DeathKnight] or false)
+		addfilterFrame.classesCheckBoxDemonHunter:SetValue(class[CLASS.DemonHunter] or false)
+		addfilterFrame.classesCheckBoxMonk:SetValue(class[CLASS.Monk] or false)
+		--@end-retail@
+		--[===[@non-retail@
+		addfilterFrame.classesCheckBoxIgnore:SetValue(false)
+		addfilterFrame.classesCheckBoxDruid:SetValue(class[CLASS.Druid] or false)
+		addfilterFrame.classesCheckBoxHunter:SetValue(class[CLASS.Hunter] or false)
+		addfilterFrame.classesCheckBoxMage:SetValue(class[CLASS.Mage] or false)
+		addfilterFrame.classesCheckBoxPaladin:SetValue(class[CLASS.Paladin] or false)
+		addfilterFrame.classesCheckBoxPriest:SetValue(class[CLASS.Priest] or false)
+		addfilterFrame.classesCheckBoxRogue:SetValue(class[CLASS.Rogue] or false)
+		addfilterFrame.classesCheckBoxShaman:SetValue(class[CLASS.Shaman] or false)
+		addfilterFrame.classesCheckBoxWarlock:SetValue(class[CLASS.Warlock] or false)
+		addfilterFrame.classesCheckBoxWarrior:SetValue(class[CLASS.Warrior] or false)
+		--@end-non-retail@]===]
 	end
+	
 	
 	if not raceFilter then 
 		addfilterFrame.rasesCheckBoxIgnore:SetValue(true)
@@ -97,10 +138,6 @@ function fn.fontSize(frame, font, size)
 	size = size or settings.FontSize
 	frame:SetFont(font, size)
 end
-
---[[-------------------------------------------------------------------------------------
-							/	UNIQUE FOR CLASSIC VERSION
-]]---------------------------------------------------------------------------------------
 
 
 

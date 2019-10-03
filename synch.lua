@@ -34,7 +34,7 @@ synch.leftColumn = GUI:Create("SimpleGroup")
 leftColumn = synch.leftColumn
 leftColumn:SetWidth((size.synchFrameW-20)/2)
 leftColumn:SetHeight(100)
-leftColumn:SetLayout("List")
+leftColumn:SetLayout("NIL")
 leftColumn:SetPoint("TOPLEFT", synch.frame, "TOPLEFT", 0, 0)
 synch:AddChild(leftColumn)
 
@@ -44,6 +44,7 @@ frame:SetText(L.interface["Данные для синхронизации"])
 fontSize(frame.label)
 frame.label:SetJustifyH("CENTER")
 frame:SetWidth(leftColumn.frame:GetWidth()-20)
+frame:SetPoint("TOPLEFT", leftColumn.frame, "TOPLEFT", 0, 0)
 leftColumn:AddChild(frame)
 
 leftColumn.synchTypeDrop = GUI:Create("Dropdown")
@@ -51,6 +52,7 @@ local frame = leftColumn.synchTypeDrop
 frame:SetWidth(leftColumn.frame:GetWidth()-20)
 frame:SetList({L.interface.synchType[1], L.interface.synchType[2],})
 frame:SetValue(1)
+frame:SetPoint("TOPLEFT", leftColumn.synchTypeLabel.frame, "BOTTOMLEFT", 0, 0)
 leftColumn:AddChild(frame)
 end
 
@@ -59,7 +61,7 @@ synch.rightColumn = GUI:Create("SimpleGroup")
 rightColumn = synch.rightColumn
 rightColumn:SetWidth((size.synchFrameW-20)/2)
 rightColumn:SetHeight(100)
-rightColumn:SetLayout("List")
+rightColumn:SetLayout("NIL")
 rightColumn:SetPoint("TOPRIGHT", synch.frame, "TOPRIGHT", 0, 0)
 synch:AddChild(rightColumn)
 
@@ -69,6 +71,7 @@ frame:SetText(L.interface["Игрок для синхронизации"])
 fontSize(frame.label)
 frame.label:SetJustifyH("CENTER")
 frame:SetWidth(rightColumn.frame:GetWidth()-20)
+frame:SetPoint("TOPLEFT", rightColumn.frame, "TOPLEFT", 0, 0)
 rightColumn:AddChild(frame)
 
 rightColumn.synchPlayerReadyDrop = GUI:Create("Dropdown")
@@ -76,6 +79,7 @@ local frame = rightColumn.synchPlayerReadyDrop
 frame:SetWidth(rightColumn.frame:GetWidth()-20)
 frame:SetList({L.interface["Все"]})
 frame:SetValue(1)
+frame:SetPoint("TOPLEFT", rightColumn.synchPlayerReadyLabel.frame, "BOTTOMLEFT", 0, 0)
 rightColumn:AddChild(frame)
 end
 
@@ -83,7 +87,7 @@ end
 synch.sendRequest = GUI:Create("Button")
 local frame = synch.sendRequest
 frame:SetText(L.interface["Отправить запрос"])
-fontSize(frame.text)
+-- fontSize(frame.text)
 btnText(frame)
 frame:SetWidth(size.sendRequest)
 frame:SetHeight(40)

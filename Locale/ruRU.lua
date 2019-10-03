@@ -271,7 +271,7 @@ L.settings = {
 		Warrior = 60,
 		
 		raceLabel = 60,
-		Orc = 50,
+		Orc = 55,
 		Undead = 80,
 		Tauren = 75,
 		Troll = 75,
@@ -329,6 +329,49 @@ L.credits = {
 								UNIQUE FOR CLASSIC VERSION
 ]]---------------------------------------------------------------------------------------
 L.SYSTEM.class = {
+	DeathKnight = LOCALIZED_CLASS_NAMES_MALE.DEATHKNIGHT,
+	DemonHunter = LOCALIZED_CLASS_NAMES_MALE.DEMONHUNTER,
+	Druid = LOCALIZED_CLASS_NAMES_MALE.DRUID,
+	Hunter = LOCALIZED_CLASS_NAMES_MALE.HUNTER,
+	Mage = LOCALIZED_CLASS_NAMES_MALE.MAGE,
+	Monk = LOCALIZED_CLASS_NAMES_MALE.MONK,
+	Paladin = LOCALIZED_CLASS_NAMES_MALE.PALADIN,
+	Priest = LOCALIZED_CLASS_NAMES_MALE.PRIEST,
+	Rogue = LOCALIZED_CLASS_NAMES_MALE.ROGUE,
+	Shaman = LOCALIZED_CLASS_NAMES_MALE.SHAMAN,
+	Warlock = LOCALIZED_CLASS_NAMES_MALE.WARLOCK,
+	Warrior = LOCALIZED_CLASS_NAMES_MALE.WARRIOR,
+}
+L.SYSTEM.race = {
+	Horde = {
+		Orc = GetRaceName(2),	--	"Орк"
+		Tauren = GetRaceName(6),	--	"Таурен"
+		Troll = GetRaceName(8),	--	"Тролль"
+		Undead = GetRaceName(5),	--	"Нежить"
+		BloodElf = GetRaceName(10),	--	"Эльф крови"
+		Goblin = GetRaceName(9),	--	"Гоблин"
+		HightmountainTauren = GetRaceName(28),	--	"Таурен Крутогорья"
+		MagharOrc = GetRaceName(36),	--	"Маг'хар"
+		Nightborne = GetRaceName(27),	--	"Ночнорожденный"
+		Pandaren = GetRaceName(26),	--	"Пандарен"
+		ZandalariTroll = GetRaceName(31),	--	"Зандалар"
+	},
+	Alliance = {
+		Dwarf = GetRaceName(3),	--	"Дворф"
+		Gnome = GetRaceName(7),	--	"Гном"
+		Human = GetRaceName(1),	--	"Человек"
+		NightElf = GetRaceName(4),	--	"Ночной эльф"
+		DarkIronDwarf = GetRaceName(34),	--	"Дворф из клана Черного Железа"
+		Draenei = GetRaceName(11),	--	"Дреней"
+		LightforgedDraenei = GetRaceName(30),	--	"Озаренный дреней"
+		Pandaren = GetRaceName(25),	--	"Пандарен"
+		VoidElf = GetRaceName(29),	--	"Эльф Бездны"
+		Worgen = GetRaceName(22),	--	"Ворген"
+		KulTiran = GetRaceName(32),	--	"Култирасец"
+	},
+}
+--[===[@non-retail@
+L.SYSTEM.class = {
 	Druid = LOCALIZED_CLASS_NAMES_MALE.DRUID,
 	Hunter = LOCALIZED_CLASS_NAMES_MALE.HUNTER,
 	Mage = LOCALIZED_CLASS_NAMES_MALE.MAGE,
@@ -353,6 +396,7 @@ L.SYSTEM.race = {
 		NightElf = GetRaceName(4),	--	"Ночной эльф"
 	},
 }
+--@end-non-retail@]===]
 --[[-------------------------------------------------------------------------------------
 							/	UNIQUE FOR CLASSIC VERSION
 ]]---------------------------------------------------------------------------------------

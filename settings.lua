@@ -13,139 +13,6 @@ local fontSize = fn.fontSize
 
 local settings
 
---[[
-interface.settingsFrame = GUI:Create("ClearFrame")
-local settingsFrame = interface.settingsFrame
-settingsFrame:SetTitle("FGI Settings")
-settingsFrame:SetWidth(size.settingsFrameW)
-settingsFrame:SetHeight(size.settingsFrameH)
-settingsFrame:SetLayout("Flow")
-
-settingsFrame.title:SetScript('OnMouseUp', function(mover)
-	local DB = addon.DB
-	local frame = mover:GetParent()
-	frame:StopMovingOrSizing()
-	local self = frame.obj
-	local status = self.status or self.localstatus
-	status.width = frame:GetWidth()
-	status.height = frame:GetHeight()
-	status.top = frame:GetTop()
-	status.left = frame:GetLeft()
-	
-	local point, relativeTo,relativePoint, xOfs, yOfs = settingsFrame.frame:GetPoint(1)
-	DB.settingsFrame = {}
-	DB.settingsFrame.point=point
-	DB.settingsFrame.relativeTo=relativeTo
-	DB.settingsFrame.relativePoint=relativePoint
-	DB.settingsFrame.xOfs=xOfs
-	DB.settingsFrame.yOfs=yOfs
-end)
-
-settingsFrame.closeButton = GUI:Create('Button')
-local frame = settingsFrame.closeButton
-frame:SetText('X')
-frame:SetWidth(frame.frame:GetHeight())
-fn:closeBtn(frame)
-frame:SetCallback('OnClick', function()
-	interface.settingsFrame:Hide()
-	interface.mainFrame:Show()
-end)
-settingsFrame:AddChild(frame)
-
-
-
-
-
-
-
-
-
-settingsFrame.settingsButtonsGRP = GUI:Create("GroupFrame")
-local settingsButtonsGRP = settingsFrame.settingsButtonsGRP
-settingsButtonsGRP:SetHeight(45)
-settingsButtonsGRP:SetWidth(size.settingsButtonsGRP)
-settingsFrame:AddChild(settingsButtonsGRP)
-
-settingsButtonsGRP.filters = GUI:Create("Button")
-local frame = settingsButtonsGRP.filters
-frame:SetText(L.interface["Фильтры"])
-fontSize(frame.text)
-frame:SetWidth(size.filters)
-frame:SetHeight(40)
-frame:SetCallback("OnClick", function()
-	interface.filtersFrame:Show()
-	fn:FiltersUpdate()
-	settingsFrame:Hide()
-end)
-settingsButtonsGRP:AddChild(frame)
-
-settingsButtonsGRP.keyBind = GUI:Create("Button")
-local frame = settingsButtonsGRP.keyBind
-frame:SetText("KeyBind")
-fontSize(frame.text)
-frame:SetWidth(size.keyBind)
-frame:SetHeight(40)
-frame:SetCallback("OnClick", function() interface.keyBindings:Show() end)
-settingsButtonsGRP:AddChild(frame)
-
-settingsButtonsGRP.setMSG = GUI:Create("Button")
-local frame = settingsButtonsGRP.setMSG
-frame:SetText(L.interface["Настроить сообщения"])
-fontSize(frame.text)
-frame:SetWidth(size.setMSG)
-frame:SetHeight(40)
-frame:SetCallback("OnClick", function()
-	interface.messageFrame:Show()
-	settingsFrame:Hide()
-end)
-settingsButtonsGRP:AddChild(frame)
-
-settingsButtonsGRP.blackList = GUI:Create("Button")
-local frame = settingsButtonsGRP.blackList
-frame:SetText(L.interface["Черный список"])
-fontSize(frame.text)
-frame:SetWidth(size.blackList)
-frame:SetHeight(40)
-frame:SetCallback("OnClick", function()
-	interface.blackList:Show()
-end)
-settingsButtonsGRP:AddChild(frame)
-
-settingsButtonsGRP.customListBtn = GUI:Create("Button")
-local frame = settingsButtonsGRP.customListBtn
-frame:SetText(L.interface["Пользовательский список"])
-fontSize(frame.text)
-frame:SetWidth(size.customListBtn)
-frame:SetHeight(40)
-frame:SetCallback("OnClick", function()
-	interface.customList:Show()
-end)
-settingsButtonsGRP:AddChild(frame)
-
-settingsButtonsGRP.synchBtn = GUI:Create("Button")
-local frame = settingsButtonsGRP.synchBtn
-frame:SetText(L.interface["Синхронизация"])
-fontSize(frame.text)
-frame:SetWidth(size.synchBtn)
-frame:SetHeight(40)
-frame:SetCallback("OnClick", function()
-	interface.synch:Show()
-end)
-settingsButtonsGRP:AddChild(frame)
-]]
-
-
-
---[[
-addPanel("FGI")
-addPanel("Profile", "FGI")
-addPanel("Filters", "FGI")
-addPanel("KeyBind", "FGI")
-addPanel("Customize post", "FGI")
-addPanel("Blacklist", "FGI")
-addPanel("Synchronization", "Blacklist")
-addPanel("Custom list", "FGI")
-addPanel("DB", "FGI")]]
 
 interface.settings = CreateFrame("Frame", UIParent)
 local settings = interface.settings
@@ -232,7 +99,7 @@ frame:SetWidth(size.addonMSG)
 frame:SetLabel(L.interface["Выключить сообщения аддона"])
 frame:SetTooltip(L.interface.tooltip["Не отображать в чате сообщения аддона"])
 frame:SetDisabled(true)
-fontSize(frame.text)
+-- fontSize(frame.text)
 frame.frame:HookScript("OnClick", function()
 	DB.addonMSG = settingsCheckBoxGRP.addonMSG:GetValue()
 end)
@@ -244,8 +111,7 @@ local frame = settingsCheckBoxGRP.systemMSG
 frame:SetWidth(size.systemMSG)
 frame:SetLabel(L.interface["Выключить системные сообщения"])
 frame:SetTooltip(L.interface.tooltip["Не отображать в чате системные сообщения"])
--- frame:SetDisabled(true)
-fontSize(frame.text)
+-- fontSize(frame.text)
 frame.frame:HookScript("OnClick", function()
 	DB.systemMSG = settingsCheckBoxGRP.systemMSG:GetValue()
 end)
@@ -257,7 +123,7 @@ local frame = settingsCheckBoxGRP.sendMSG
 frame:SetWidth(size.sendMSG)
 frame:SetLabel(L.interface["Выключить отправляемые сообщения"])
 frame:SetTooltip(L.interface.tooltip["Не отображать в чате отправляемые сообщения"])
-fontSize(frame.text)
+-- fontSize(frame.text)
 frame.frame:HookScript("OnClick", function()
 	DB.sendMSG = settingsCheckBoxGRP.sendMSG:GetValue()
 end)
@@ -269,7 +135,7 @@ local frame = settingsCheckBoxGRP.minimapButton
 frame:SetWidth(size.minimapButton)
 frame:SetLabel(L.interface["Не отображать значок у миникарты"])
 frame:SetTooltip("")
-fontSize(frame.text)
+-- fontSize(frame.text)
 frame.frame:HookScript("OnClick", function()
 	DB.minimap.hide = settingsCheckBoxGRP.minimapButton:GetValue()
 	if DB.minimap.hide then
@@ -286,7 +152,7 @@ local frame = settingsCheckBoxGRP.rememberAll
 frame:SetWidth(size.rememberAll)
 frame:SetLabel(L.interface["Запоминать всех игроков"])
 frame:SetTooltip(L.interface.tooltip["Записывать игрока в базу данных даже если приглашение не было отправлено"])
-fontSize(frame.text)
+-- fontSize(frame.text)
 frame.frame:HookScript("OnClick", function()
 	DB.rememberAll = settingsCheckBoxGRP.rememberAll:GetValue()
 end)

@@ -25,12 +25,9 @@ FGISYNCH_PREFIX = "FGI_SYNCH"
 C_ChatInfo.RegisterAddonMessagePrefix(FGISYNCH_PREFIX)
 
 
---[[-------------------------------------------------------------------------------------
-								UNIQUE FOR CLASSIC VERSION
-]]---------------------------------------------------------------------------------------
+FGI_MAXLVL = 120
+--[===[@non-retail@
 FGI_MAXLVL = 60
+--@end-non-retail@]===]
 FGI_DEFAULT_RACEFILTERSTART = FGI_MAXLVL +1
 FGI_DEFAULT_CLASSFILTERSTART = FGI_MAXLVL +1
---[[-------------------------------------------------------------------------------------
-								UNIQUE FOR CLASSIC VERSION
-]]---------------------------------------------------------------------------------------

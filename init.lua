@@ -10,6 +10,7 @@ addon.ruReg = "[%aабвгдеёжзийклмнопрстуфхцчшщъьыэ
 addon.functions = {}
 addon.interface = {}
 addon.version = GetAddOnMetadata('FastGuildInvite', 'Version')
+addon.versionN = tonumber(GetAddOnMetadata('FastGuildInvite', 'Version')) or 0
 addon.whoQueryList = {}
 addon.color = {
 	WARRIOR='|cffc79c6e',

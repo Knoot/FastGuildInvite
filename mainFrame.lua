@@ -20,75 +20,12 @@ local function btnText(frame)
 	text:SetPoint("TOPLEFT", 5, -1)
 	text:SetPoint("BOTTOMRIGHT", -5, 1)
 end
---[[
-do		--	gratitude
-local FrameBackdrop = {
-	bgFile = "Interface\\FrameGeneral\\UI-Background-Rock",
-	edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
-	tile = true, tileSize = 32, edgeSize = 32,
-	insets = { left = 8, right = 8, top = 8, bottom = 8 }
-}
-
-interface.gratitudeFrame = GUI:Create("ClearFrame")
-gratitudeFrame = interface.gratitudeFrame
-gratitudeFrame.frame:SetBackdrop(FrameBackdrop)
-gratitudeFrame.frame:SetBackdropColor(0, 0, 0, 0.9)
-gratitudeFrame:SetTitle("Fast Guild Invite Gratitude")
-gratitudeFrame:SetWidth(800)
-gratitudeFrame:SetHeight(500)
-gratitudeFrame:SetLayout("Fill")
-
-gratitudeFrame.scrollBar = GUI:Create("ScrollFrame")
-scrollBar = gratitudeFrame.scrollBar
-gratitudeFrame:AddChild(scrollBar)
-scrollBar:SetLayout("Flow")
-
-gratitudeFrame.closeButton = GUI:Create('Button')
-local frame = gratitudeFrame.closeButton
-frame:SetText('X')
-frame:SetWidth(frame.frame:GetHeight())
-fn:closeBtn(frame)
-frame:SetCallback('OnClick', function()
-	interface.gratitudeFrame:Hide()
-end)
-gratitudeFrame:AddChild(frame)
-
-
-
-
--- local labelWidth = (interface.gratitudeFrame.frame:GetWidth()-60)/4
-gratitudeFrame.Category = GUI:Create("TLabel")
-local frame = gratitudeFrame.Category
-fontSize(frame.label)
-frame:SetWidth(110)
-scrollBar:AddChild(frame)
-
-gratitudeFrame.Name = GUI:Create("TLabel")
-local frame = gratitudeFrame.Name
-fontSize(frame.label)
-frame:SetWidth(300)
-scrollBar:AddChild(frame)
-
-gratitudeFrame.Contact = GUI:Create("TLabel")
-local frame = gratitudeFrame.Contact
-fontSize(frame.label)
-frame:SetWidth(180)
-scrollBar:AddChild(frame)
-
-gratitudeFrame.Donate = GUI:Create("TLabel")
-local frame = gratitudeFrame.Donate
-fontSize(frame.label)
-frame:SetWidth(120)
-scrollBar:AddChild(frame)
-end
-]]
-
 
 
 do		--	mainFrame
 interface.mainFrame = GUI:Create("ClearFrame")
 mainFrame = interface.mainFrame
-mainFrame:SetTitle("Fast Guild Invite")
+mainFrame:SetTitle("Fast Guild Invite v."..addon.version)
 mainFrame:SetWidth(size.mainFrameW)
 mainFrame:SetHeight(size.mainFrameH)
 mainFrame:SetLayout("List")
@@ -166,7 +103,7 @@ local frame = mainCheckBoxGRP.customList
 frame:SetWidth(size.customListBtn)
 frame:SetLabel(L.interface["Пользовательский список"])
 frame:SetTooltip(L.interface.tooltip["Использовать пользовательский список запросов"])
-fontSize(frame.text)
+-- fontSize(frame.text)
 frame.frame:HookScript("OnClick", function()
 	DB.customWho = mainCheckBoxGRP.customList:GetValue()
 end)
@@ -177,7 +114,7 @@ local frame = mainCheckBoxGRP.backgroundRun
 frame:SetWidth(size.backgroundRun)
 frame:SetLabel(L.interface["Запускать в фоновом режиме"])
 frame:SetTooltip(L.interface.tooltip["Запускать поиск в фоновом режиме"])
-fontSize(frame.text)
+-- fontSize(frame.text)
 frame.frame:HookScript("OnClick", function()
 	DB.backgroundRun = mainCheckBoxGRP.backgroundRun:GetValue()
 end)
@@ -188,7 +125,7 @@ local frame = mainCheckBoxGRP.enableFilters
 frame:SetWidth(size.enableFilters)
 frame:SetLabel(L.interface["Включить фильтры"])
 frame:SetTooltip("")
-fontSize(frame.text)
+-- fontSize(frame.text)
 frame.frame:HookScript("OnClick", function()
 	DB.enableFilters = mainCheckBoxGRP.enableFilters:GetValue()
 end)
@@ -208,7 +145,7 @@ mainFrame:AddChild(mainButtonsGRP)
 mainButtonsGRP.startScan = GUI:Create("Button")
 local frame = mainButtonsGRP.startScan
 frame:SetText(L.interface["Начать сканирование"])
-fontSize(frame.text)
+-- fontSize(frame.text)
 btnText(frame)
 frame:SetWidth(size.startScan)
 frame:SetHeight(40)
@@ -226,7 +163,7 @@ mainButtonsGRP:AddChild(frame)
 mainButtonsGRP.chooseInvites = GUI:Create("Button")
 local frame = mainButtonsGRP.chooseInvites
 frame:SetText(L.interface["Выбрать приглашения"])
-fontSize(frame.text)
+-- fontSize(frame.text)
 btnText(frame)
 frame:SetWidth(size.chooseInvites)
 frame:SetHeight(mainButtonsGRP.startScan.frame:GetHeight())
@@ -236,7 +173,7 @@ mainButtonsGRP:AddChild(frame)
 mainButtonsGRP.settingsBtn = GUI:Create("Button")
 local frame = mainButtonsGRP.settingsBtn
 frame:SetText(L.interface["Настройки"])
-fontSize(frame.text)
+-- fontSize(frame.text)
 btnText(frame)
 frame:SetWidth(size.settingsBtn)
 frame:SetHeight(mainButtonsGRP.startScan.frame:GetHeight())
@@ -247,16 +184,6 @@ frame.frame:SetScript("OnClick", function()
 	InterfaceOptionsFrame_OpenToCategory(interface.settings)
 	interface.mainFrame:Hide()
 end)
-mainButtonsGRP:AddChild(frame)
-
-mainButtonsGRP.Gratitude = GUI:Create("Button")
-local frame = mainButtonsGRP.Gratitude
-frame:SetText("Gratitude")
-fontSize(frame.text)
-btnText(frame)
-frame:SetWidth(size.gratitude)
-frame:SetHeight(mainButtonsGRP.startScan.frame:GetHeight())
-frame:SetCallback("OnClick", function() interface.gratitudeFrame:Show() end)
 mainButtonsGRP:AddChild(frame)
 end
 
@@ -455,9 +382,6 @@ frame:SetScript('OnEvent', function()
 	
 	mainButtonsGRP.settingsBtn:ClearAllPoints()
 	mainButtonsGRP.settingsBtn:SetPoint("LEFT", mainButtonsGRP.chooseInvites.frame, "RIGHT", 2, 0)
-	
-	mainButtonsGRP.Gratitude:ClearAllPoints()
-	mainButtonsGRP.Gratitude:SetPoint("LEFT", mainButtonsGRP.settingsBtn.frame, "RIGHT", 2, 0)
 	
 	
 	
