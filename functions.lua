@@ -141,6 +141,18 @@ end
 
 
 
+function fn:parseBL(str)
+	local name, reason
+	str = str:gsub("blacklist ", '')
+	if str:find('-') then
+		name,reason = str:match("([^-]+)[%s-%s]+([^-]+)")
+	else
+		name = str:match("([^-%s]+)")
+		reason = false
+	end
+	return name, reason
+end
+
 
 local frame = CreateFrame("Frame")
 frame:RegisterEvent("CHAT_MSG_SYSTEM")

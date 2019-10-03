@@ -49,6 +49,9 @@ StaticPopupDialogs["FGI_BLACKLIST_CHANGE"] = {
 		blackList:update()
 		return true
 	end,
+	OnCancel  = function(self, data)
+		blackList:update()
+	end,
 	OnShow = function(self, data)
 		self.text:SetText(format("%s - %s", L.interface["Причина"], data.name))
 		self.editBox:SetText(tostring(DB.blackList[data.name]))
@@ -87,11 +90,9 @@ local function AddHookClick(frame, parent)
 end
 local help = "RBM - change"
 function blackList:add(data)
-	local ID 
 	for i=1, #scrollBar.items do
-		if not scrollBar.items[i].frame:IsShown()then ID=i;break; end
+		if not scrollBar.items[i].frame:IsShown() then return blackList:update() end
 	end
-	if ID then return blackList:updateList() end
 	scrollBar.items[#scrollBar.items+1] = GUI:Create("SimpleGroup")
 	local frame = scrollBar.items[#scrollBar.items]
 	frame:SetFullWidth(true)
@@ -118,22 +119,16 @@ function blackList:update()
 	local i=1
 	for k,v in pairs(DB.blackList) do
 		local f = scrollBar.items[i]
+		if not f then return end
 		f.n:SetText(k)
 		f.r:SetText(tostring(v))
 		AddHookClick(f.n, f)
+		f.frame:Show()
 		i = i+1
 	end
 	for i=i, #scrollBar.items do
 		scrollBar.items[i].frame:Hide()
 	end
-end
-
-function blackList:updateList()
-	local str = ''
-	for k,v in pairs(DB.blackList) do
-		str = format("%s%s\n", str, k)
-	end
-	-- blackList.list:SetText(str)
 end
 
 local function showNext()
