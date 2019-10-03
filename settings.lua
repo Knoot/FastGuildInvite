@@ -71,8 +71,8 @@ InterfaceOptions_AddCategory(settings.db)
 
 -- InterfaceOptionsFrame_OpenToCategory(settings)
 -- InterfaceOptionsFrame_OpenToCategory(settings)
--- InterfaceOptionsFrame_OpenToCategory(settings.Synchronization)
--- InterfaceOptionsFrame_OpenToCategory(settings.Synchronization)
+-- InterfaceOptionsFrame_OpenToCategory(settings.Blacklist)
+-- InterfaceOptionsFrame_OpenToCategory(settings.Blacklist)
 
 
 local w,h = 623, 568
