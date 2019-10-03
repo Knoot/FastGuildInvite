@@ -13,7 +13,7 @@ local L = {
 			show = "/fgi show - Open the main window of the addon",
 			invite = "/fgi invite - Invite the first player from the queue",
 			nextSearch = "/fgi nextSearch - Run next scan",
-			blacklist = "/fgibl <Name> - <Reason> - Add a player to the blacklist",
+			blacklist = "/fgi blacklist <Name> - <Reason> - Add a player to the blacklist",
 			help2 = "/fgi help2 - Commands with prefix \"!\"",
 		},
 		help2 = {
