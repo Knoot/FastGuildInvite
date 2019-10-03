@@ -48,7 +48,7 @@ local function MenuButtons(self)
 		local server = dropdownFrame.server;
 		
 		fn:blackList(name)
-		interface.settings.Blacklist.content:updateList()
+		interface.settings.Blacklist.content:update()
 		StaticPopup_Show("FGI_BLACKLIST_CHANGE", _,_,  {name = name})
 		
 	elseif (button == "GUILD_INVITE") then
@@ -344,6 +344,17 @@ function Console:FGIInput(str)
 		fn:invitePlayer()
 	elseif str == "nextSearch" then
 		interface.scanFrame.pausePlay.frame:Click()
+	elseif str:find("^blacklist") then 
+		local name,reason = fn:parseBL(str)
+		if not name then return print('blacklist wrong msg, report your message please') end
+		fn:blackList(name, reason)
+		if name and reason then
+			interface.settings.Blacklist.content:add({name=name, reason=reason})
+			return
+		end
+		if not reason then
+			StaticPopup_Show("FGI_BLACKLIST_CHANGE", _,_,  {name = name})
+		end
 	elseif str == 'debug' then 
 		toggleDebug()
 	elseif str == 'resetDB' then DB.alredySended = {}
