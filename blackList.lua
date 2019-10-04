@@ -96,12 +96,13 @@ function blackList:add(data)
 	scrollBar.items[#scrollBar.items+1] = GUI:Create("SimpleGroup")
 	local frame = scrollBar.items[#scrollBar.items]
 	frame:SetFullWidth(true)
-	frame:SetLayout("Flow")
+	frame:SetLayout("NIL")
 	frame.n = GUI:Create("TLabel")
 		frame.n:SetText(data.name)
 		frame.n:SetWidth(120)
 		frame.n:SetHeight(20)
 		frame.n:SetTooltip(help)
+		frame.n:SetPoint("TOPLEFT", frame.frame, "TOPLEFT", 0, 0)
 		AddHookClick(frame.n, frame)
 	fn.fontSize(frame.n.label)
 	frame:AddChild(frame.n)
@@ -111,19 +112,27 @@ function blackList:add(data)
 		frame.r:SetWidth(623-frame.n.frame:GetWidth()-50)
 		frame.r:SetHeight(20)
 		frame.r:SetTooltip(data.reason)
+		frame.r:SetPoint("TOPLEFT", frame.n.frame, "TOPRIGHT", 0, 0)
 	fn.fontSize(frame.r.label)
 	frame:AddChild(frame.r)
 	frame:SetHeight(frame.n.frame:GetHeight())
 	scrollBar:AddChild(frame)
+	if #scrollBar.items == 1 then
+		frame:SetPoint("TOPLEFT", scrollBar.frame, "TOPLEFT", 0, 0)
+	else
+		frame:SetPoint("TOPLEFT", scrollBar.items[#scrollBar.items-1].frame, "BOTTOMLEFT", 0, -5)
+	end
+	blackList:update()
 end
 
 function blackList:update()
 	local i=1
-	for k,v in pairs(DB.blackList) do
+	for name, reason in fn:pairsByKeys(DB.blackList) do
 		local f = scrollBar.items[i]
 		if not f then return end
-		f.n:SetText(k)
-		f.r:SetText(tostring(v))
+		f.n:SetText(name)
+		f.r:SetText(tostring(reason))
+		f.r:SetTooltip(tostring(reason))
 		AddHookClick(f.n, f)
 		f.frame:Show()
 		i = i+1
@@ -168,72 +177,6 @@ StaticPopupDialogs["FGI_BLACKLIST"] = {
 }
 
 
-
---[[
-local function btnText(frame)
-	local text = frame.text
-	text:ClearAllPoints()
-	text:SetPoint("TOPLEFT", 5, -1)
-	text:SetPoint("BOTTOMRIGHT", -5, 1)
-end
-
--- format("Player %s was found in blacklist. Do you want kick %s from guild?", name, name)
--- format("FGI autoKick: Player %s has been kicked.", name)
-
-interface.blackList = GUI:Create("ClearFrame")
-blackList = interface.blackList
-blackList:SetTitle("FGI Blacklist")
-blackList:SetWidth(size.blackListW)
-blackList:SetHeight(size.blackListH)
-blackList:SetLayout("Flow")
-
-
-blackList.title:SetScript('OnMouseUp', function(mover)
-	local DB = addon.DB
-	local frame = mover:GetParent()
-	frame:StopMovingOrSizing()
-	local self = frame.obj
-	local status = self.status or self.localstatus
-	status.width = frame:GetWidth()
-	status.height = frame:GetHeight()
-	status.top = frame:GetTop()
-	status.left = frame:GetLeft()
-	
-	local point, relativeTo,relativePoint, xOfs, yOfs = blackList.frame:GetPoint(1)
-	DB.blackListPos = {}
-	DB.blackListPos.point=point
-	DB.blackListPos.relativeTo=relativeTo
-	DB.blackListPos.relativePoint=relativePoint
-	DB.blackListPos.xOfs=xOfs
-	DB.blackListPos.yOfs=yOfs
-end)
-
-blackList.scrollBar = GUI:Create("ScrollFrame")
-scrollBar = blackList.scrollBar
-scrollBar:SetFullWidth(true)
-scrollBar:SetFullWidth(true)
--- scrollBar:SetWidth(blackList.frame:GetWidth()-20)
--- scrollBar:SetHeight(blackList.frame:GetHeight()-40)
-scrollBar:SetLayout("Flow")
-blackList:AddChild(scrollBar)
-
-blackList.closeButton = GUI:Create('Button')
-local frame = blackList.closeButton
-frame:SetText('X')
-frame:SetWidth(frame.frame:GetHeight())
-fn:closeBtn(frame)
-frame:SetCallback('OnClick', function()
-	interface.blackList:Hide()
-end)
-blackList:AddChild(frame)
-
-scrollBar.items = {}
-
-
-
-
-
-]]
 -- set points
 local frame = CreateFrame('Frame')
 frame:RegisterEvent('PLAYER_LOGIN')
@@ -242,20 +185,4 @@ frame:SetScript('OnEvent', function()
 	for k,v in pairs(DB.blackList) do
 		blackList:add({name=tostring(k),reason=tostring(v)})
 	end
-	
-	--[[if DB.blackListPos then
-		interface.blackList:ClearAllPoints()
-		interface.blackList:SetPoint(DB.blackListPos.point, UIParent, DB.blackListPos.relativePoint, DB.blackListPos.xOfs, DB.blackListPos.yOfs)
-	else
-		interface.blackList:SetPoint("CENTER", UIParent)
-	end
-	C_Timer.After(0.1, function()
-	blackList.closeButton:ClearAllPoints()
-	blackList.closeButton:SetPoint("CENTER", blackList.frame, "TOPRIGHT", -8, -8)
-	
-	
-	
-	
-	blackList:Hide()
-	end)]]
 end)
