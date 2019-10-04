@@ -346,7 +346,7 @@ function Console:FGIInput(str)
 		interface.scanFrame.pausePlay.frame:Click()
 	elseif str:find("^blacklist") then 
 		local name,reason = fn:parseBL(str)
-		if not name then return print('blacklist wrong msg, report your message please') end
+		if not name then return print('Blacklist: nil name') end
 		fn:blackList(name, reason)
 		if name and reason then
 			interface.settings.Blacklist.content:add({name=name, reason=reason})
