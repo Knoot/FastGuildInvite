@@ -84,7 +84,7 @@ frame:SetWidth(size.inviteTypeGRP)
 frame:SetList({L.interface.invType["Только пригласить"], L.interface.invType["Отправить сообщение и пригласить"], L.interface.invType["Только сообщение"],})
 frame:SetValue(1)
 frame:SetCallback("OnValueChanged", function(key)
-	DB.inviteType = inviteTypeGRP.drop:GetValue()
+	DB.global.inviteType = inviteTypeGRP.drop:GetValue()
 end)
 inviteTypeGRP:AddChild(frame)
 end
@@ -105,11 +105,11 @@ frame:SetLabel(L.interface["Пользовательский список"])
 frame:SetTooltip(L.interface.tooltip["Использовать пользовательский список запросов"])
 -- fontSize(frame.text)
 frame.frame:HookScript("OnClick", function()
-	DB.customWho = mainCheckBoxGRP.customList:GetValue()
+	DB.realm.customWho = mainCheckBoxGRP.customList:GetValue()
 end)
 mainCheckBoxGRP:AddChild(frame)
 
-mainCheckBoxGRP.backgroundRun = GUI:Create("TCheckBox")
+--[[mainCheckBoxGRP.backgroundRun = GUI:Create("TCheckBox")
 local frame = mainCheckBoxGRP.backgroundRun
 frame:SetWidth(size.backgroundRun)
 frame:SetLabel(L.interface["Запускать в фоновом режиме"])
@@ -118,7 +118,7 @@ frame:SetTooltip(L.interface.tooltip["Запускать поиск в фоно�
 frame.frame:HookScript("OnClick", function()
 	DB.backgroundRun = mainCheckBoxGRP.backgroundRun:GetValue()
 end)
-mainCheckBoxGRP:AddChild(frame)
+mainCheckBoxGRP:AddChild(frame)]]
 
 mainCheckBoxGRP.enableFilters = GUI:Create("TCheckBox")
 local frame = mainCheckBoxGRP.enableFilters
@@ -151,7 +151,7 @@ frame:SetWidth(size.startScan)
 frame:SetHeight(40)
 frame:SetCallback("OnClick", function()
 	if not fn:inGuildCanInvite() then return print(L.FAQ.error["Вы не состоите в гильдии или у вас нет прав для приглашения."]) end
-	if not DB.backgroundRun or addon.search.state ~= "stop" then
+	if --[[not DB.backgroundRun or ]]addon.search.state ~= "stop" then
 		interface.scanFrame:Show()
 	end
 	if addon.search.state ~= "start" then
@@ -180,7 +180,7 @@ frame:SetHeight(mainButtonsGRP.startScan.frame:GetHeight())
 frame.frame:SetScript("OnClick", function()
 	--interface.settingsFrame:Show()
 	InterfaceOptionsFrame_OpenToCategory(interface.settings)
-	InterfaceOptionsFrame_OpenToCategory(interface.settings.profile)
+	InterfaceOptionsFrame_OpenToCategory(interface.settings.Blacklist)
 	InterfaceOptionsFrame_OpenToCategory(interface.settings)
 	interface.mainFrame:Hide()
 end)
@@ -213,11 +213,11 @@ frame:SetWidth(30)
 frame.frame:SetScript("OnMouseWheel",function(self,delta)
 	local mod = IsShiftKeyDown() and 5 or 1
 	if delta > 0 then
-		DB.lowLimit = math.min(DB.highLimit, DB.lowLimit + mod)
+		DB.global.lowLimit = math.min(DB.global.highLimit, DB.global.lowLimit + mod)
 	else
-		DB.lowLimit = math.max(FGI_MINLVL, DB.lowLimit - mod)
+		DB.global.lowLimit = math.max(FGI_MINLVL, DB.global.lowLimit - mod)
 	end
-	searchRangeGRP.lvlRangeMin:SetText(DB.lowLimit)
+	searchRangeGRP.lvlRangeMin:SetText(DB.global.lowLimit)
 end)
 searchRangeGRP:AddChild(frame)
 
@@ -238,11 +238,11 @@ fontSize(frame.label)
 frame.frame:SetScript("OnMouseWheel",function(self,delta)
 	local mod = IsShiftKeyDown() and 5 or 1
 	if delta > 0 then
-		DB.highLimit = math.min(FGI_MAXLVL, DB.highLimit + mod)
+		DB.global.highLimit = math.min(FGI_MAXLVL, DB.global.highLimit + mod)
 	else
-		DB.highLimit = math.max(DB.lowLimit, DB.highLimit - mod)
+		DB.global.highLimit = math.max(DB.global.lowLimit, DB.global.highLimit - mod)
 	end
-	searchRangeGRP.lvlRangeMax:SetText(DB.highLimit)
+	searchRangeGRP.lvlRangeMax:SetText(DB.global.highLimit)
 end)
 searchRangeGRP:AddChild(frame)
 
@@ -304,14 +304,14 @@ frame:SetScript('OnEvent', function()
 	scrollBar.content:SetHeight(gratitudeFrame.Category.frame:GetHeight())]]
 	
 	C_Timer.After(0.1, function()
-	inviteTypeGRP.drop:SetValue(DB.inviteType)
+	inviteTypeGRP.drop:SetValue(DB.global.inviteType)
 	
-	mainCheckBoxGRP.customList:SetValue(DB.customWho or false)
-	mainCheckBoxGRP.backgroundRun:SetValue(DB.backgroundRun or false)
-	mainCheckBoxGRP.enableFilters:SetValue(DB.enableFilters or false)
+	mainCheckBoxGRP.customList:SetValue(DB.realm.customWho or false)
+	-- mainCheckBoxGRP.backgroundRun:SetValue(DB.backgroundRun or false)
+	mainCheckBoxGRP.enableFilters:SetValue(DB.realm.enableFilters or false)
 	
-	searchRangeGRP.lvlRangeMin:SetText(DB.lowLimit)
-	searchRangeGRP.lvlRangeMax:SetText(DB.highLimit)
+	searchRangeGRP.lvlRangeMin:SetText(DB.global.lowLimit)
+	searchRangeGRP.lvlRangeMax:SetText(DB.global.highLimit)
 	
 	--[[gratitudeFrame:ClearAllPoints()
 	gratitudeFrame:SetPoint("CENTER", UIParent, "CENTER", 0, 0)

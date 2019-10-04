@@ -83,7 +83,9 @@ local L = {
 		["Расы:"] = "Race:",
 		["Режим приглашения"] = "Invitation mode",
 		["Сбросить"] = "Reset",
-		["Слово NAME заглавными буквами будет заменено на название вашей гильдии."] = "The word NAME in capital letters will be replaced with the name of your guild.",
+		["Настройка сообщений, подсказка"] = [[Auto Replace.
+NAME is the name of the player to whom the message is sent.
+GUILD is the name of your guild.]],
 		["Сохранить"] = "Save",
 		["Текущее сообщение: %s"] = "Current message: %s",
 		["Предпросмотр: %s"] = "Preview: %s",

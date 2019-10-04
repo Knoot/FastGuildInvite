@@ -14,23 +14,12 @@ local fontSize = fn.fontSize
 local CustomizePost
 
 local function defaultValues()
-	CustomizePost.drop:SetList(DB.messageList)
-	CustomizePost.drop:SetValue(DB.curMessage)
-	CustomizePost.message:SetText(DB.messageList[DB.curMessage] or "")
-	local msg = DB.messageList[DB.curMessage]
+	CustomizePost.drop:SetList(DB.realm.messageList)
+	CustomizePost.drop:SetValue(DB.realm.curMessage)
+	CustomizePost.message:SetText(DB.realm.messageList[DB.realm.curMessage] or "")
+	local msg = DB.realm.messageList[DB.realm.curMessage]
 	if msg then msg = fn:msgMod(msg) end
 	CustomizePost.curMessage:SetText(format(L.interface["Предпросмотр: %s"], msg or ''))
-end
-
-local function overLen(msg)
-	local guildName, guildRankName, guildRankIndex, realm = GetGuildInfo("player")
-	msg = msg:gsub("NAME", format("<%s>",guildName or 'GUILD_NAME'))
-	if msg:len()>255 then
-		BasicMessageDialog:SetFrameStrata("TOOLTIP")
-		message(format(L.FAQ.error["Превышен лимит символов. Максимальная длина сообщения 255 символов. Длина сообщения превышена на %d"], msg:len()-255))
-		return true
-	end
-	return false
 end
 
 local function EditBoxChange(frame)
@@ -59,7 +48,7 @@ CustomizePost:SetPoint("TOPLEFT", interface.settings.CustomizePost, "TOPLEFT", 1
 
 CustomizePost.intro = GUI:Create("TLabel")
 local frame = CustomizePost.intro
-frame:SetText(L.interface["Слово NAME заглавными буквами будет заменено на название вашей гильдии."])
+frame:SetText(L.interface["Настройка сообщений, подсказка"])
 fontSize(frame.label)
 frame:SetWidth(CustomizePost.frame:GetWidth()-30)
 frame.label:SetJustifyH("CENTER")
@@ -70,8 +59,8 @@ CustomizePost.drop = GUI:Create("Dropdown")
 local frame = CustomizePost.drop
 frame:SetWidth(CustomizePost.frame:GetWidth()-30)
 frame:SetCallback("OnValueChanged", function(key)
-	CustomizePost.message:SetText(DB.messageList[CustomizePost.drop:GetValue()] or "")
-	local msg = DB.messageList[CustomizePost.drop:GetValue()]
+	CustomizePost.message:SetText(DB.realm.messageList[CustomizePost.drop:GetValue()] or "")
+	local msg = DB.realm.messageList[CustomizePost.drop:GetValue()]
 	if msg then msg = fn:msgMod(msg) end
 	CustomizePost.curMessage:SetText(format(L.interface["Предпросмотр: %s"], msg or ''))
 end)
@@ -81,7 +70,6 @@ CustomizePost:AddChild(frame)
 CustomizePost.message = GUI:Create("EditBox")
 local frame = CustomizePost.message
 frame:SetWidth(CustomizePost.frame:GetWidth()-30)
-frame:SetMaxLetters(255)
 EditBoxChange(frame)
 frame:SetCallback("OnTextChanged", function(_,_,msg)
 	if msg then msg = fn:msgMod(msg) end
@@ -105,10 +93,9 @@ frame:SetCallback("OnClick", function()
 		BasicMessageDialog:SetFrameStrata("TOOLTIP")
 		return message(L.FAQ.error["Нельзя сохранить пустое сообщение"])
 	else
-		if overLen(msg) then return end
 		
-		DB.messageList[CustomizePost.drop:GetValue()] = msg
-		DB.curMessage = CustomizePost.drop:GetValue()
+		DB.realm.messageList[CustomizePost.drop:GetValue()] = msg
+		DB.realm.curMessage = CustomizePost.drop:GetValue()
 		defaultValues()
 	end
 end)
@@ -127,10 +114,8 @@ frame:SetCallback("OnClick", function()
 		BasicMessageDialog:SetFrameStrata("TOOLTIP")
 		return message(L.FAQ.error["Нельзя добавить пустое сообщение"])
 	else
-		if overLen(msg) then return end
-		
-		table.insert(DB.messageList, msg)
-		DB.curMessage = #DB.messageList
+		table.insert(DB.realm.messageList, msg)
+		DB.realm.curMessage = #DB.realm.messageList
 		defaultValues()
 	end
 end)
@@ -145,16 +130,16 @@ frame:SetWidth(size.delete)
 frame:SetHeight(40)
 frame:SetCallback("OnClick", function()
 	local msg = CustomizePost.drop:GetValue()
-	if DB.messageList[msg] == nil then
+	if DB.realm.messageList[msg] == nil then
 		BasicMessageDialog:SetFrameStrata("TOOLTIP")
 		return message(L.FAQ.error["Выберите сообщение"])
 	else
-		if DB.curMessage == msg then
-			DB.curMessage = 1
-		elseif DB.curMessage > msg then
-			DB.curMessage = DB.curMessage - 1
+		if DB.realm.curMessage == msg then
+			DB.realm.curMessage = 1
+		elseif DB.realm.curMessage > msg then
+			DB.realm.curMessage = DB.realm.curMessage - 1
 		end
-		table.remove(DB.messageList, msg)
+		table.remove(DB.realm.messageList, msg)
 		defaultValues()
 	end
 end)

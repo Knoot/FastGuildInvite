@@ -154,15 +154,15 @@ frame:SetScript("OnEvent", function(_,_,msg)
 	local type, name = playerHaveInvite(msg)
 	if not name then return end
 	if type == "not_found" then
-		DB.alredySended[name] = nil
+		DB.realm.alreadySended[name] = nil
 		debug(format(ERR_GUILD_PLAYER_NOT_FOUND_S, name).." "..L.interface["Игрок не добавлен в список исключений."], color.yellow)
 	elseif type == "auto_decline" then
 		debug(format(ERR_CHAT_PLAYER_NOT_FOUND_S, name), color.yellow)
 		auto_decline[name] = true
 	elseif type == "invite" then
 		local list = addon.search.inviteList
-		local msg = DB.messageList[DB.curMessage]
-		if DB.inviteType == 2 then
+		local msg = DB.realm.messageList[DB.realm.curMessage]
+		if DB.global.inviteType == 2 then
 			C_Timer.After(1, function() if not auto_decline[name] and addon.msgQueue[name] then fn:sendWhisper(msg, name); addon.msgQueue[name] = nil end end)
 		end
 	end

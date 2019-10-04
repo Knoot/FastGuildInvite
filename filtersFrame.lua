@@ -588,7 +588,7 @@ local function saveFilter()
 	
 	if not filterName then
 		table.insert(errors, format("%s \n %s", L.interface["Имя фильтра"], L.interface["Имя фильтра не может быть пустым"]))
-	elseif DB.filtersList[filterName] ~= nil and not addfilterFrame.change then
+	elseif DB.realm.filtersList[filterName] ~= nil and not addfilterFrame.change then
 		table.insert(errors, format("%s \n %s", L.interface["Имя фильтра"], L.interface["Имя фильтра занято"]))
 	end
 	
@@ -637,7 +637,7 @@ local function saveFilter()
 	if #errors == 0 then
 		filters.filtersFrame.frame:Show()
 		filters.addfilterFrame.frame:Hide()
-		DB.filtersList[filterName] = {
+		DB.realm.filtersList[filterName] = {
 			filterByName = filterByName,
 			lvlRange = lvlRange,
 			letterFilter = letterFilter,

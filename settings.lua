@@ -19,11 +19,11 @@ local settings = interface.settings
 settings.name = "Fast Guild Invite"
 InterfaceOptions_AddCategory(settings)
 
-settings.profile = CreateFrame("Frame", settings)
+--[[settings.profile = CreateFrame("Frame", settings)
 settings.profile.name = "Profile"
 -- settings.profile.refresh  = function(self)print(self:GetHeight())end
 settings.profile.parent = settings.name
-InterfaceOptions_AddCategory(settings.profile)
+InterfaceOptions_AddCategory(settings.profile)]]
 
 settings.filters = CreateFrame("Frame", settings)
 settings.filters.name = L.interface["Фильтры"]
@@ -64,15 +64,15 @@ settings.credits.name = L.interface["Благодарности"]
 settings.credits.parent = settings.name
 InterfaceOptions_AddCategory(settings.credits)
 
-settings.db = CreateFrame("Frame", settings)
+--[[settings.db = CreateFrame("Frame", settings)
 settings.db.name = "DB"
 settings.db.parent = settings.name
-InterfaceOptions_AddCategory(settings.db)
+InterfaceOptions_AddCategory(settings.db)]]
 
 -- InterfaceOptionsFrame_OpenToCategory(settings)
 -- InterfaceOptionsFrame_OpenToCategory(settings)
--- InterfaceOptionsFrame_OpenToCategory(settings.Blacklist)
--- InterfaceOptionsFrame_OpenToCategory(settings.Blacklist)
+-- InterfaceOptionsFrame_OpenToCategory(settings.profile)
+-- InterfaceOptionsFrame_OpenToCategory(settings.profile)
 
 
 local w,h = 623, 568
@@ -101,7 +101,7 @@ frame:SetTooltip(L.interface.tooltip["Не отображать в чате со
 frame:SetDisabled(true)
 -- fontSize(frame.text)
 frame.frame:HookScript("OnClick", function()
-	DB.addonMSG = settingsCheckBoxGRP.addonMSG:GetValue()
+	DB.realm.addonMSG = settingsCheckBoxGRP.addonMSG:GetValue()
 end)
 frame:SetPoint("TOPLEFT", settings.settingsCheckBoxGRP.frame, "TOPLEFT", 0, 0)
 settingsCheckBoxGRP:AddChild(frame)
@@ -113,7 +113,7 @@ frame:SetLabel(L.interface["Выключить системные сообщен
 frame:SetTooltip(L.interface.tooltip["Не отображать в чате системные сообщения"])
 -- fontSize(frame.text)
 frame.frame:HookScript("OnClick", function()
-	DB.systemMSG = settingsCheckBoxGRP.systemMSG:GetValue()
+	DB.realm.systemMSG = settingsCheckBoxGRP.systemMSG:GetValue()
 end)
 frame:SetPoint("TOPLEFT", settings.settingsCheckBoxGRP.addonMSG.frame, "BOTTOMLEFT", 0, 0)
 settingsCheckBoxGRP:AddChild(frame)
@@ -125,7 +125,7 @@ frame:SetLabel(L.interface["Выключить отправляемые сооб
 frame:SetTooltip(L.interface.tooltip["Не отображать в чате отправляемые сообщения"])
 -- fontSize(frame.text)
 frame.frame:HookScript("OnClick", function()
-	DB.sendMSG = settingsCheckBoxGRP.sendMSG:GetValue()
+	DB.realm.sendMSG = settingsCheckBoxGRP.sendMSG:GetValue()
 end)
 frame:SetPoint("TOPLEFT", settings.settingsCheckBoxGRP.systemMSG.frame, "BOTTOMLEFT", 0, 0)
 settingsCheckBoxGRP:AddChild(frame)
@@ -137,8 +137,8 @@ frame:SetLabel(L.interface["Не отображать значок у миник
 frame:SetTooltip("")
 -- fontSize(frame.text)
 frame.frame:HookScript("OnClick", function()
-	DB.minimap.hide = settingsCheckBoxGRP.minimapButton:GetValue()
-	if DB.minimap.hide then
+	DB.global.minimap.hide = settingsCheckBoxGRP.minimapButton:GetValue()
+	if DB.global.minimap.hide then
 		addon.icon:Hide("FGI")
 	else
 		addon.icon:Show("FGI")
@@ -168,7 +168,7 @@ frame:SetWidth(size.clearDBtimes)
 frame:SetLabel(L.interface.clearDBtimes["Время запоминания игрока"])
 frame:SetList({L.interface.clearDBtimes["Отключить"], L.interface.clearDBtimes["1 день"], L.interface.clearDBtimes["1 неделя"], L.interface.clearDBtimes["1 месяц"], L.interface.clearDBtimes["6 месяцев"],})
 frame:SetCallback("OnValueChanged", function(key)
-	DB.clearDBtimes = settings.clearDBtimes:GetValue()
+	DB.global.clearDBtimes = settings.clearDBtimes:GetValue()
 end)
 frame:SetPoint("TOPLEFT", settings.settingsCheckBoxGRP.frame, "BOTTOMLEFT", 0, 0)
 settings:AddChild(frame)
@@ -185,12 +185,12 @@ frame:RegisterEvent('PLAYER_LOGIN')
 frame:SetScript('OnEvent', function()
 	DB = addon.DB
 	
-	settingsCheckBoxGRP.addonMSG:SetValue(DB.addonMSG or false)
-	settingsCheckBoxGRP.systemMSG:SetValue(DB.systemMSG or false)
-	settingsCheckBoxGRP.sendMSG:SetValue(DB.sendMSG or false)
-	settingsCheckBoxGRP.minimapButton:SetValue(DB.minimap.hide or false)
+	settingsCheckBoxGRP.addonMSG:SetValue(DB.realm.addonMSG or false)
+	settingsCheckBoxGRP.systemMSG:SetValue(DB.realm.systemMSG or false)
+	settingsCheckBoxGRP.sendMSG:SetValue(DB.realm.sendMSG or false)
+	settingsCheckBoxGRP.minimapButton:SetValue(DB.global.minimap.hide or false)
 	settingsCheckBoxGRP.rememberAll:SetValue(DB.rememberAll or false)
-	settings.clearDBtimes:SetValue(DB.clearDBtimes)
+	settings.clearDBtimes:SetValue(DB.global.clearDBtimes)
 	-- settingsCheckBoxGRP.addonMSG:SetValue(true)
 	
 	

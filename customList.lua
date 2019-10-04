@@ -49,10 +49,10 @@ btnText(frame)
 frame:SetWidth(size.saveButton)
 frame:SetHeight(40)
 frame:SetCallback("OnClick", function()
-	DB.customWhoList = {}
+	DB.faction.customWhoList = {}
 	for k,v in pairs(table.pack(fn:split(CustomList.list:GetText(),"\n"))) do
 		if v~="" then
-			table.insert(DB.customWhoList, v)
+			table.insert(DB.faction.customWhoList, v)
 		end
 	end
 end)
@@ -67,8 +67,8 @@ frame:RegisterEvent('PLAYER_LOGIN')
 frame:SetScript('OnEvent', function()
 	DB = addon.DB
 	local str = ''
-	for i=1,#DB.customWhoList do
-		str = format("%s%s\n", str, DB.customWhoList[i])
+	for i=1,#DB.faction.customWhoList do
+		str = format("%s%s\n", str, DB.faction.customWhoList[i])
 		CustomList.list:SetText(str)
 	end
 end)

@@ -32,7 +32,7 @@ local function Button_OnClick(self, button,...)
 	elseif button == "LeftButton" and shift then
 		--delete
 		local DB = FGI.DB
-		DB.filtersList[frame.id] = nil
+		DB.realm.filtersList[frame.id] = nil
 		FGI.functions:FiltersUpdate()
 	elseif button == "RightButton" then
 		--replace
@@ -79,14 +79,14 @@ local methods = {
 	
 	["click"] = function(self)
 		local DB = FGI.DB
-		if self.frame.id == '' and not DB.filtersList[self.frame.id] then return  end
-		local on = not DB.filtersList[self.frame.id].filterOn
+		if self.frame.id == '' and not DB.realm.filtersList[self.frame.id] then return  end
+		local on = not DB.realm.filtersList[self.frame.id].filterOn
 		if on then
 			setHighlight(self.highlight, true)
-			DB.filtersList[self.frame.id].filterOn = true
+			DB.realm.filtersList[self.frame.id].filterOn = true
 		else
 			setHighlight(self.highlight, false)
-			DB.filtersList[self.frame.id].filterOn = false
+			DB.realm.filtersList[self.frame.id].filterOn = false
 		end
 	end,
 
@@ -112,8 +112,8 @@ local methods = {
 	["SetID"] = function(self, id)
 		local DB = FGI.DB
 		self.frame.id = id
-		if DB.filtersList[id] then self.frame:Show() end
-		if DB.filtersList[id] and DB.filtersList[id].filterOn then
+		if DB.realm.filtersList[id] then self.frame:Show() end
+		if DB.realm.filtersList[id] and DB.realm.filtersList[id].filterOn then
 			setHighlight(self.highlight, true)
 		else
 			setHighlight(self.highlight, false)

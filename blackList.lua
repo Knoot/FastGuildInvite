@@ -37,7 +37,7 @@ StaticPopupDialogs["FGI_BLACKLIST_CHANGE"] = {
 	button2 = "Cancel",
 	OnAccept = function(self, data)
 		local reason = self.editBox:GetText()
-		DB.blackList[data.name] = reason
+		DB.realm.blackList[data.name] = reason
 		if type(data.frame) == "table" then
 			data.frame.r:SetText(reason)
 			data.frame.r:SetTooltip(reason)
@@ -54,7 +54,7 @@ StaticPopupDialogs["FGI_BLACKLIST_CHANGE"] = {
 	end,
 	OnShow = function(self, data)
 		self.text:SetText(format("%s - %s", L.interface["Причина"], data.name))
-		self.editBox:SetText(tostring(DB.blackList[data.name]))
+		self.editBox:SetText(tostring(DB.realm.blackList[data.name]))
 	end,
 	timeout = 0,
 	whileDead = true,
@@ -70,7 +70,7 @@ local function AddHookClick(frame, parent)
 			StaticPopup_Show("FGI_BLACKLIST_CHANGE", _,_,  {name = frame.label:GetText(), frame = parent})
 		end},
 		{text = "Delete", func = function()
-			DB.blackList[frame.label:GetText()] = nil
+			DB.realm.blackList[frame.label:GetText()] = nil
 			blackList:update()
 		end},
 		{text = "", isTitle = true},
@@ -127,7 +127,7 @@ end
 
 function blackList:update()
 	local i=1
-	for name, reason in fn:pairsByKeys(DB.blackList) do
+	for name, reason in fn:pairsByKeys(DB.realm.blackList) do
 		local f = scrollBar.items[i]
 		if not f then return end
 		f.n:SetText(name)
@@ -182,7 +182,7 @@ local frame = CreateFrame('Frame')
 frame:RegisterEvent('PLAYER_LOGIN')
 frame:SetScript('OnEvent', function()
 	DB = addon.DB
-	for k,v in pairs(DB.blackList) do
+	for k,v in pairs(DB.realm.blackList) do
 		blackList:add({name=tostring(k),reason=tostring(v)})
 	end
 end)

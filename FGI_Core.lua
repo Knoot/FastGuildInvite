@@ -90,7 +90,7 @@ frame:SetScript("OnEvent", function(...)
 		n = strsub(msg,place)
 		name = strsub(n,1,(strfind(n,"%s") or 2)-1)
 		if format(ERR_GUILD_LEAVE_S ,name) == msg then
-			DB.leave[name] = true
+			DB.realm.leave[name] = true
 			debug(format("Player %s left the guild or was expelled.", name), color.yellow)
 		end
 	end
@@ -124,7 +124,7 @@ frame:SetScript("OnEvent", function(_,_, msg,_,_,_,name,...)
 		local b,n,r = isCorrect(msg)
 		print("delete",b,n,r)
 	elseif msg:find("^!blacklistGetList") then
-		for k,v in pairs(DB.blackList) do
+		for k,v in pairs(DB.realm.blackList) do
 			SendChatMessage(format("%s - %s", k, v) , "OFFICER",  GetDefaultLanguage("player"))
 		end
 	end
@@ -140,7 +140,7 @@ end
 
 
 function FastGuildInvite:OnEnable()
-	addon.debug = DB.debug
+	addon.debug = DB.global.debug
 	fn:blackListAutoKick()
 	local parent = interface.settings.filters.content.filtersFrame
 	local list = parent.filterList
@@ -204,8 +204,8 @@ function FastGuildInvite:OnEnable()
 	debugFrame:Hide()
 	-- if not addon.debug then debugFrame:Hide() else debugFrame:Show() end
 	
-	fn:SetKeybind(DB.keyBind.invite, "invite")
-	fn:SetKeybind(DB.keyBind.nextSearch, "nextSearch")
+	fn:SetKeybind(DB.global.keyBind.invite, "invite")
+	fn:SetKeybind(DB.global.keyBind.nextSearch, "nextSearch")
 	
 	
 	
@@ -223,12 +223,44 @@ function FastGuildInvite:OnEnable()
 	Console:RegisterChatCommand('fgidebug', 'FGIdebug')
 end
 
+
+local defaultSettings =  { 
+	profile = {
+	},
+	realm = {
+		enableFilters = false,
+		customWho = false,
+		addonMSG = false,
+		systemMSG = false,
+		sendMSG = false,
+		curMessage = 1,
+		messageList = {},
+		filtersList = {},
+		blackList = {},
+		alreadySended = {},
+		leave = {},
+	},
+	faction = {
+		customWhoList = {"1-15 c-\"Class\" r-\"Race\""},
+	},
+	global = {
+		inviteType = 1,
+		lowLimit = FGI_MINLVL,
+		highLimit = FGI_MAXLVL,
+		keyBind = {invite = false, nextSearch = false},
+		clearDBtimes = 3,
+		minimap = {hide = false},
+		debug = false,
+	},
+} 
+
+
 function FastGuildInvite:OnInitialize()
-	self.db = LibStub("AceDB-3.0"):New("FGI_DB")
+	self.db = LibStub("AceDB-3.0"):New("FGI_DB", defaultSettings, true)
 	self.debugdb = LibStub("AceDB-3.0"):New("FGI_DEBUG")
 	self.db.RegisterCallback(self, "OnDatabaseReset", function() C_UI.Reload() end)
 	
-	DB = self.db.global
+	DB = self.db
 	addon.DB = DB
 	debugDB = self.debugdb.global
 	for i=#debugDB, 1, -1  do
@@ -236,51 +268,37 @@ function FastGuildInvite:OnInitialize()
 	end
 	table.insert(debugDB, {})
 	addon.debugDB = debugDB[#debugDB]
-	
---	mainFrame settings
-	DB.inviteType = DB.inviteType or 1
-	DB.lowLimit = DB.lowLimit or FGI_MINLVL
-	DB.highLimit = DB.highLimit or FGI_MAXLVL
-		-- DB.raceFilterVal = DB.raceFilterVal or FGI_DEFAULT_RACEFILTERSTART
-		-- DB.classFilterVal = DB.classFilterVal or FGI_DEFAULT_CLASSFILTERSTART
-		-- DB.searchInterval = DB.searchInterval or FGI_DEFAULT_SEARCHINTERVAL
-		-- DB.backgroundRun = DB.backgroundRun or false
-	DB.enableFilters = DB.enableFilters or false
-	DB.customWho = DB.customWho or false
---	mainFrame settings
 
---	settings
-	DB.addonMSG = DB.addonMSG or false
-	DB.systemMSG = DB.systemMSG or false
-	DB.sendMSG = DB.sendMSG or false
-	DB.keyBind = istable(DB.keyBind) and DB.keyBind or {invite = false, nextSearch = false}
-	DB.rememberAll = DB.rememberAll or false
-	DB.clearDBtimes = DB.clearDBtimes or 3
---	settings
-
---	message
-	DB.messageList = istable(DB.messageList) and DB.messageList or {}
-	if DB.messageList[0] then table.insert(DB.messageList, DB.messageList[0]);DB.messageList[0] = nil end
-	DB.curMessage = math.max(DB.curMessage or 1, 1)
---	message
-	
--- DATA
-	DB.alredySended = istable(DB.alredySended) and DB.alredySended or {}
-	DB.filtersList = istable(DB.filtersList) and DB.filtersList or {}
-	DB.blackList = istable(DB.blackList) and DB.blackList or {}
-	DB.leave = istable(DB.leave) and DB.leave or {}
-	DB.customWhoList = istable(DB.customWhoList) and DB.customWhoList or {"1-15 c-\"Class\" r-\"Race\""}
-	
-	DB.minimap = istable(DB.minimap) and DB.minimap or {}
-	DB.minimap.hide = DB.minimap.hide or false
-	
-	DB.debug = DB.debug or false
--- DATA
-	
-	if DB.clearDBtimes>1 then
-		for k,v in pairs(DB.alredySended) do	-- delete player from sended DB after "FGI_RESETSENDDBTIME"
-			if difftime(time({year = date("%Y"), month = date("%m"), day = date("%d")}), v) >= FGI_RESETSENDDBTIME[DB.clearDBtimes] then
-				DB.alredySended[k] = nil
+	-- for DB update
+	if DB.global.customWhoList then
+		DB.faction.customWhoList = DB.global.customWhoList
+		DB.global.customWhoList = nil
+	end
+	if DB.global.blackList then
+		DB.realm.blackList = DB.global.blackList
+		DB.global.blackList = nil
+	end
+	if DB.global.messageList then
+		DB.realm.messageList = DB.global.messageList
+		DB.global.messageList = nil
+	end
+	if DB.global.alredySended then
+		DB.realm.alreadySended = DB.global.alredySended
+		DB.global.alredySended = nil
+	end
+	if DB.global.filtersList then
+		DB.realm.filtersList = DB.global.filtersList
+		DB.global.filtersList = nil
+	end
+	if DB.global.leave then
+		DB.realm.leave = DB.global.leave
+		DB.global.leave = nil
+	end
+	-- / for DB update
+	if DB.global.clearDBtimes>1 then
+		for k,v in pairs(DB.realm.alreadySended) do	-- delete player from sended DB after "FGI_RESETSENDDBTIME"
+			if difftime(time({year = date("%Y"), month = date("%m"), day = date("%d")}), v) >= FGI_RESETSENDDBTIME[DB.global.clearDBtimes] then
+				DB.realm.alreadySended[k] = nil
 			end
 		end
 	end
@@ -291,9 +309,9 @@ function FastGuildInvite:OnInitialize()
 end
 
 local function toggleDebug()
-	DB.debug = not DB.debug
-	addon.debug = DB.debug
-	print("FGI Debug "..(DB.debug and color.green.."on" or color.red.."off").."|r")
+	DB.global.debug = not DB.global.debug
+	addon.debug = DB.global.debug
+	print("FGI Debug "..(DB.global.debug and color.green.."on" or color.red.."off").."|r")
 end
 
 function Console:FGIdebug(str)
@@ -357,7 +375,7 @@ function Console:FGIInput(str)
 		end
 	elseif str == 'debug' then 
 		toggleDebug()
-	elseif str == 'resetDB' then DB.alredySended = {}
+	elseif str == 'resetDB' then DB.realm.alreadySended = {}
 	elseif str == 'resetWindowsPos' then
 		fn:resetWindowsPos()
 		interface.mainFrame:ClearAllPoints()

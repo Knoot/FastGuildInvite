@@ -70,7 +70,7 @@ local RaceClassCombo = {
 function fn:FilterChange(id)
 	local filtersFrame = interface.settings.filters.content.filtersFrame
 	local addfilterFrame = interface.settings.filters.content.addfilterFrame
-	local filter = FGI.DB.filtersList[id]
+	local filter = FGI.DB.realm.filtersList[id]
 	local class = filter.classFilter
 	local raceFilter = filter.raceFilter
 	
@@ -176,7 +176,7 @@ frame:SetScript("OnEvent", function(_,_,msg)
 		local n = strsub(msg,place)
 		local name = strsub(n,1,(strfind(n,"%s") or 2)-1)
 		if format(ERR_GUILD_JOIN_S,name) == msg then
-			if DB.alredySended[name] then
+			if DB.realm.alreadySended[name] then
 				addon.searchInfo.invited()
 			end
 		end
@@ -189,7 +189,7 @@ function fn:initDB()
 end
 
 local function IsInBlacklist(name)
-	return DB.blackList[name] and true or false
+	return DB.realm.blackList[name] and true or false
 end
 
 local function guildKick(name)
@@ -224,7 +224,7 @@ function fn:blackListAutoKick()
 end
 
 function fn:blackList(name, reason)
-	DB.blackList[name] = reason or L.interface.defaultReason
+	DB.realm.blackList[name] = reason or L.interface.defaultReason
 	print(format("%s%s|r", color.red, format(L.interface["Игрок %s добавлен в черный список."], name)))
 	fn:blacklistKick()
 end
@@ -247,7 +247,7 @@ end
 local debug = fn.debug
 
 function fn:SetKeybind(key, keyType)
-	local DBkey = addon.DB.keyBind
+	local DBkey = addon.DB.global.keyBind
 	if key then
 		if keyType == "invite" then
 			DBkey.invite = key
@@ -286,8 +286,8 @@ function fn:FiltersUpdate()
 		list[i]:Hide()
 	end
 	local i = 1
-	for name,v in pairs(DB.filtersList) do
-		local filter = DB.filtersList[name]
+	for name,v in pairs(DB.realm.filtersList) do
+		local filter = DB.realm.filtersList[name]
 		local frame = list[i]
 		frame:Show()
 		frame:SetID(name)
@@ -322,11 +322,15 @@ end
 
 
 
-function fn:msgMod(msg)
+function fn:msgMod(msg, name)
 	if not msg then return end
 	if msg:find("NAME") then
 		local guildName, guildRankName, guildRankIndex, realm = GetGuildInfo("player")
-		msg = msg:gsub("NAME", format("<%s>",guildName or 'GUILD_NAME'))
+		msg = msg:gsub("NAME", name or 'PLAYER_NAME')
+	end
+	if msg:find("GUILD") then
+		local guildName, guildRankName, guildRankIndex, realm = GetGuildInfo("player")
+		msg = msg:gsub("GUILD", format("<%s>",guildName or 'GUILD_NAME'))
 	end
 	return msg
 end
@@ -343,16 +347,15 @@ end
 
 function fn:sendWhisper(msg, name)
 	if not msg or not name then return end
-	msg = fn:msgMod(msg)
-	if msg:len()>255 then
-		return print(format(L.FAQ.error["Превышен лимит символов. Максимальная длина сообщения 255 символов. Длина сообщения превышена на %d"], msg:len()-255))
-	end
+	msg = fn:msgMod(msg, name)
 	
 	if msg ~= nil then
-		if DB.sendMSG then
+		if DB.realm.sendMSG then
 			addon.removeMsgList[name:match("([^-]*)")] = true
 		end
-		SendChatMessage(msg, 'WHISPER', GetDefaultLanguage("player"), name)
+		for i=0, msg:len(), 255 do
+			SendChatMessage(msg:sub(i+1, i+255), 'WHISPER', GetDefaultLanguage("player"), name)
+		end
 	else
 		print(L.FAQ.error["Выберите сообщение"])
 	end
@@ -363,7 +366,7 @@ local function inviteBtnText(text)
 end
 
 function fn:rememberPlayer(name)
-	DB.alredySended[name] = time({year = date("%Y"), month = date("%m"), day = date("%d")})
+	DB.realm.alreadySended[name] = time({year = date("%Y"), month = date("%m"), day = date("%d")})
 	addon.search.tempSendedInvites[name] = nil
 	debug(format("Remember: %s",name))
 end
@@ -371,14 +374,14 @@ end
 function fn:invitePlayer(noInv)
 	local list = addon.search.inviteList
 	if #list==0 then return end
-	if DB.inviteType == 2 and not noInv then
+	if DB.global.inviteType == 2 and not noInv then
 		addon.msgQueue[list[1].name] = true
-	elseif DB.inviteType == 3 and not noInv then
-		local msg = DB.messageList[math.random(1, #DB.messageList)]
+	elseif DB.global.inviteType == 3 and not noInv then
+		local msg = DB.realm.messageList[math.random(1, #DB.realm.messageList)]
 		debug(format("Send whisper: %s %s",list[1].name, msg))
 		fn:sendWhisper(msg, list[1].name)
 	end
-	if (DB.inviteType == 1 or DB.inviteType == 2) and not noInv then
+	if (DB.global.inviteType == 1 or DB.global.inviteType == 2) and not noInv then
 		debug(format("Invite: %s",list[1].name))
 		GuildInvite(list[1].name)
 	end
@@ -440,12 +443,12 @@ local function searchGetParams(query)
 end
 
 local function isQueryFiltered(query)
-	if DB.filtersList == {} or not DB.enableFilters then return false end
+	if DB.realm.filtersList == {} or not DB.realm.enableFilters then return false end
 	local filter = {}
 	local q = searchGetParams(query)
 	q.min = tonumber(q.min)
 	q.max = tonumber(q.max)
-	for fName,v in pairs(DB.filtersList) do
+	for fName,v in pairs(DB.realm.filtersList) do
 		local lvl = {}
 		if v.filterOn then
 			filter[fName] = {min = false, max = false, --[[race = false,class = false,]]}
@@ -585,7 +588,7 @@ local function findRace(raceName)
 end
 
 local function filtered(player)
-	for k,v in pairs(DB.filtersList) do
+	for k,v in pairs(DB.realm.filtersList) do
 		if v.filterOn then
 			if v.lvlRange then
 				local min, max = fn:split(v.lvlRange, ":", -1)
@@ -628,14 +631,14 @@ local function filtered(player)
 end
 
 local function addNewPlayer(t, p)
-	local blackList = DB.blackList[p.Name] and true or false
+	local blackList = DB.realm.blackList[p.Name] and true or false
 	local playerInfoStr = format("%s - lvl:%d; race:%s; class:%s; Guild: \"%s\"", p.Name, p.Level, p.Race, p.Class, p.Guild)
 	if p.Guild == "" then
 		if not blackList then
-			if not DB.leave[p.Name] then
+			if not DB.realm.leave[p.Name] then
 				if not t.tempSendedInvites[p.Name] then
-					if not DB.alredySended[p.Name] then
-						if ((DB.enableFilters and not filtered(p)) or not DB.enableFilters) then
+					if not DB.realm.alreadySended[p.Name] then
+						if ((DB.realm.enableFilters and not filtered(p)) or not DB.realm.enableFilters) then
 							table.insert(t.inviteList, {name = p.Name, lvl = p.Level, race = p.Race, class = p.Class,  NoLocaleClass = p.NoLocaleClass})
 							t.tempSendedInvites[p.Name] = true
 							debug(format("Add player %s", playerInfoStr), color.green)
@@ -676,7 +679,7 @@ end
 
 local function searchWhoResultCallback(query, results)
 	local searchLvl = getSearchDeepLvl(query)
-	if #results >= FGI_MAXWHORETURN and DB.customWho then
+	if #results >= FGI_MAXWHORETURN and DB.realm.customWho then
 		print(format(L.FAQ.error["Поиск вернул 50 или более результатов, рекомендуется изменить настройки поиска. Запрос: %s"], query))
 		debug(format("Query (%s) return 50 or more results; SearchLevel-%d", query, searchLvl))
 	end
@@ -701,12 +704,12 @@ end
 function fn:nextSearch()
 	C_Timer.After(FGI_SCANINTERVALTIME, function() interface.scanFrame.pausePlay:SetDisabled(false) end)
 	if #addon.search.whoQueryList == 0 then
-		if  DB.customWho then
-			for i=1, #DB.customWhoList do
-				table.insert(addon.search.whoQueryList, DB.customWhoList[i])
+		if  DB.realm.customWho then
+			for i=1, #DB.faction.customWhoList do
+				table.insert(addon.search.whoQueryList, DB.faction.customWhoList[i])
 			end
 		else
-		addon.search.whoQueryList = {DB.lowLimit.."-"..DB.highLimit}
+		addon.search.whoQueryList = {DB.global.lowLimit.."-"..DB.global.highLimit}
 		end
 	end
 	
@@ -827,17 +830,17 @@ local writeReceiveData = {
 	blacklist = function(arr)
 		for i=1, #arr do
 			local name, reason = arr[i][1], arr[i][2]
-			if not DB.blackList[name] then
+			if not DB.realm.blackList[name] then
 				interface.blackList:add({name=name, reason=reason})
 			end
-			DB.blackList[name] = reason
+			DB.realm.blackList[name] = reason
 		end
 		interface.blackList:update()
 	end,
 	invitations = function(arr)
 		for i=1, #arr do
 			local name, time = arr[i][1], tonumber(arr[i][2])
-			DB.alredySended[name] = math.max(time, DB.alredySended[name] or 0)
+			DB.realm.alreadySended[name] = math.max(time, DB.realm.alreadySended[name] or 0)
 		end
 	end,
 }
@@ -869,11 +872,11 @@ local function getSynchRequest(requestMSG, sender)
 	
 	local SendSynchStr = ''
 	if requestMSG=='blacklist' then
-		for k,v in pairs(DB.blackList) do
+		for k,v in pairs(DB.realm.blackList) do
 			SendSynchStr = string.format("%s%s,%s;", SendSynchStr, k, tostring(v):gsub(',','~'))
 		end
 	elseif requestMSG=='invitations' then
-		for k,v in pairs(DB.alredySended) do
+		for k,v in pairs(DB.realm.alreadySended) do
 			SendSynchStr = string.format("%s%s,%s;", SendSynchStr, k, tostring(v))
 		end
 	end
