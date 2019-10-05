@@ -12,7 +12,6 @@ local fontSize = fn.fontSize
 
 local synch, leftColumn, rightColumn
 
-
 local function btnText(frame)
 	local text = frame.text
 	text:ClearAllPoints()
@@ -131,6 +130,65 @@ end
 function frame.Success(self, text)
 	self:SetText(format("%s%s|r",color.green, text))
 end
+
+
+
+interface.confirmSending = GUI:Create("ClearFrame")
+confirmSending = interface.confirmSending
+confirmSending:SetTitle("Sync confirmation")
+confirmSending:SetLayout("NIL")
+confirmSending:SetWidth(250)
+confirmSending:SetHeight(140)
+confirmSending:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+confirmSending.NewConfirm = function(_, fn, name, sType)
+	if type(fn) ~= 'function' or type(name) ~= 'string' or type(sType) ~= 'string' then return print("Use NewConfirm(function, playerName, dataStr)") end
+	confirmSending.callback = fn
+	confirmSending.infoLabel:SetText(format(confirmSending.infoLabel.placeholder, name, sType))
+	confirmSending:Show()
+end
+
+confirmSending.infoLabel = GUI:Create("TLabel")
+local frame = confirmSending.infoLabel
+confirmSending:Hide()
+frame.placeholder = L.interface["Игрок %s хочет синхронизировать %s.\nРазрешить?"]
+fontSize(frame.label)
+frame.label:SetJustifyH("CENTER")
+frame:SetWidth(confirmSending.frame:GetWidth()-20)
+frame:SetPoint("TOP", confirmSending.frame, "TOP", 0, -25)
+confirmSending:AddChild(frame)
+
+confirmSending.YES = GUI:Create("Button")
+local frame = confirmSending.YES
+frame:SetText(L.interface["Да"])
+btnText(frame)
+frame:SetWidth(size.sendRequest)
+frame:SetHeight(40)
+frame:SetWidth(60)
+frame:SetCallback("OnClick", function()
+	if type(confirmSending.callback) == 'function' then
+		confirmSending.callback()
+	end
+	confirmSending:Hide()
+	confirmSending.callback = nil
+end)
+frame:SetPoint("BOTTOMLEFT", confirmSending.frame, "BOTTOMLEFT", 10, 10)
+confirmSending:AddChild(frame)
+
+confirmSending.NO = GUI:Create("Button")
+local frame = confirmSending.NO
+frame:SetText(L.interface["Нет"])
+btnText(frame)
+frame:SetWidth(size.sendRequest)
+frame:SetHeight(40)
+frame:SetWidth(70)
+frame:SetCallback("OnClick", function()
+	confirmSending:Hide()
+	confirmSending.callback = nil
+end)
+frame:SetPoint("BOTTOMRIGHT", confirmSending.frame, "BOTTOMRIGHT", -10, 10)
+confirmSending:AddChild(frame)
+
+
 
 -- set points
 local frame = CreateFrame('Frame')

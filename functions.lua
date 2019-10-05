@@ -863,25 +863,38 @@ local function readSynchStr(sender, mod)
 	ReceiveSynchStr[sender][mod] = nil
 end
 
-local function getSynchRequest(requestMSG, sender)
-	requestMSG = L.interface.synchBaseType[requestMSG]
-	if not requestMSG then
+
+local function getSynchRequest(requestMSG, sender, allowed)
+	local function confirm()
+		getSynchRequest(requestMSG, sender, true)
+	end
+	local request = L.interface.synchType[requestMSG]
+	local requestType = L.interface.synchBaseType[requestMSG]
+	if not requestType then
 		return C_ChatInfo.SendAddonMessage(FGISYNCH_PREFIX, 'ERROR|'..L.interface.synchState["Ошибка типа синхронизации"], "WHISPER", sender)
+	end
+	if not allowed then
+		if DB.global.security.sended and requestType == 'invitations' then
+			confirmSending:NewConfirm(confirm, sender, request)
+		elseif DB.global.security.blacklist and requestType == 'blacklist' then
+			confirmSending:NewConfirm(confirm, sender, request)
+		end
+		return
 	end
 	C_ChatInfo.SendAddonMessage(FGISYNCH_PREFIX, 'SUCCESS|'..L.interface.synchState["Начало синхронизации"], "WHISPER", sender)
 	
 	local SendSynchStr = ''
-	if requestMSG=='blacklist' then
+	if requestType=='blacklist' then
 		for k,v in pairs(DB.realm.blackList) do
 			SendSynchStr = string.format("%s%s,%s;", SendSynchStr, k, tostring(v):gsub(',','~'))
 		end
-	elseif requestMSG=='invitations' then
+	elseif requestType=='invitations' then
 		for k,v in pairs(DB.realm.alreadySended) do
 			SendSynchStr = string.format("%s%s,%s;", SendSynchStr, k, tostring(v))
 		end
 	end
 	if SendSynchStr=='' then return end
-	fn.SendSynchArray(SendSynchStr, requestMSG, sender)
+	fn.SendSynchArray(SendSynchStr, requestType, sender)
 	return
 end
 
@@ -895,7 +908,8 @@ synchFrame:SetScript("OnEvent", function(self, event, ...)
 	sender = sender:match("([^-]+)")
 	if sender == UnitName('player') then return end
 	local synch = interface.settings.Synchronization.content
-	local requestType, requestMSG = msg:match("([^|]+)|(.+)")
+	local requestType, requestMSG = msg:match("([^|]+)[|]*([^|]+)")
+	requestMSG = tonumber(requestMSG) == nil and requestMSG or tonumber(requestMSG)
 	
 	if channel == "WHISPER" then
 		if requestType == "ERROR" then
@@ -909,8 +923,8 @@ synchFrame:SetScript("OnEvent", function(self, event, ...)
 		elseif requestType == "LOGIN" and requestMSG == "GET_FGI_USERS" then
 			return synch.rightColumn.synchPlayerReadyDrop:AddItem(sender, sender)
 		end
+		if synch.timer then synch.timer:Cancel() end
 		
-		synch.timer:Cancel()
 		local Start, End = msg:find("%(.+%)")
 		End = End or 0
 		local s,e,mod = msg:sub(Start, End):match("(%d+)[^%d](%d+);(%w+)")
@@ -959,7 +973,7 @@ function fn.SendSynchArray(str, mod, playerName)
 	return arr
 end
 
-function fn:sendSynchRequest(player, type)
+function fn:sendSynchRequest(player, sType)
 	local synch = interface.settings.Synchronization.content
 	ReceiveSynchStr[player] = ReceiveSynchStr[player] or {}
 	ReceiveSynchStr[player].start = GetTime()
@@ -976,8 +990,8 @@ function fn:sendSynchRequest(player, type)
 		end)
 	end
 	if player == L.interface["Все"] then
-		C_ChatInfo.SendAddonMessage(FGISYNCH_PREFIX, "GET|"..type, "GUILD")
+		C_ChatInfo.SendAddonMessage(FGISYNCH_PREFIX, "GET||"..sType, "GUILD")
 	else
-		C_ChatInfo.SendAddonMessage(FGISYNCH_PREFIX, "GET|"..type, "WHISPER", player)
+		C_ChatInfo.SendAddonMessage(FGISYNCH_PREFIX, "GET||"..sType, "WHISPER", player)
 	end
 end
