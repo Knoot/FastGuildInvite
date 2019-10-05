@@ -7,7 +7,7 @@ local settings = L.settings
 local GUI = LibStub("AceGUI-3.0")
 local color = addon.color
 local FastGuildInvite = addon.lib
-addon.search = {progress=1, inviteList={}, state='stop', timeShift=0, tempSendedInvites={}, whoQueryList = {}}
+addon.search = {progress=1, inviteList={}, timeShift=0, tempSendedInvites={}, whoQueryList = {}}
 addon.removeMsgList = {}
 addon.libWho = {}
 local DB

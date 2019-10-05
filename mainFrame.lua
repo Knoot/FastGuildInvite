@@ -151,12 +151,8 @@ frame:SetWidth(size.startScan)
 frame:SetHeight(40)
 frame:SetCallback("OnClick", function()
 	if not fn:inGuildCanInvite() then return print(L.FAQ.error["Вы не состоите в гильдии или у вас нет прав для приглашения."]) end
-	if --[[not DB.backgroundRun or ]]addon.search.state ~= "stop" then
-		interface.scanFrame:Show()
-	end
-	if addon.search.state ~= "start" then
-		interface.scanFrame.pausePlay.frame:Click()
-	end
+	interface.scanFrame:Show()
+	interface.scanFrame.pausePlay.frame:Click()
 end)
 mainButtonsGRP:AddChild(frame)
 
