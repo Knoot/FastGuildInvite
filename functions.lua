@@ -335,7 +335,7 @@ function fn:msgMod(msg, name)
 	return msg
 end
 
-local function hideWhisper(...)
+function fn.hideWhisper(...)
 	local name = select(4,...):match("([^-]*)")
 	if addon.removeMsgList[name] then
 		--addon.removeMsgList[name] = nil
@@ -816,7 +816,7 @@ function fn:inGuildCanInvite()
 	return true	
 end
 
-local function hideSysMsg()
+function fn.hideSysMsg()
 	return true
 end
 

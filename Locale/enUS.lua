@@ -37,6 +37,9 @@ local L = {
 	},
 	interface = {
 		["Благодарности"] = "Credits",
+		["Безопасность"] = "Security",
+		["Список отправленных приглашений"] = "List of sent invitations",
+		["Подтверждение отправки данных синхронизации"] = "Confirmation of sending synchronization data",
 		["Игрок %s добавлен в черный список."] = "Player %s has been blacklisted.",
 		["Причина"] = "Reason",
 		["Включен"] = "Included",

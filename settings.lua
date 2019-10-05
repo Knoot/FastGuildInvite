@@ -13,6 +13,18 @@ local fontSize = fn.fontSize
 
 local settings
 
+local function updateMsgFilters()
+	if DB.realm.systemMSG then
+		ChatFrame_AddMessageEventFilter("CHAT_MSG_SYSTEM", fn.hideSysMsg)
+	else
+		ChatFrame_RemoveMessageEventFilter("CHAT_MSG_SYSTEM", fn.hideSysMsg)
+	end
+	if DB.realm.sendMSG then
+		ChatFrame_AddMessageEventFilter("CHAT_MSG_WHISPER_INFORM", fn.hideWhisper)
+	else
+		ChatFrame_RemoveMessageEventFilter("CHAT_MSG_WHISPER_INFORM", fn.hideWhisper)
+	end
+end
 
 interface.settings = CreateFrame("Frame", UIParent)
 local settings = interface.settings
@@ -25,12 +37,14 @@ settings.profile.name = "Profile"
 settings.profile.parent = settings.name
 InterfaceOptions_AddCategory(settings.profile)]]
 
+settings.Security = CreateFrame("Frame", settings)
+settings.Security.name = L.interface["Безопасность"]
+settings.Security.parent = settings.name
+InterfaceOptions_AddCategory(settings.Security)
+
 settings.filters = CreateFrame("Frame", settings)
 settings.filters.name = L.interface["Фильтры"]
 settings.filters.parent = settings.name
-settings.filters.refresh  = function(self)
-	
-end
 InterfaceOptions_AddCategory(settings.filters)
 
 settings.KeyBind = CreateFrame("Frame", settings)
@@ -114,6 +128,8 @@ frame:SetTooltip(L.interface.tooltip["Не отображать в чате си
 -- fontSize(frame.text)
 frame.frame:HookScript("OnClick", function()
 	DB.realm.systemMSG = settingsCheckBoxGRP.systemMSG:GetValue()
+	updateMsgFilters()
+	
 end)
 frame:SetPoint("TOPLEFT", settings.settingsCheckBoxGRP.addonMSG.frame, "BOTTOMLEFT", 0, 0)
 settingsCheckBoxGRP:AddChild(frame)
@@ -126,6 +142,7 @@ frame:SetTooltip(L.interface.tooltip["Не отображать в чате от
 -- fontSize(frame.text)
 frame.frame:HookScript("OnClick", function()
 	DB.realm.sendMSG = settingsCheckBoxGRP.sendMSG:GetValue()
+	
 end)
 frame:SetPoint("TOPLEFT", settings.settingsCheckBoxGRP.systemMSG.frame, "BOTTOMLEFT", 0, 0)
 settingsCheckBoxGRP:AddChild(frame)
@@ -194,44 +211,5 @@ frame:SetScript('OnEvent', function()
 	-- settingsCheckBoxGRP.addonMSG:SetValue(true)
 	
 	
-	--[[if DB.settingsFrame then
-		interface.settingsFrame:ClearAllPoints()
-		interface.settingsFrame:SetPoint(DB.settingsFrame.point, UIParent, DB.settingsFrame.relativePoint, DB.settingsFrame.xOfs, DB.settingsFrame.yOfs)
-	else
-		interface.settingsFrame:SetPoint("CENTER", UIParent)
-	end
-	
-	C_Timer.After(0.1, function()
-	settingsFrame.closeButton:ClearAllPoints()
-	settingsFrame.closeButton:SetPoint("CENTER", settingsFrame.frame, "TOPRIGHT", -8, -8)
-	
-	settingsCheckBoxGRP:ClearAllPoints()
-	settingsCheckBoxGRP:SetPoint("TOPLEFT", settingsFrame.frame, "TOPLEFT", 20, -25)
-	
-	settingsCheckBoxGRP.addonMSG:ClearAllPoints()
-	settingsCheckBoxGRP.addonMSG:SetPoint("TOPLEFT", settingsCheckBoxGRP.frame, "TOPLEFT", 0, 0)
-	
-	settingsFrame.clearDBtimes:ClearAllPoints()
-	settingsFrame.clearDBtimes:SetPoint("TOPLEFT", settingsCheckBoxGRP.frame, "BOTTOMLEFT", 2, 0)
-	
-	settingsButtonsGRP:ClearAllPoints()
-	settingsButtonsGRP:SetPoint("TOPLEFT", settingsFrame.clearDBtimes.frame, "BOTTOMLEFT", 0, -10)
-	
-	settingsButtonsGRP.filters:ClearAllPoints()
-	settingsButtonsGRP.filters:SetPoint("TOPLEFT", settingsButtonsGRP.frame, "TOPLEFT", 0, 0)
-	
-	settingsButtonsGRP.keyBind:ClearAllPoints()
-	settingsButtonsGRP.keyBind:SetPoint("LEFT", settingsButtonsGRP.filters.frame, "RIGHT", 2, 0)
-	
-	settingsButtonsGRP.setMSG:ClearAllPoints()
-	settingsButtonsGRP.setMSG:SetPoint("LEFT", settingsButtonsGRP.keyBind.frame, "RIGHT", 2, 0)
-	
-	settingsButtonsGRP.blackList:ClearAllPoints()
-	settingsButtonsGRP.blackList:SetPoint("TOPRIGHT", settingsFrame.frame, "TOPRIGHT", -20, -30)
-	
-	settingsButtonsGRP.customListBtn:ClearAllPoints()
-	settingsButtonsGRP.customListBtn:SetPoint("TOPRIGHT", settingsFrame.settingsButtonsGRP.blackList.frame, "BOTTOMRIGHT", 0, 2)
-	
-	settingsFrame:Hide()
-	end)]]
+	updateMsgFilters()
 end)

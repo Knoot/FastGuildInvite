@@ -251,6 +251,7 @@ local defaultSettings =  {
 		clearDBtimes = 3,
 		minimap = {hide = false},
 		debug = false,
+		security = {blacklist = true, sended = true}
 	},
 } 
 
