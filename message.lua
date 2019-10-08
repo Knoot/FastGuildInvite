@@ -1,6 +1,6 @@
 local addon = FGI
 local fn = addon.functions
-local L = addon.L
+local L = LibStub("AceLocale-3.0"):GetLocale("FastGuildInvite")
 local settings = L.settings
 local size = settings.size
 local color = addon.color
@@ -18,7 +18,7 @@ local function defaultValues()
 	CustomizePost.message:SetText(DB.realm.messageList[DB.realm.curMessage] or "")
 	local msg = DB.realm.messageList[DB.realm.curMessage]
 	if msg then msg = fn:msgMod(msg) end
-	CustomizePost.curMessage:SetText(format(L.interface["Предпросмотр: %s"], msg or ''))
+	CustomizePost.curMessage:SetText(format(L["Предпросмотр: %s"], msg or ''))
 end
 
 local function EditBoxChange(frame)
@@ -47,7 +47,7 @@ CustomizePost:SetPoint("TOPLEFT", interface.settings.CustomizePost, "TOPLEFT", 1
 
 CustomizePost.intro = GUI:Create("TLabel")
 local frame = CustomizePost.intro
-frame:SetText(L.interface["Настройка сообщений, подсказка"])
+frame:SetText(L["Настройка сообщений, подсказка"])
 fontSize(frame.label)
 frame:SetWidth(CustomizePost.frame:GetWidth()-30)
 frame.label:SetJustifyH("CENTER")
@@ -61,7 +61,7 @@ frame:SetCallback("OnValueChanged", function(key)
 	CustomizePost.message:SetText(DB.realm.messageList[CustomizePost.drop:GetValue()] or "")
 	local msg = DB.realm.messageList[CustomizePost.drop:GetValue()]
 	if msg then msg = fn:msgMod(msg) end
-	CustomizePost.curMessage:SetText(format(L.interface["Предпросмотр: %s"], msg or ''))
+	CustomizePost.curMessage:SetText(format(L["Предпросмотр: %s"], msg or ''))
 end)
 frame:SetPoint("TOP", CustomizePost.intro.frame, "BOTTOM", 0, -10)
 CustomizePost:AddChild(frame)
@@ -72,14 +72,14 @@ frame:SetWidth(CustomizePost.frame:GetWidth()-30)
 EditBoxChange(frame)
 frame:SetCallback("OnTextChanged", function(_,_,msg)
 	if msg then msg = fn:msgMod(msg) end
-	CustomizePost.curMessage:SetText(format(L.interface["Предпросмотр: %s"], msg or ''))
+	CustomizePost.curMessage:SetText(format(L["Предпросмотр: %s"], msg or ''))
 end)
 frame:SetPoint("TOP", CustomizePost.drop.frame, "BOTTOM", 0, -10)
 CustomizePost:AddChild(frame)
 
 CustomizePost.save = GUI:Create("Button")
 local frame = CustomizePost.save
-frame:SetText(L.interface["Сохранить"])
+frame:SetText(L["Сохранить"])
 -- fontSize(frame.text)
 frame.text:ClearAllPoints()
 frame.text:SetPoint("TOPLEFT", 5, -1)
@@ -90,7 +90,7 @@ frame:SetCallback("OnClick", function()
 	local msg = CustomizePost.message:GetText()
 	if msg == "" then
 		BasicMessageDialog:SetFrameStrata("TOOLTIP")
-		return message(L.FAQ.error["Нельзя сохранить пустое сообщение"])
+		return message(L["Нельзя сохранить пустое сообщение"])
 	else
 		
 		DB.realm.messageList[CustomizePost.drop:GetValue()] = msg
@@ -103,7 +103,7 @@ CustomizePost:AddChild(frame)
 
 CustomizePost.add = GUI:Create("Button")
 local frame = CustomizePost.add
-frame:SetText(L.interface["Добавить"])
+frame:SetText(L["Добавить"])
 -- fontSize(frame.text)
 frame:SetWidth(size.add)
 frame:SetHeight(40)
@@ -111,7 +111,7 @@ frame:SetCallback("OnClick", function()
 	local msg = CustomizePost.message:GetText()
 	if msg == "" then
 		BasicMessageDialog:SetFrameStrata("TOOLTIP")
-		return message(L.FAQ.error["Нельзя добавить пустое сообщение"])
+		return message(L["Нельзя добавить пустое сообщение"])
 	else
 		table.insert(DB.realm.messageList, msg)
 		DB.realm.curMessage = #DB.realm.messageList
@@ -123,7 +123,7 @@ CustomizePost:AddChild(frame)
 
 CustomizePost.delete = GUI:Create("Button")
 local frame = CustomizePost.delete
-frame:SetText(L.interface["Удалить"])
+frame:SetText(L["Удалить"])
 -- fontSize(frame.text)
 frame:SetWidth(size.delete)
 frame:SetHeight(40)
@@ -131,7 +131,7 @@ frame:SetCallback("OnClick", function()
 	local msg = CustomizePost.drop:GetValue()
 	if DB.realm.messageList[msg] == nil then
 		BasicMessageDialog:SetFrameStrata("TOOLTIP")
-		return message(L.FAQ.error["Выберите сообщение"])
+		return message(L["Выберите сообщение"])
 	else
 		if DB.realm.curMessage == msg then
 			DB.realm.curMessage = 1
@@ -149,7 +149,7 @@ CustomizePost.frame:HookScript("OnShow", defaultValues)
 
 CustomizePost.curMessage = GUI:Create("TLabel")
 local frame = CustomizePost.curMessage
--- frame:SetText(format(L.interface["Предпросмотр: %s"], ''))
+-- frame:SetText(format(L["Предпросмотр: %s"], ''))
 fontSize(frame.label)
 frame:SetWidth(CustomizePost.frame:GetWidth()-30)
 frame.label:SetJustifyH("CENTER")

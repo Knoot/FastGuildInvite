@@ -1,6 +1,6 @@
 local addon = FGI
 local fn = addon.functions
-local L = addon.L
+local L = LibStub("AceLocale-3.0"):GetLocale("FastGuildInvite")
 local settings = L.settings
 local size = settings.size
 local color = addon.color
@@ -43,7 +43,7 @@ CustomList:AddChild(frame)
 
 CustomList.saveButton = GUI:Create("Button")
 local frame = CustomList.saveButton
-frame:SetText(L.interface["Сохранить"])
+frame:SetText(L["Сохранить"])
 -- fontSize(frame.text)
 btnText(frame)
 frame:SetWidth(size.saveButton)

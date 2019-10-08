@@ -1,6 +1,6 @@
 local addon = FGI
 local fn = addon.functions
-local L = addon.L
+local L = LibStub("AceLocale-3.0"):GetLocale("FastGuildInvite")
 local settings = L.settings
 local size = settings.size
 local color = addon.color
@@ -71,7 +71,7 @@ mainFrame:AddChild(inviteTypeGRP)
 
 inviteTypeGRP.inviteType = GUI:Create("TLabel")
 local frame = inviteTypeGRP.inviteType
-frame:SetText(L.interface["Режим приглашения"])
+frame:SetText(L["Режим приглашения"])
 fontSize(frame.label)
 frame.label:SetJustifyH("CENTER")
 frame:SetWidth(size.inviteTypeGRP)
@@ -81,7 +81,7 @@ inviteTypeGRP.drop = GUI:Create("Dropdown")
 local frame = inviteTypeGRP.drop
 frame:SetWidth(size.inviteTypeGRP)
 -- frame:SetList(L.invType)
-frame:SetList({L.interface.invType["Только пригласить"], L.interface.invType["Отправить сообщение и пригласить"], L.interface.invType["Только сообщение"],})
+frame:SetList({L["Только пригласить"], L["Отправить сообщение и пригласить"], L["Только сообщение"],})
 frame:SetValue(1)
 frame:SetCallback("OnValueChanged", function(key)
 	DB.global.inviteType = inviteTypeGRP.drop:GetValue()
@@ -101,8 +101,8 @@ mainFrame:AddChild(mainCheckBoxGRP)
 mainCheckBoxGRP.customList = GUI:Create("TCheckBox")
 local frame = mainCheckBoxGRP.customList
 frame:SetWidth(size.customListBtn)
-frame:SetLabel(L.interface["Пользовательский список"])
-frame:SetTooltip(L.interface.tooltip["Использовать пользовательский список запросов"])
+frame:SetLabel(L["Пользовательский список"])
+frame:SetTooltip(L["Использовать пользовательский список запросов"])
 -- fontSize(frame.text)
 frame.frame:HookScript("OnClick", function()
 	DB.realm.customWho = mainCheckBoxGRP.customList:GetValue()
@@ -112,8 +112,8 @@ mainCheckBoxGRP:AddChild(frame)
 --[[mainCheckBoxGRP.backgroundRun = GUI:Create("TCheckBox")
 local frame = mainCheckBoxGRP.backgroundRun
 frame:SetWidth(size.backgroundRun)
-frame:SetLabel(L.interface["Запускать в фоновом режиме"])
-frame:SetTooltip(L.interface.tooltip["Запускать поиск в фоновом режиме"])
+frame:SetLabel(L["Запускать в фоновом режиме"])
+frame:SetTooltip(L["Запускать поиск в фоновом режиме"])
 -- fontSize(frame.text)
 frame.frame:HookScript("OnClick", function()
 	DB.backgroundRun = mainCheckBoxGRP.backgroundRun:GetValue()
@@ -123,7 +123,7 @@ mainCheckBoxGRP:AddChild(frame)]]
 mainCheckBoxGRP.enableFilters = GUI:Create("TCheckBox")
 local frame = mainCheckBoxGRP.enableFilters
 frame:SetWidth(size.enableFilters)
-frame:SetLabel(L.interface["Включить фильтры"])
+frame:SetLabel(L["Включить фильтры"])
 frame:SetTooltip("")
 -- fontSize(frame.text)
 frame.frame:HookScript("OnClick", function()
@@ -144,13 +144,13 @@ mainFrame:AddChild(mainButtonsGRP)
 
 mainButtonsGRP.startScan = GUI:Create("Button")
 local frame = mainButtonsGRP.startScan
-frame:SetText(L.interface["Начать сканирование"])
+frame:SetText(L["Начать сканирование"])
 -- fontSize(frame.text)
 btnText(frame)
 frame:SetWidth(size.startScan)
 frame:SetHeight(40)
 frame:SetCallback("OnClick", function()
-	if not fn:inGuildCanInvite() then return print(L.FAQ.error["Вы не состоите в гильдии или у вас нет прав для приглашения."]) end
+	if not fn:inGuildCanInvite() then return print(L["Вы не состоите в гильдии или у вас нет прав для приглашения."]) end
 	interface.scanFrame:Show()
 	interface.scanFrame.pausePlay.frame:Click()
 end)
@@ -158,7 +158,7 @@ mainButtonsGRP:AddChild(frame)
 
 mainButtonsGRP.chooseInvites = GUI:Create("Button")
 local frame = mainButtonsGRP.chooseInvites
-frame:SetText(L.interface["Выбрать приглашения"])
+frame:SetText(L["Выбрать приглашения"])
 -- fontSize(frame.text)
 btnText(frame)
 frame:SetWidth(size.chooseInvites)
@@ -168,7 +168,7 @@ mainButtonsGRP:AddChild(frame)
 
 mainButtonsGRP.settingsBtn = GUI:Create("Button")
 local frame = mainButtonsGRP.settingsBtn
-frame:SetText(L.interface["Настройки"])
+frame:SetText(L["Настройки"])
 -- fontSize(frame.text)
 btnText(frame)
 frame:SetWidth(size.settingsBtn)
@@ -194,7 +194,7 @@ mainFrame:AddChild(searchRangeGRP)
 
 searchRangeGRP.lvlRange = GUI:Create("TLabel")
 local frame = searchRangeGRP.lvlRange
-frame:SetText(L.interface["Диапазон уровней"])
+frame:SetText(L["Диапазон уровней"])
 fontSize(frame.label)
 frame:SetWidth(size.lvlRange)
 frame.label:SetJustifyH("CENTER")
@@ -264,7 +264,7 @@ end
 
 mainFrame.wheelHint = GUI:Create("TLabel")
 local frame = mainFrame.wheelHint
-frame:SetText(L.interface["Для изменения значений используйте колесо мыши"])
+frame:SetText(L["Для изменения значений используйте колесо мыши"])
 fontSize(frame.label)
 frame:SetWidth(size.wheelHint)
 frame.label:SetJustifyH("CENTER")
@@ -283,21 +283,6 @@ frame:SetScript('OnEvent', function()
 	else
 		interface.mainFrame:SetPoint("CENTER", UIParent)
 	end
-	--[[gratitudeFrame:ClearAllPoints()
-	gratitudeFrame:SetPoint("CENTER", UIParent)
-	
-	
-	local cat,name,contact,donate = '','','',''
-	for i=1,#L.Gratitude do
-		local u = L.Gratitude[i]
-		local Ctype = u[1]:find("Author") and color.green or u[1]:find("Translate") and color.blue or u[1]:find("Donate") and color.yellow or u[1]:find("Testing") and color.orange or ''
-		cat,name,contact,donate = format("%s\n%s%s|r", cat, Ctype, u[1]),format("%s\n%s%s|r", name, Ctype, u[2]),format("%s\n%s%s|r", contact, Ctype, u[3]),format("%s\n%s%s|r", donate, Ctype, u[4])
-	end
-	gratitudeFrame.Category:SetText(cat)
-	gratitudeFrame.Name:SetText(name)
-	gratitudeFrame.Contact:SetText(contact)
-	gratitudeFrame.Donate:SetText(donate)
-	scrollBar.content:SetHeight(gratitudeFrame.Category.frame:GetHeight())]]
 	
 	C_Timer.After(0.1, function()
 	inviteTypeGRP.drop:SetValue(DB.global.inviteType)
@@ -308,24 +293,6 @@ frame:SetScript('OnEvent', function()
 	
 	searchRangeGRP.lvlRangeMin:SetText(DB.global.lowLimit)
 	searchRangeGRP.lvlRangeMax:SetText(DB.global.highLimit)
-	
-	--[[gratitudeFrame:ClearAllPoints()
-	gratitudeFrame:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
-	
-	gratitudeFrame.closeButton:ClearAllPoints()
-	gratitudeFrame.closeButton:SetPoint("CENTER", gratitudeFrame.frame, "TOPRIGHT", -8, -8)
-	
-	gratitudeFrame.Category:ClearAllPoints()
-	gratitudeFrame.Category:SetPoint("TOPLEFT", gratitudeFrame.scrollBar.frame, "TOPLEFT", 20, -20)
-	
-	gratitudeFrame.Name:ClearAllPoints()
-	gratitudeFrame.Name:SetPoint("TOPLEFT", gratitudeFrame.Category.frame, "TOPRIGHT", 0, 0)
-	
-	gratitudeFrame.Contact:ClearAllPoints()
-	gratitudeFrame.Contact:SetPoint("TOPLEFT", gratitudeFrame.Name.frame, "TOPRIGHT", 0, 0)
-	
-	gratitudeFrame.Donate:ClearAllPoints()
-	gratitudeFrame.Donate:SetPoint("TOPLEFT", gratitudeFrame.Contact.frame, "TOPRIGHT", 0, 0)]]
 	
 	
 	

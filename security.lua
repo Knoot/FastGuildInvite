@@ -1,6 +1,6 @@
 local addon = FGI
 local fn = addon.functions
-local L = addon.L
+local L = LibStub("AceLocale-3.0"):GetLocale("FastGuildInvite")
 local settings = L.settings
 local size = settings.size
 local color = addon.color
@@ -25,7 +25,7 @@ Security:SetPoint("TOPLEFT", interface.settings.Security, "TOPLEFT", 10, -10)
 Security.intro = GUI:Create("TLabel")
 local frame = Security.intro
 frame:SetWidth(w)
-frame:SetText(L.interface["Подтверждение отправки данных синхронизации"])
+frame:SetText(L["Подтверждение отправки данных синхронизации"])
 fontSize(frame.label)
 frame:SetPoint("TOPLEFT", Security.frame, "TOPLEFT", 0, 0)
 Security:AddChild(frame)
@@ -33,7 +33,7 @@ Security:AddChild(frame)
 Security.sended = GUI:Create("TCheckBox")
 local frame = Security.sended
 frame:SetWidth(w)
-frame:SetLabel(L.interface["Список отправленных приглашений"])
+frame:SetLabel(L["Список отправленных приглашений"])
 frame.frame:HookScript("OnClick", function()
 	DB.global.security.sended = Security.sended:GetValue()
 end)
@@ -42,7 +42,7 @@ Security:AddChild(frame)
 
 Security.blacklist = GUI:Create("TCheckBox")
 local frame = Security.blacklist
-frame:SetLabel(L.interface["Черный список"])
+frame:SetLabel(L["Черный список"])
 frame.frame:HookScript("OnClick", function()
 	DB.global.security.blacklist = Security.blacklist:GetValue()
 end)

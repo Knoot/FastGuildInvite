@@ -8,8 +8,7 @@ local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
 
-local addon = FGI
-local L = addon.L
+local L = LibStub("AceLocale-3.0"):GetLocale("FastGuildInvite")
 
 
 -- Lua APIs
@@ -46,7 +45,7 @@ end
 local function Control_OnEnter(frame)
 	if frame.obj.tooltip ~= nil and frame.obj.tooltip ~= '' then
 		GameTooltip:SetOwner(frame, "ANCHOR_TOP")
-		GameTooltip:AddLine(format("%s\n\n%s", L.FAQ.help["filter"], frame.obj.tooltip))
+		GameTooltip:AddLine(format("%s\n\n%s", L["filter"], frame.obj.tooltip))
 		GameTooltip:Show()
 	end
 	frame.obj:Fire("OnEnter")

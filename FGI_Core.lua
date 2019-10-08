@@ -1,6 +1,6 @@
 local addon = FGI
 local fn = addon.functions
-local L = addon.L
+local L = LibStub("AceLocale-3.0"):GetLocale("FastGuildInvite")
 local interface = addon.interface
 local settings = L.settings
 local Console = LibStub("AceConsole-3.0")
@@ -111,9 +111,9 @@ frame:SetScript("OnEvent", function(_,_, msg,_,_,_,name,...)
 	if name == UnitName("Player") then print("player -> return")end
 	if not msg:find("^!") then return end
 	if msg:find("^!fgi") then
-		for i=4,#L.FAQ.help2 do
-			SendChatMessage(" "..L.FAQ.help2[i] , "OFFICER",  GetDefaultLanguage("player"))
-		end
+		SendChatMessage(" "..L.blacklistAdd , "OFFICER",  GetDefaultLanguage("player"))
+		SendChatMessage(" "..L.blacklistDelete , "OFFICER",  GetDefaultLanguage("player"))
+		SendChatMessage(" "..L.blacklistGetList , "OFFICER",  GetDefaultLanguage("player"))
 	elseif msg:find("^!blacklistAdd") then
 		msg = msg:gsub("!blacklistAdd ", '')
 		local b,n,r = isCorrect(msg)
@@ -135,7 +135,7 @@ end)
 
 function addon.dataBroker.OnTooltipShow(GameTooltip)
 	local search = addon.search
-	GameTooltip:SetText(format(L.FAQ.help.minimap,#search.inviteList, interface.scanFrame.progressBar:GetProgress()), 1, 1, 1)
+	GameTooltip:SetText(format(L.minimap,#search.inviteList, interface.scanFrame.progressBar:GetProgress()), 1, 1, 1)
 end
 
 
@@ -283,6 +283,11 @@ function FastGuildInvite:OnInitialize()
 		DB.realm.messageList = DB.global.messageList
 		DB.global.messageList = nil
 	end
+	if DB.realm.messageList[0] then
+		table.insert(DB.realm.messageList, DB.realm.messageList[0])
+		DB.realm.messageList[0] = nil
+		DB.realm.curMessage = 1
+	end
 	if DB.global.alredySended then
 		DB.realm.alreadySended = DB.global.alredySended
 		DB.global.alredySended = nil
@@ -345,7 +350,7 @@ function Console:FGIAddBlackList(str)
 		if not b then return end
 		fn:blackList(n,r)
 		interface.blackList:add({name=n,reason=r})
-		SendChatMessage(format("%s %s - %s", format(L.interface["Игрок %s добавлен в черный список."], n), L.interface["Причина"], r) , "OFFICER",  GetDefaultLanguage("player"))
+		SendChatMessage(format("%s %s - %s", format(L["Игрок %s добавлен в черный список."], n), L["Причина"], r) , "OFFICER",  GetDefaultLanguage("player"))
 	end
 end
 
@@ -431,19 +436,23 @@ end
 
 function Console:FGIHelp()
 	print("|cffffff00<|r|cff16ABB5FGI|r|cffffff00>|r Help")
-	print(L.FAQ.help.show)
-	print(L.FAQ.help.resetDB)
-	print(L.FAQ.help.factorySettings)
-	print(L.FAQ.help.resetWindowsPos)
-	print(L.FAQ.help.invite)
-	print(L.FAQ.help.nextSearch)
-	print(L.FAQ.help.blacklist)
-	print(L.FAQ.help.help2)
+	print(L.show)
+	print(L.resetDB)
+	print(L.factorySettings)
+	print(L.resetWindowsPos)
+	print(L.invite)
+	print(L.nextSearch)
+	print(L.blacklist)
+	print(L.help2)
 end
 
 function Console:FGIHelp2()
 	print("|cffffff00<|r|cff16ABB5FGI|r|cffffff00>|r Help2")
-	for i=1, #L.FAQ.help2 do
-		print(L.FAQ.help2[i])
-	end
+	print(L.intro)
+	print(L.commandList)
+	print(L.fgi)
+	print(L.blacklistAdd)
+	print(L.blacklistDelete)
+	print(L.blacklistGetList)
+	
 end

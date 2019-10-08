@@ -1,6 +1,6 @@
 local addon = FGI
 local fn = addon.functions
-local L = addon.L
+local L = LibStub("AceLocale-3.0"):GetLocale("FastGuildInvite")
 local settings = L.settings
 local size = settings.size
 local color = addon.color
@@ -71,7 +71,7 @@ for i=1,#L.credits do
 	local u = L.credits[i]
 	local _, lines = u[2]:gsub("\n", '')
 	lines = ("\n"):rep(lines)
-	local Ctype = u[1]:find(L.interface["Автор"]) and color.green or u[1]:find(L.interface["Перевод"]) and color.blue or u[1]:find("Donate") and color.yellow or u[1]:find(L.interface["Тестирование"]) and color.orange or ''
+	local Ctype = u[1]:find(L["Автор"]) and color.green or u[1]:find(L["Перевод"]) and color.blue or u[1]:find("Donate") and color.yellow or u[1]:find(L["Тестирование"]) and color.orange or ''
 	cat,name,contact,donate = format("%s\n%s%s|r", cat, Ctype, u[1]..lines),format("%s\n%s%s|r", name, Ctype, u[2]),format("%s\n%s%s|r", contact, Ctype, u[3]..lines),format("%s\n%s%s|r", donate, Ctype, u[4]..lines)
 end
 	credits.Category:SetText(cat)

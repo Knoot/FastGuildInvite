@@ -1,6 +1,6 @@
 local addon = FGI
 local fn = addon.functions
-local L = addon.L
+local L = LibStub("AceLocale-3.0"):GetLocale("FastGuildInvite")
 local settings = L.settings
 local size = settings.size
 local color = addon.color
@@ -135,7 +135,7 @@ scanFrame:AddChild(frame)
 
 scanFrame.invite = GUI:Create("Button")
 local frame = scanFrame.invite
-frame:SetText(format(L.interface["Пригласить: %d"],0))
+frame:SetText(format(L["Пригласить: %d"],0))
 -- fontSize(frame.text)
 btnText(frame)
 frame:SetWidth(size.inviteBTN)
@@ -154,7 +154,7 @@ frame:SetScript("OnEvent", function(_,_,msg)
 	if not name then return end
 	if type == "not_found" then
 		DB.realm.alreadySended[name] = nil
-		debug(format(ERR_GUILD_PLAYER_NOT_FOUND_S, name).." "..L.interface["Игрок не добавлен в список исключений."], color.yellow)
+		debug(format(ERR_GUILD_PLAYER_NOT_FOUND_S, name).." "..L["Игрок не добавлен в список исключений."], color.yellow)
 	elseif type == "auto_decline" then
 		debug(format(ERR_CHAT_PLAYER_NOT_FOUND_S, name), color.yellow)
 		auto_decline[name] = true
@@ -186,7 +186,7 @@ frame:SetHeight(40)
 frame.frame.pause = true
 frame.frame:SetNormalTexture("Interface\\Buttons\\UI-SpellbookIcon-NextPage-Up")
 frame:SetCallback("OnClick", function(self)
-	if not fn:inGuildCanInvite() then return print(L.FAQ.error["Вы не состоите в гильдии или у вас нет прав для приглашения."]) end
+	if not fn:inGuildCanInvite() then return print(L["Вы не состоите в гильдии или у вас нет прав для приглашения."]) end
 	scanFrame.pausePlay:SetDisabled(true)
 	scanFrame.pausePlayLabel.timer = FGI_SCANINTERVALTIME
 	scanFrame.pausePlayLabel.frame:SetFrameStrata("TOOLTIP")
@@ -209,13 +209,13 @@ scanFrame:AddChild(frame)
 
 scanFrame.clear = GUI:Create("Button")
 local frame = scanFrame.clear
-frame:SetText(L.interface["Сбросить"])
+frame:SetText(L["Сбросить"])
 -- fontSize(frame.text)
 btnText(frame)
 frame:SetWidth(size.clearBTN)
 frame:SetHeight(40)
 frame:SetCallback("OnClick", function()
-	scanFrame.invite:SetText(format(L.interface["Пригласить: %d"],0))
+	scanFrame.invite:SetText(format(L["Пригласить: %d"],0))
 	local resume = addon.search.state == "start"
 	if resume then
 		scanFrame.pausePlay.frame:Click()

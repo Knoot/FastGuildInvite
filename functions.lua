@@ -1,7 +1,7 @@
 local addon=FGI
 local fn=addon.functions
-local L = addon.L
-local CLASS = L.SYSTEM.class
+local L = LibStub("AceLocale-3.0"):GetLocale("FastGuildInvite")
+local CLASS = L.class
 local interface = addon.interface
 local settings = L.settings
 local GUI = LibStub("AceGUI-3.0")
@@ -224,8 +224,8 @@ function fn:blackListAutoKick()
 end
 
 function fn:blackList(name, reason)
-	DB.realm.blackList[name] = reason or L.interface.defaultReason
-	print(format("%s%s|r", color.red, format(L.interface["Игрок %s добавлен в черный список."], name)))
+	DB.realm.blackList[name] = reason or L.defaultReason
+	print(format("%s%s|r", color.red, format(L["Игрок %s добавлен в черный список."], name)))
 	fn:blacklistKick()
 end
 
@@ -260,9 +260,9 @@ function fn:SetKeybind(key, keyType)
 		DBkey[keyType] = false
 	end
 	
-	interface.settings.KeyBind.content.invite:SetLabel(format(L.interface["Назначить кнопку (%s)"], DBkey.invite or "none"))
+	interface.settings.KeyBind.content.invite:SetLabel(format(L["Назначить кнопку (%s)"], DBkey.invite or "none"))
 	interface.settings.KeyBind.content.invite:SetKey(DBkey.invite)
-	interface.settings.KeyBind.content.nextSearch:SetLabel(format(L.interface["Назначить кнопку (%s)"], DBkey.nextSearch or "none"))
+	interface.settings.KeyBind.content.nextSearch:SetLabel(format(L["Назначить кнопку (%s)"], DBkey.nextSearch or "none"))
 	interface.settings.KeyBind.content.nextSearch:SetKey(DBkey.nextSearch)
 end
 
@@ -292,27 +292,27 @@ function fn:FiltersUpdate()
 		frame:Show()
 		frame:SetID(name)
 		frame:SetText(name)
-		local state = filter.filterOn and L.interface["Включен"]:upper() or L.interface["Выключен"]:upper()
-		local lvlRange = filter.lvlRange or L.interface["Откл."]
-		local filterByName = filter.filterByName or L.interface["Откл."]
+		local state = filter.filterOn and L["Включен"]:upper() or L["Выключен"]:upper()
+		local lvlRange = filter.lvlRange or L["Откл."]
+		local filterByName = filter.filterByName or L["Откл."]
 		local letterFilterVowels, letterFilterConsonants = filter.letterFilter==false and 0,0 or fn:split(filter.letterFilter, ":")
 		local class = ""
 		if not filter.classFilter then
-			class = L.interface["Откл."]
+			class = L["Откл."]
 		else
 			for k,v in pairs(filter.classFilter) do class = class..k.."," end
 			class = class:sub(1, -2)
 		end
 		local race = ""
 		if not filter.raceFilter then
-			race = L.interface["Откл."]
+			race = L["Откл."]
 		else
 			for k,v in pairs(filter.raceFilter) do race = race..k.."," end
 			race = race:sub(1, -2)
 		end
 		local count = filter.filteredCount
 		
-		frame:SetTooltip(format(L.FAQ.help["filterTooltip"], name, state, filterByName, lvlRange, letterFilterVowels, letterFilterConsonants, class, race, count))
+		frame:SetTooltip(format(L["filterTooltip"], name, state, filterByName, lvlRange, letterFilterVowels, letterFilterConsonants, class, race, count))
 		
 		i = i + 1
 		
@@ -357,7 +357,7 @@ function fn:sendWhisper(msg, name)
 			SendChatMessage(msg:sub(i+1, i+255), 'WHISPER', GetDefaultLanguage("player"), name)
 		end
 	else
-		print(L.FAQ.error["Выберите сообщение"])
+		print(L["Выберите сообщение"])
 	end
 end
 
@@ -377,7 +377,7 @@ function fn:invitePlayer(noInv)
 	if DB.global.inviteType == 2 and not noInv then
 		addon.msgQueue[list[1].name] = true
 	elseif DB.global.inviteType == 3 and not noInv then
-		local msg = DB.realm.messageList[math.random(1, #DB.realm.messageList)]
+		local msg = DB.realm.messageList[math.random(1, math.max(1,#DB.realm.messageList))]
 		debug(format("Send whisper: %s %s",list[1].name, msg))
 		fn:sendWhisper(msg, list[1].name)
 	end
@@ -393,7 +393,7 @@ function fn:invitePlayer(noInv)
 		addon.searchInfo.sended()
 	end
 	table.remove(list, 1)
-	inviteBtnText(format(L.interface["Пригласить: %d"], #list))
+	inviteBtnText(format(L["Пригласить: %d"], #list))
 	
 	interface.chooseInvites.player:SetText(#list > 0 and format("%s%s %d %s %s|r", color[list[1].NoLocaleClass:upper()], list[1].name, list[1].lvl, list[1].class, list[1].race) or "")
 end
@@ -418,8 +418,8 @@ frame:SetScript('OnEvent', function()
 end)
 
 local function getSearchDeepLvl(query)
-	local l2 = (("%%d+-%%d+ %s\"%s+"):format(L.SYSTEM["r-"],addon.ruReg)):gsub("-","%%-")
-	local l3 = (("%%d+-%%d+ %s\"%s+%%\" %s"):format(L.SYSTEM["r-"],addon.ruReg,L.SYSTEM["c-"])):gsub("-","%%-")
+	local l2 = (("%%d+-%%d+ %s\"%s+"):format(L["r-"],addon.ruReg)):gsub("-","%%-")
+	local l3 = (("%%d+-%%d+ %s\"%s+%%\" %s"):format(L["r-"],addon.ruReg,L["c-"])):gsub("-","%%-")
 	if query:find(l3) then
 		return 3
 	elseif query:find(l2) then
@@ -432,8 +432,8 @@ local function getSearchDeepLvl(query)
 end
 
 local function searchGetParams(query)
-	local class = query:match(("%s%%\"(%s+)%%\""):format(L.SYSTEM["c-"],addon.ruReg):gsub("-","%%-"))
-	local race = query:match(("%s%%\"(%s+)%%\""):format(L.SYSTEM["r-"],addon.ruReg):gsub("-","%%-"))
+	local class = query:match(("%s%%\"(%s+)%%\""):format(L["c-"],addon.ruReg):gsub("-","%%-"))
+	local race = query:match(("%s%%\"(%s+)%%\""):format(L["r-"],addon.ruReg):gsub("-","%%-"))
 	local lvl = {}
 	for s in query:gmatch("%d+") do
 		table.insert(lvl, s)
@@ -521,8 +521,8 @@ local function searchAddWhoList(query, lvl)
 	local function RACEsplit(query)
 		local new = 0
 		table.remove(addon.search.whoQueryList, progress)
-		for _,v in pairs(L.SYSTEM.race) do
-			local newQuery = format("%s %s\"%s\"",query,L.SYSTEM["r-"],v)
+		for _,v in pairs(L.race) do
+			local newQuery = format("%s %s\"%s\"",query,L["r-"],v)
 			if not isQueryFiltered(newQuery) then
 				table.insert(addon.search.whoQueryList, progress+new, newQuery)
 				new = new + 1
@@ -538,7 +538,7 @@ local function searchAddWhoList(query, lvl)
 		local new = 0
 		table.remove(addon.search.whoQueryList, progress)
 		if race then
-			for k,v in pairs(L.SYSTEM.race) do
+			for k,v in pairs(L.race) do
 				if v==race then
 					race = k
 					break
@@ -550,7 +550,7 @@ local function searchAddWhoList(query, lvl)
 			return table.insert(addon.search.whoQueryList, progress, query)
 		end
 		for k,v in pairs(RaceClassCombo[race]) do
-			local newQuery = format("%s %s\"%s\"",query,L.SYSTEM["c-"],v)
+			local newQuery = format("%s %s\"%s\"",query,L["c-"],v)
 			if not isQueryFiltered(newQuery) then
 				table.insert(addon.search.whoQueryList, progress+new, newQuery)
 				new = new + 1
@@ -574,15 +574,15 @@ local function searchAddWhoList(query, lvl)
 end
 
 local function findClass(className)
-	for k,v in pairs(L.SYSTEM.femaleClass) do
-		if v==className then return L.SYSTEM.class[k]  end
+	for k,v in pairs(L.femaleClass) do
+		if v==className then return L.class[k]  end
 	end
 	return false
 end
 
 local function findRace(raceName)
-	for k,v in pairs(L.SYSTEM.femaleRace) do
-		if v==raceName then return L.SYSTEM.race[k] end
+	for k,v in pairs(L.femaleRace) do
+		if v==raceName then return L.race[k] end
 	end
 	return false
 end
@@ -680,7 +680,7 @@ end
 local function searchWhoResultCallback(query, results)
 	local searchLvl = getSearchDeepLvl(query)
 	if #results >= FGI_MAXWHORETURN and DB.realm.customWho then
-		print(format(L.FAQ.error["Поиск вернул 50 или более результатов, рекомендуется изменить настройки поиска. Запрос: %s"], query))
+		print(format(L["Поиск вернул 50 или более результатов, рекомендуется изменить настройки поиска. Запрос: %s"], query))
 		debug(format("Query (%s) return 50 or more results; SearchLevel-%d", query, searchLvl))
 	end
 	addon.search.progress = addon.search.progress + 1
@@ -698,7 +698,7 @@ local function searchWhoResultCallback(query, results)
 	end
 	interface.scanFrame.progressBar:SetMinMax(0, #addon.search.whoQueryList)
 	interface.scanFrame.progressBar:SetProgress(addon.search.progress-1)
-	inviteBtnText(format(L.interface["Пригласить: %d"], #addon.search.inviteList))
+	inviteBtnText(format(L["Пригласить: %d"], #addon.search.inviteList))
 end
 
 function fn:nextSearch()
@@ -824,7 +824,7 @@ end
 --[[----------------------------------------------------------------------------------------------
 									Synch
 ]]------------------------------------------------------------------------------------------------
-FGI.ReceiveSynchStr = {[L.interface["Все"]] = {}}
+FGI.ReceiveSynchStr = {[L["Все"]] = {}}
 ReceiveSynchStr = FGI.ReceiveSynchStr
 local writeReceiveData = {
 	blacklist = function(arr)
@@ -868,10 +868,10 @@ local function getSynchRequest(requestMSG, sender, allowed)
 	local function confirm()
 		getSynchRequest(requestMSG, sender, true)
 	end
-	local request = L.interface.synchType[requestMSG]
-	local requestType = L.interface.synchBaseType[requestMSG]
+	local request = L.synchType[requestMSG]
+	local requestType = L.synchBaseType[requestMSG]
 	if not requestType then
-		return C_ChatInfo.SendAddonMessage(FGISYNCH_PREFIX, 'ERROR|'..L.interface.synchState["Ошибка типа синхронизации"], "WHISPER", sender)
+		return C_ChatInfo.SendAddonMessage(FGISYNCH_PREFIX, 'ERROR|'..L.synchState["Ошибка типа синхронизации"], "WHISPER", sender)
 	end
 	if not allowed then
 		if DB.global.security.sended and requestType == 'invitations' then
@@ -881,7 +881,7 @@ local function getSynchRequest(requestMSG, sender, allowed)
 		end
 		return
 	end
-	C_ChatInfo.SendAddonMessage(FGISYNCH_PREFIX, 'SUCCESS|'..L.interface.synchState["Начало синхронизации"], "WHISPER", sender)
+	C_ChatInfo.SendAddonMessage(FGISYNCH_PREFIX, 'SUCCESS|'..L.synchState["Начало синхронизации"], "WHISPER", sender)
 	
 	local SendSynchStr = ''
 	if requestType=='blacklist' then
@@ -930,13 +930,13 @@ synchFrame:SetScript("OnEvent", function(self, event, ...)
 		local s,e,mod = msg:sub(Start, End):match("(%d+)[^%d](%d+);(%w+)")
 		if not mod then return end
 		s, e = tonumber(s), tonumber(e)
-		synch.infoLabel:Success(format(L.interface.synchState["Синхронизация с %s.\n %d/%d"], sender,s,e))
+		synch.infoLabel:Success(format(L.synchState["Синхронизация с %s.\n %d/%d"], sender,s,e))
 		if s == 1 then ReceiveSynchStr[sender] = { [mod] = ''} end
 			msg = msg:sub(End+1, -1)
 			ReceiveSynchStr[sender][mod] = ReceiveSynchStr[sender][mod]..msg
 		if s == e then
 			readSynchStr(sender, mod)
-			synch.infoLabel:Success(format(L.interface.synchState["Данные синхронизированы с игроком %s."], sender))
+			synch.infoLabel:Success(format(L.synchState["Данные синхронизированы с игроком %s."], sender))
 		end
 		
 	elseif channel == "GUILD" then
@@ -980,16 +980,16 @@ function fn:sendSynchRequest(player, sType)
 	local start = GetTime()
 	synch.ticker = C_Timer.NewTicker(1,function()
 		local time = math.ceil(start+FGI_MAXSYNCHWAIT-GetTime())
-		synch.infoLabel:During(format(L.interface.synchState["Запрос синхронизации у: %s. %d"], player or L.interface["Все"], time))
-		if time == 0 then return synch.infoLabel:Error(L.interface.synchState["Превышен лимит ожидания ответа"]) end
+		synch.infoLabel:During(format(L.synchState["Запрос синхронизации у: %s. %d"], player or L["Все"], time))
+		if time == 0 then return synch.infoLabel:Error(L.synchState["Превышен лимит ожидания ответа"]) end
 	end, FGI_MAXSYNCHWAIT)
 	function synch.ticker:responseReceived()
 		synch.ticker:Cancel()
 		synch.timer = C_Timer.NewTimer(FGI_MAXSYNCHWAIT, function()
-			synch.infoLabel:Error(L.interface.synchState["Превышен лимит ожидания ответа"])
+			synch.infoLabel:Error(L.synchState["Превышен лимит ожидания ответа"])
 		end)
 	end
-	if player == L.interface["Все"] then
+	if player == L["Все"] then
 		C_ChatInfo.SendAddonMessage(FGISYNCH_PREFIX, "GET||"..sType, "GUILD")
 	else
 		C_ChatInfo.SendAddonMessage(FGISYNCH_PREFIX, "GET||"..sType, "WHISPER", player)

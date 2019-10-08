@@ -1,6 +1,6 @@
 local addon = FGI
 local fn = addon.functions
-local L = addon.L
+local L = LibStub("AceLocale-3.0"):GetLocale("FastGuildInvite")
 local settings = L.settings
 local size = settings.size
 local color = addon.color
@@ -20,7 +20,7 @@ KeyBind:SetLayout("NIL")
 
 KeyBind.inviteLabel = GUI:Create("TLabel")
 local frame = KeyBind.inviteLabel
-frame:SetText(L.interface.tooltip["Назначить клавишу для приглашения"])
+frame:SetText(L["Назначить клавишу для приглашения"])
 fontSize(frame.label)
 frame.label:SetJustifyH("CENTER")
 frame:SetWidth(size.keyBind)
@@ -39,7 +39,7 @@ KeyBind:AddChild(frame)
 
 KeyBind.nextSearchLabel = GUI:Create("TLabel")
 local frame = KeyBind.nextSearchLabel
-frame:SetText(L.interface.tooltip["Назначить клавишу следующего поиска"])
+frame:SetText(L["Назначить клавишу следующего поиска"])
 fontSize(frame.label)
 frame.label:SetJustifyH("CENTER")
 frame:SetWidth(size.keyBind)

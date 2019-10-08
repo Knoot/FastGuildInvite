@@ -1,6 +1,6 @@
 local addon = FGI
 local fn = addon.functions
-local L = addon.L
+local L = LibStub("AceLocale-3.0"):GetLocale("FastGuildInvite")
 local settings = L.settings
 local size = settings.size
 local color = addon.color
@@ -39,7 +39,7 @@ synch:AddChild(leftColumn)
 
 leftColumn.synchTypeLabel = GUI:Create("TLabel")
 local frame = leftColumn.synchTypeLabel
-frame:SetText(L.interface["Данные для синхронизации"])
+frame:SetText(L["Данные для синхронизации"])
 fontSize(frame.label)
 frame.label:SetJustifyH("CENTER")
 frame:SetWidth(leftColumn.frame:GetWidth()-20)
@@ -49,7 +49,7 @@ leftColumn:AddChild(frame)
 leftColumn.synchTypeDrop = GUI:Create("Dropdown")
 local frame = leftColumn.synchTypeDrop
 frame:SetWidth(leftColumn.frame:GetWidth()-20)
-frame:SetList({L.interface.synchType[1], L.interface.synchType[2],})
+frame:SetList({L.synchType[1], L.synchType[2],})
 frame:SetValue(1)
 frame:SetPoint("TOPLEFT", leftColumn.synchTypeLabel.frame, "BOTTOMLEFT", 0, 0)
 leftColumn:AddChild(frame)
@@ -66,7 +66,7 @@ synch:AddChild(rightColumn)
 
 rightColumn.synchPlayerReadyLabel = GUI:Create("TLabel")
 local frame = rightColumn.synchPlayerReadyLabel
-frame:SetText(L.interface["Игрок для синхронизации"])
+frame:SetText(L["Игрок для синхронизации"])
 fontSize(frame.label)
 frame.label:SetJustifyH("CENTER")
 frame:SetWidth(rightColumn.frame:GetWidth()-20)
@@ -76,7 +76,7 @@ rightColumn:AddChild(frame)
 rightColumn.synchPlayerReadyDrop = GUI:Create("Dropdown")
 local frame = rightColumn.synchPlayerReadyDrop
 frame:SetWidth(rightColumn.frame:GetWidth()-20)
-frame:SetList({L.interface["Все"]})
+frame:SetList({L["Все"]})
 frame:SetValue(1)
 frame:SetPoint("TOPLEFT", rightColumn.synchPlayerReadyLabel.frame, "BOTTOMLEFT", 0, 0)
 rightColumn:AddChild(frame)
@@ -85,7 +85,7 @@ end
 
 synch.sendRequest = GUI:Create("Button")
 local frame = synch.sendRequest
-frame:SetText(L.interface["Отправить запрос"])
+frame:SetText(L["Отправить запрос"])
 -- fontSize(frame.text)
 btnText(frame)
 frame:SetWidth(size.sendRequest)
@@ -96,15 +96,15 @@ frame:SetCallback("OnClick", function()
 	local type = leftColumn.synchTypeDrop:GetValue()
 	local player = rightColumn.synchPlayerReadyDrop--:GetValue()==1 and (not true) or rightColumn.synchPlayerReadyDrop.list[rightColumn.synchPlayerReadyDrop:GetValue()]
 	local playerName = player.list[player:GetValue()]
-	if type == nil or L.interface.synchType[type] == nil then
-		synch.infoLabel:Error(L.interface.synchState["Данные для синхронизации не выбраны"])
+	if type == nil or L.synchType[type] == nil then
+		synch.infoLabel:Error(L["Данные для синхронизации не выбраны"])
 		return
 	end
 	if player == nil then
-		synch.infoLabel:Error(L.interface.synchState["Игрок для синхронизации не выбран"])
+		synch.infoLabel:Error(L["Игрок для синхронизации не выбран"])
 		return
 	end
-	synch.infoLabel:During(format(L.interface.synchState["Запрос синхронизации у: %s. %d"], playerName, FGI_MAXSYNCHWAIT))
+	synch.infoLabel:During(format(L["Запрос синхронизации у: %s. %d"], playerName, FGI_MAXSYNCHWAIT))
 	
 	fn:sendSynchRequest(playerName, type)
 end)
@@ -114,7 +114,7 @@ synch:AddChild(frame)
 
 synch.infoLabel = GUI:Create("TLabel")
 local frame = synch.infoLabel
--- frame:SetText(L.interface["Отправить запрос"])
+-- frame:SetText(L["Отправить запрос"])
 fontSize(frame.label)
 frame.label:SetJustifyH("CENTER")
 frame:SetWidth(synch.frame:GetWidth()-20)
@@ -150,7 +150,7 @@ end
 confirmSending.infoLabel = GUI:Create("TLabel")
 local frame = confirmSending.infoLabel
 confirmSending:Hide()
-frame.placeholder = L.interface["Игрок %s хочет синхронизировать %s.\nРазрешить?"]
+frame.placeholder = L["Игрок %s хочет синхронизировать %s.\nРазрешить?"]
 fontSize(frame.label)
 frame.label:SetJustifyH("CENTER")
 frame:SetWidth(confirmSending.frame:GetWidth()-20)
@@ -159,7 +159,7 @@ confirmSending:AddChild(frame)
 
 confirmSending.YES = GUI:Create("Button")
 local frame = confirmSending.YES
-frame:SetText(L.interface["Да"])
+frame:SetText(L["Да"])
 btnText(frame)
 frame:SetWidth(size.sendRequest)
 frame:SetHeight(40)
@@ -176,7 +176,7 @@ confirmSending:AddChild(frame)
 
 confirmSending.NO = GUI:Create("Button")
 local frame = confirmSending.NO
-frame:SetText(L.interface["Нет"])
+frame:SetText(L["Нет"])
 btnText(frame)
 frame:SetWidth(size.sendRequest)
 frame:SetHeight(40)
@@ -195,28 +195,4 @@ local frame = CreateFrame('Frame')
 frame:RegisterEvent('PLAYER_LOGIN')
 frame:SetScript('OnEvent', function()
 	DB = addon.DB
-	--[[if DB.synchPos then
-		interface.synch:ClearAllPoints()
-		interface.synch:SetPoint(DB.synchPos.point, UIParent, DB.synchPos.relativePoint, DB.synchPos.xOfs, DB.synchPos.yOfs)
-	else
-		interface.synch:SetPoint("CENTER", UIParent)
-	end
-	
-	
-	C_Timer.After(0.1, function()
-	synch.closeButton:ClearAllPoints()
-	synch.closeButton:SetPoint("CENTER", synch.frame, "TOPRIGHT", -8, -8)
-	
-	synch.leftColumn:ClearAllPoints()
-	synch.leftColumn:SetPoint("TOPLEFT", synch.frame, "TOPLEFT", 10, -30)
-	
-	synch.rightColumn:ClearAllPoints()
-	synch.rightColumn:SetPoint("TOPRIGHT", synch.frame, "TOPRIGHT", -10, -30)
-	
-	synch.sendRequest:ClearAllPoints()
-	synch.sendRequest:SetPoint("BOTTOM", synch.frame, "BOTTOM", 0, 10)
-	
-	
-	synch:Hide()
-	end)]]
 end)

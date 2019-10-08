@@ -1,6 +1,6 @@
 local addon = FGI
 local fn = addon.functions
-local L = addon.L
+local L = LibStub("AceLocale-3.0"):GetLocale("FastGuildInvite")
 local settings = L.settings
 local size = settings.size
 local color = addon.color
@@ -69,7 +69,7 @@ chooseInvites:AddChild(frame)
 
 chooseInvites.invite = GUI:Create("Button")
 local frame = chooseInvites.invite
-frame:SetText(L.interface["Пригласить"])
+frame:SetText(L["Пригласить"])
 -- fontSize(frame.text)
 btnText(frame)
 frame:SetWidth(size.invite)
@@ -81,7 +81,7 @@ chooseInvites:AddChild(frame)
 
 chooseInvites.reject = GUI:Create("Button")
 local frame = chooseInvites.reject
-frame:SetText(L.interface["Отклонить"])
+frame:SetText(L["Отклонить"])
 -- fontSize(frame.text)
 btnText(frame)
 frame:SetWidth(size.reject)

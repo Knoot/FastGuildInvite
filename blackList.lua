@@ -1,6 +1,6 @@
 local addon = FGI
 local fn = addon.functions
-local L = addon.L
+local L = LibStub("AceLocale-3.0"):GetLocale("FastGuildInvite")
 local settings = L.settings
 local size = settings.size
 local color = addon.color
@@ -32,7 +32,7 @@ scrollBar:SetLayout("Flow")
 scrollBar.items = {}
 
 StaticPopupDialogs["FGI_BLACKLIST_CHANGE"] = {
-	text = L.interface["Причина"],
+	text = L["Причина"],
 	button1 = "Ok",
 	button2 = "Cancel",
 	OnAccept = function(self, data)
@@ -43,7 +43,7 @@ StaticPopupDialogs["FGI_BLACKLIST_CHANGE"] = {
 			data.frame.r:SetTooltip(reason)
 		else
 			blackList:add({name=data.name, reason=reason})
-			SendChatMessage(format("%s %s - %s", format(L.interface["Игрок %s добавлен в черный список."], data.name), L.interface["Причина"], reason) , "OFFICER",  GetDefaultLanguage("player"))
+			SendChatMessage(format("%s %s - %s", format(L["Игрок %s добавлен в черный список."], data.name), L["Причина"], reason) , "OFFICER",  GetDefaultLanguage("player"))
 		end
 		StaticPopup_Hide("FGI_BLACKLIST_CHANGE")
 		blackList:update()
@@ -53,7 +53,7 @@ StaticPopupDialogs["FGI_BLACKLIST_CHANGE"] = {
 		blackList:update()
 	end,
 	OnShow = function(self, data)
-		self.text:SetText(format("%s - %s", L.interface["Причина"], data.name))
+		self.text:SetText(format("%s - %s", L["Причина"], data.name))
 		self.editBox:SetText(tostring(DB.realm.blackList[data.name]))
 	end,
 	timeout = 0,
@@ -145,7 +145,7 @@ end
 local function showNext()
 	local data = StaticPopupDialogs["FGI_BLACKLIST"].data
 	if not data[1] then return end
-	StaticPopupDialogs["FGI_BLACKLIST"].text = format(L.interface["Игрок %s найденный в черном списке, находится в вашей гильдии!"],data[1])
+	StaticPopupDialogs["FGI_BLACKLIST"].text = format(L["Игрок %s найденный в черном списке, находится в вашей гильдии!"],data[1])
 	StaticPopup_Show("FGI_BLACKLIST")
 end
 StaticPopupDialogs["FGI_BLACKLIST"] = {
