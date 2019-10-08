@@ -871,7 +871,7 @@ local function getSynchRequest(requestMSG, sender, allowed)
 	local request = L.synchType[requestMSG]
 	local requestType = L.synchBaseType[requestMSG]
 	if not requestType then
-		return C_ChatInfo.SendAddonMessage(FGISYNCH_PREFIX, 'ERROR|'..L.synchState["Ошибка типа синхронизации"], "WHISPER", sender)
+		return C_ChatInfo.SendAddonMessage(FGISYNCH_PREFIX, 'ERROR|'..L["Ошибка типа синхронизации"], "WHISPER", sender)
 	end
 	if not allowed then
 		if DB.global.security.sended and requestType == 'invitations' then
@@ -881,7 +881,7 @@ local function getSynchRequest(requestMSG, sender, allowed)
 		end
 		return
 	end
-	C_ChatInfo.SendAddonMessage(FGISYNCH_PREFIX, 'SUCCESS|'..L.synchState["Начало синхронизации"], "WHISPER", sender)
+	C_ChatInfo.SendAddonMessage(FGISYNCH_PREFIX, 'SUCCESS|'..L["Начало синхронизации"], "WHISPER", sender)
 	
 	local SendSynchStr = ''
 	if requestType=='blacklist' then
@@ -930,13 +930,14 @@ synchFrame:SetScript("OnEvent", function(self, event, ...)
 		local s,e,mod = msg:sub(Start, End):match("(%d+)[^%d](%d+);(%w+)")
 		if not mod then return end
 		s, e = tonumber(s), tonumber(e)
-		synch.infoLabel:Success(format(L.synchState["Синхронизация с %s.\n %d/%d"], sender,s,e))
+		synch.infoLabel:Success(format(L[ [=[Синхронизация с %s.
+%d/%d]=] ], sender,s,e))
 		if s == 1 then ReceiveSynchStr[sender] = { [mod] = ''} end
 			msg = msg:sub(End+1, -1)
 			ReceiveSynchStr[sender][mod] = ReceiveSynchStr[sender][mod]..msg
 		if s == e then
 			readSynchStr(sender, mod)
-			synch.infoLabel:Success(format(L.synchState["Данные синхронизированы с игроком %s."], sender))
+			synch.infoLabel:Success(format(L["Данные синхронизированы с игроком %s."], sender))
 		end
 		
 	elseif channel == "GUILD" then
@@ -980,13 +981,13 @@ function fn:sendSynchRequest(player, sType)
 	local start = GetTime()
 	synch.ticker = C_Timer.NewTicker(1,function()
 		local time = math.ceil(start+FGI_MAXSYNCHWAIT-GetTime())
-		synch.infoLabel:During(format(L.synchState["Запрос синхронизации у: %s. %d"], player or L["Все"], time))
-		if time == 0 then return synch.infoLabel:Error(L.synchState["Превышен лимит ожидания ответа"]) end
+		synch.infoLabel:During(format(L["Запрос синхронизации у: %s. %d"], player or L["Все"], time))
+		if time == 0 then return synch.infoLabel:Error(L["Превышен лимит ожидания ответа"]) end
 	end, FGI_MAXSYNCHWAIT)
 	function synch.ticker:responseReceived()
 		synch.ticker:Cancel()
 		synch.timer = C_Timer.NewTimer(FGI_MAXSYNCHWAIT, function()
-			synch.infoLabel:Error(L.synchState["Превышен лимит ожидания ответа"])
+			synch.infoLabel:Error(L["Превышен лимит ожидания ответа"])
 		end)
 	end
 	if player == L["Все"] then

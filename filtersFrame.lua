@@ -525,7 +525,8 @@ addfilterFrame:AddChild(frame)
 addfilterFrame.excludeNameLabel = GUI:Create("TLabel")
 local frame = addfilterFrame.excludeNameLabel
 frame:SetText(L["Фильтр по имени"])
-frame:SetTooltip(L["Если имя игрока содержит введенную\nфразу, он не будет добавлен в очередь"])
+frame:SetTooltip(L[ [=[Если имя игрока содержит введенную
+фразу, он не будет добавлен в очередь]=] ])
 fontSize(frame.label)
 frame:SetWidth(size.excludeNameLabel)
 frame.label:SetJustifyH("CENTER")
@@ -542,7 +543,10 @@ addfilterFrame:AddChild(frame)
 addfilterFrame.lvlRangeLabel = GUI:Create("TLabel")
 local frame = addfilterFrame.lvlRangeLabel
 frame:SetText(L["Диапазон уровней (Мин:Макс)"])
-frame:SetTooltip(format(L["Введите диапазон уровней для фильтра.\nНапример: %s55%s:%s58%s\nбудут подходить только те игроки, уровень\nкоторых варьируется от %s55%s до %s58%s (включительно)"], "|cff00ff00", "|r", "|cff00A2FF", "|r", "|cff00ff00", "|r", "|cff00A2FF", "|r"))
+frame:SetTooltip(format(L[ [=[Введите диапазон уровней для фильтра.
+Например: %s55%s:%s58%s
+будут подходить только те игроки, уровень
+которых варьируется от %s55%s до %s58%s (включительно)]=] ], "|cff00ff00", "|r", "|cff00A2FF", "|r", "|cff00ff00", "|r", "|cff00A2FF", "|r"))
 fontSize(frame.label)
 frame:SetWidth(size.lvlRangeLabel)
 frame.label:SetJustifyH("CENTER")
@@ -559,7 +563,11 @@ addfilterFrame:AddChild(frame)
 addfilterFrame.excludeRepeatLabel = GUI:Create("TLabel")
 local frame = addfilterFrame.excludeRepeatLabel
 frame:SetText(L["Фильтр повторений в имени"])
-frame:SetTooltip(format(L["Введите максимальное количество последовательных\nгласных и согласных, которое может содержать имя игрока.\nНапример: %s3%s:%s5%s\nБудет означать, что игроки с более чем %s3%s гласными подряд\nили более %s5%s согласными подряд не будут добавлены в очередь."], "|cff00ff00", "|r", "|cff00A2FF", "|r", "|cff00ff00", "|r", "|cff00A2FF", "|r"))
+frame:SetTooltip(format(L[ [=[Введите максимальное количество последовательных
+гласных и согласных, которое может содержать имя игрока.
+Например: %s3%s:%s5%s
+Будет означать, что игроки с более чем %s3%s гласными подряд
+или более %s5%s согласными подряд не будут добавлены в очередь.]=] ], "|cff00ff00", "|r", "|cff00A2FF", "|r", "|cff00ff00", "|r", "|cff00A2FF", "|r"))
 fontSize(frame.label)
 frame:SetWidth(size.excludeRepeatLabel)
 frame.label:SetJustifyH("CENTER")

@@ -150,7 +150,8 @@ end
 confirmSending.infoLabel = GUI:Create("TLabel")
 local frame = confirmSending.infoLabel
 confirmSending:Hide()
-frame.placeholder = L["Игрок %s хочет синхронизировать %s.\nРазрешить?"]
+frame.placeholder = L[ [=[Игрок %s хочет синхронизировать %s.
+Разрешить?]=] ]
 fontSize(frame.label)
 frame.label:SetJustifyH("CENTER")
 frame:SetWidth(confirmSending.frame:GetWidth()-20)

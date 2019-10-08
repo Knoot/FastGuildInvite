@@ -15,7 +15,7 @@ L.settings.size.Shaman = 80
 L.settings.size.Warrior = 80
 
 
-L.femaleClass = {
+L.femaleRace = {
 	Orc = L["Orc"],
 	Tauren = L["Tauren"],
 	Dwarf = L["Tauren"],
@@ -33,3 +33,12 @@ L.femaleClass = {
 	VoidElf = L["VoidElf"],
 	KulTiran = L["KulTiran"],
 }
+
+
+L.femaleClass = {}
+for k,v in pairs(L.class) do
+	local n = LOCALIZED_CLASS_NAMES_FEMALE[k:upper()]
+	if v~=n then
+		L.femaleClass[k] = n
+	end
+end

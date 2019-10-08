@@ -131,7 +131,8 @@ L.settings = {
 }
 
 
-L.femaleClass = {
+
+L.femaleRace = {
 	Orc = L["Orc"],
 	Tauren = L["Tauren"],
 	Dwarf = L["Tauren"],
@@ -219,3 +220,11 @@ L.race = {
 	},
 }
 --@end-non-retail@]===]
+
+L.femaleClass = {}
+for k,v in pairs(L.class) do
+	local n = LOCALIZED_CLASS_NAMES_FEMALE[k:upper()]
+	if v~=n then
+		L.femaleClass[k] = n
+	end
+end
