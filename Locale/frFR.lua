@@ -1,8 +1,15 @@
--- if not(GetLocale() == "frFR") then
-  -- return
--- end
+local L = LibStub("AceLocale-3.0"):NewLocale("FastGuildInvite", "frFR")
+if not L then return end
+--@localization(locale="frFR", format="lua_additive_table", same-key-is-true=true)@
 
-local L = {}
+L.synchBaseType = {
+	"blacklist",
+	"invitations",
+}
 
+L = LibStub("AceLocale-3.0"):GetLocale("FastGuildInvite")
 
-FGI.L["frFR"] = L
+L.synchType = {
+	L["Черный список"],
+	L["Список приглашенных"],
+}

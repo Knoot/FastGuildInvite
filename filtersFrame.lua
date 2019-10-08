@@ -132,7 +132,7 @@ addfilterFrame:AddChild(frame)
 addfilterFrame.classesCheckBoxDruid = GUI:Create("TCheckBox")
 local frame = addfilterFrame.classesCheckBoxDruid
 frame:SetWidth(size.Druid)
-frame:SetLabel(L.Druid)
+frame:SetLabel(L.class.Druid)
 fontSize(frame.text)
 frame:SetPoint("TOPLEFT", addfilterFrame.classesCheckBoxMonk.frame, "BOTTOMLEFT", 0, 0)
 addfilterFrame:AddChild(frame)
@@ -140,7 +140,7 @@ addfilterFrame:AddChild(frame)
 addfilterFrame.classesCheckBoxHunter = GUI:Create("TCheckBox")
 local frame = addfilterFrame.classesCheckBoxHunter
 frame:SetWidth(size.Hunter)
-frame:SetLabel(L.Hunter)
+frame:SetLabel(L.class.Hunter)
 fontSize(frame.text)
 frame:SetPoint("TOPLEFT", addfilterFrame.classesCheckBoxDruid.frame, "BOTTOMLEFT", 0, 0)
 addfilterFrame:AddChild(frame)
@@ -148,7 +148,7 @@ addfilterFrame:AddChild(frame)
 addfilterFrame.classesCheckBoxMage = GUI:Create("TCheckBox")
 local frame = addfilterFrame.classesCheckBoxMage
 frame:SetWidth(size.Mage)
-frame:SetLabel(L.Mage)
+frame:SetLabel(L.class.Mage)
 fontSize(frame.text)
 frame:SetPoint("TOPLEFT", addfilterFrame.classesCheckBoxHunter.frame, "BOTTOMLEFT", 0, 0)
 addfilterFrame:AddChild(frame)
@@ -156,7 +156,7 @@ addfilterFrame:AddChild(frame)
 addfilterFrame.classesCheckBoxPaladin = GUI:Create("TCheckBox")
 local frame = addfilterFrame.classesCheckBoxPaladin
 frame:SetWidth(size.Paladin)
-frame:SetLabel(L.Paladin)
+frame:SetLabel(L.class.Paladin)
 fontSize(frame.text)
 frame:SetPoint("TOPLEFT", addfilterFrame.classesCheckBoxMage.frame, "BOTTOMLEFT", 0, 0)
 addfilterFrame:AddChild(frame)
@@ -164,7 +164,7 @@ addfilterFrame:AddChild(frame)
 addfilterFrame.classesCheckBoxPriest = GUI:Create("TCheckBox")
 local frame = addfilterFrame.classesCheckBoxPriest
 frame:SetWidth(size.Priest)
-frame:SetLabel(L.Priest)
+frame:SetLabel(L.class.Priest)
 fontSize(frame.text)
 frame:SetPoint("TOPLEFT", addfilterFrame.classesCheckBoxPaladin.frame, "BOTTOMLEFT", 0, 0)
 addfilterFrame:AddChild(frame)
@@ -172,7 +172,7 @@ addfilterFrame:AddChild(frame)
 addfilterFrame.classesCheckBoxRogue = GUI:Create("TCheckBox")
 local frame = addfilterFrame.classesCheckBoxRogue
 frame:SetWidth(size.Rogue)
-frame:SetLabel(L.Rogue)
+frame:SetLabel(L.class.Rogue)
 fontSize(frame.text)
 frame:SetPoint("TOPLEFT", addfilterFrame.classesCheckBoxPriest.frame, "BOTTOMLEFT", 0, 0)
 addfilterFrame:AddChild(frame)
@@ -180,7 +180,7 @@ addfilterFrame:AddChild(frame)
 addfilterFrame.classesCheckBoxShaman = GUI:Create("TCheckBox")
 local frame = addfilterFrame.classesCheckBoxShaman
 frame:SetWidth(size.Shaman)
-frame:SetLabel(L.Shaman)
+frame:SetLabel(L.class.Shaman)
 fontSize(frame.text)
 frame:SetPoint("TOPLEFT", addfilterFrame.classesCheckBoxRogue.frame, "BOTTOMLEFT", 0, 0)
 addfilterFrame:AddChild(frame)
@@ -188,7 +188,7 @@ addfilterFrame:AddChild(frame)
 addfilterFrame.classesCheckBoxWarlock = GUI:Create("TCheckBox")
 local frame = addfilterFrame.classesCheckBoxWarlock
 frame:SetWidth(size.Warlock)
-frame:SetLabel(L.Warlock)
+frame:SetLabel(L.class.Warlock)
 fontSize(frame.text)
 frame:SetPoint("TOPLEFT", addfilterFrame.classesCheckBoxShaman.frame, "BOTTOMLEFT", 0, 0)
 addfilterFrame:AddChild(frame)
@@ -196,7 +196,7 @@ addfilterFrame:AddChild(frame)
 addfilterFrame.classesCheckBoxWarrior = GUI:Create("TCheckBox")
 local frame = addfilterFrame.classesCheckBoxWarrior
 frame:SetWidth(size.Warrior)
-frame:SetLabel(L.Warrior)
+frame:SetLabel(L.class.Warrior)
 fontSize(frame.text)
 frame:SetPoint("TOPLEFT", addfilterFrame.classesCheckBoxWarlock.frame, "BOTTOMLEFT", 0, 0)
 addfilterFrame:AddChild(frame)
@@ -266,15 +266,15 @@ end
 
 local function getClassFilter()
 	local arr = {
-		[L.Druid] = addfilterFrame.classesCheckBoxDruid:GetValue() or nil,
-		[L.Hunter] = addfilterFrame.classesCheckBoxHunter:GetValue() or nil,
-		[L.Mage] = addfilterFrame.classesCheckBoxMage:GetValue() or nil,
-		[L.Paladin] = addfilterFrame.classesCheckBoxPaladin:GetValue() or nil,
-		[L.Priest] = addfilterFrame.classesCheckBoxPriest:GetValue() or nil,
-		[L.Rogue] = addfilterFrame.classesCheckBoxRogue:GetValue() or nil,
-		[L.Shaman] = addfilterFrame.classesCheckBoxShaman:GetValue() or nil,
-		[L.Warlock] = addfilterFrame.classesCheckBoxWarlock:GetValue() or nil,
-		[L.Warrior] = addfilterFrame.classesCheckBoxWarrior:GetValue() or nil
+		[L.class.Druid] = addfilterFrame.classesCheckBoxDruid:GetValue() or nil,
+		[L.class.Hunter] = addfilterFrame.classesCheckBoxHunter:GetValue() or nil,
+		[L.class.Mage] = addfilterFrame.classesCheckBoxMage:GetValue() or nil,
+		[L.class.Paladin] = addfilterFrame.classesCheckBoxPaladin:GetValue() or nil,
+		[L.class.Priest] = addfilterFrame.classesCheckBoxPriest:GetValue() or nil,
+		[L.class.Rogue] = addfilterFrame.classesCheckBoxRogue:GetValue() or nil,
+		[L.class.Shaman] = addfilterFrame.classesCheckBoxShaman:GetValue() or nil,
+		[L.class.Warlock] = addfilterFrame.classesCheckBoxWarlock:GetValue() or nil,
+		[L.class.Warrior] = addfilterFrame.classesCheckBoxWarrior:GetValue() or nil
 	}
 	return arr
 end
@@ -283,7 +283,7 @@ local function createClassBoxes()
 addfilterFrame.classesCheckBoxDruid = GUI:Create("TCheckBox")
 local frame = addfilterFrame.classesCheckBoxDruid
 frame:SetWidth(size.Druid)
-frame:SetLabel(L.Druid)
+frame:SetLabel(L.class.Druid)
 fontSize(frame.text)
 frame:SetPoint("TOPLEFT", addfilterFrame.classesCheckBoxIgnore.frame, "BOTTOMLEFT", 0, -2)
 addfilterFrame:AddChild(frame)
@@ -291,7 +291,7 @@ addfilterFrame:AddChild(frame)
 addfilterFrame.classesCheckBoxHunter = GUI:Create("TCheckBox")
 local frame = addfilterFrame.classesCheckBoxHunter
 frame:SetWidth(size.Hunter)
-frame:SetLabel(L.Hunter)
+frame:SetLabel(L.class.Hunter)
 fontSize(frame.text)
 frame:SetPoint("TOPLEFT", addfilterFrame.classesCheckBoxDruid.frame, "BOTTOMLEFT", 0, 0)
 addfilterFrame:AddChild(frame)
@@ -299,7 +299,7 @@ addfilterFrame:AddChild(frame)
 addfilterFrame.classesCheckBoxMage = GUI:Create("TCheckBox")
 local frame = addfilterFrame.classesCheckBoxMage
 frame:SetWidth(size.Mage)
-frame:SetLabel(L.Mage)
+frame:SetLabel(L.class.Mage)
 fontSize(frame.text)
 frame:SetPoint("TOPLEFT", addfilterFrame.classesCheckBoxHunter.frame, "BOTTOMLEFT", 0, 0)
 addfilterFrame:AddChild(frame)
@@ -307,7 +307,7 @@ addfilterFrame:AddChild(frame)
 addfilterFrame.classesCheckBoxPaladin = GUI:Create("TCheckBox")
 local frame = addfilterFrame.classesCheckBoxPaladin
 frame:SetWidth(size.Paladin)
-frame:SetLabel(L.Paladin)
+frame:SetLabel(L.class.Paladin)
 fontSize(frame.text)
 frame:SetPoint("TOPLEFT", addfilterFrame.classesCheckBoxMage.frame, "BOTTOMLEFT", 0, 0)
 addfilterFrame:AddChild(frame)
@@ -315,7 +315,7 @@ addfilterFrame:AddChild(frame)
 addfilterFrame.classesCheckBoxPriest = GUI:Create("TCheckBox")
 local frame = addfilterFrame.classesCheckBoxPriest
 frame:SetWidth(size.Priest)
-frame:SetLabel(L.Priest)
+frame:SetLabel(L.class.Priest)
 fontSize(frame.text)
 frame:SetPoint("TOPLEFT", addfilterFrame.classesCheckBoxPaladin.frame, "BOTTOMLEFT", 0, 0)
 addfilterFrame:AddChild(frame)
@@ -323,7 +323,7 @@ addfilterFrame:AddChild(frame)
 addfilterFrame.classesCheckBoxRogue = GUI:Create("TCheckBox")
 local frame = addfilterFrame.classesCheckBoxRogue
 frame:SetWidth(size.Rogue)
-frame:SetLabel(L.Rogue)
+frame:SetLabel(L.class.Rogue)
 fontSize(frame.text)
 frame:SetPoint("TOPLEFT", addfilterFrame.classesCheckBoxPriest.frame, "BOTTOMLEFT", 0, 0)
 addfilterFrame:AddChild(frame)
@@ -331,7 +331,7 @@ addfilterFrame:AddChild(frame)
 addfilterFrame.classesCheckBoxShaman = GUI:Create("TCheckBox")
 local frame = addfilterFrame.classesCheckBoxShaman
 frame:SetWidth(size.Shaman)
-frame:SetLabel(L.Shaman)
+frame:SetLabel(L.class.Shaman)
 fontSize(frame.text)
 frame:SetPoint("TOPLEFT", addfilterFrame.classesCheckBoxRogue.frame, "BOTTOMLEFT", 0, 0)
 addfilterFrame:AddChild(frame)
@@ -339,7 +339,7 @@ addfilterFrame:AddChild(frame)
 addfilterFrame.classesCheckBoxWarlock = GUI:Create("TCheckBox")
 local frame = addfilterFrame.classesCheckBoxWarlock
 frame:SetWidth(size.Warlock)
-frame:SetLabel(L.Warlock)
+frame:SetLabel(L.class.Warlock)
 fontSize(frame.text)
 frame:SetPoint("TOPLEFT", addfilterFrame.classesCheckBoxShaman.frame, "BOTTOMLEFT", 0, 0)
 addfilterFrame:AddChild(frame)
@@ -347,7 +347,7 @@ addfilterFrame:AddChild(frame)
 addfilterFrame.classesCheckBoxWarrior = GUI:Create("TCheckBox")
 local frame = addfilterFrame.classesCheckBoxWarrior
 frame:SetWidth(size.Warrior)
-frame:SetLabel(L.Warrior)
+frame:SetLabel(L.class.Warrior)
 fontSize(frame.text)
 frame:SetPoint("TOPLEFT", addfilterFrame.classesCheckBoxWarlock.frame, "BOTTOMLEFT", 0, 0)
 addfilterFrame:AddChild(frame)

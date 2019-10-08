@@ -11,6 +11,8 @@ L.synchBaseType = {
 	"invitations",
 }
 
+L = LibStub("AceLocale-3.0"):GetLocale("FastGuildInvite")
+
 L.synchType = {
 	L["Черный список"],
 	L["Список приглашенных"],

@@ -1,4 +1,5 @@
 local L = LibStub("AceLocale-3.0"):NewLocale("FastGuildInvite", "enUS")
+if not L then return end
 --@localization(locale="enUS", format="lua_additive_table", same-key-is-true=true)@
 
 
@@ -7,15 +8,11 @@ L.synchBaseType = {--		WARNING
 	"invitations",
 }
 
-
-L.settings = {
-	size = {
-		Mage = 60,
-		Priest = 80,
-		Shaman = 80,
-		Warrior = 80,
-	}
-}
+L = LibStub("AceLocale-3.0"):GetLocale("FastGuildInvite")
+L.settings.size.Mage = 60
+L.settings.size.Priest = 80
+L.settings.size.Shaman = 80
+L.settings.size.Warrior = 80
 
 
 L.femaleClass = {
