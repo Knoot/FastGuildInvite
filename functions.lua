@@ -828,14 +828,15 @@ FGI.ReceiveSynchStr = {[L["Все"]] = {}}
 ReceiveSynchStr = FGI.ReceiveSynchStr
 local writeReceiveData = {
 	blacklist = function(arr)
+		local blackList = interface.settings.Blacklist.content
 		for i=1, #arr do
 			local name, reason = arr[i][1], arr[i][2]
 			if not DB.realm.blackList[name] then
-				interface.blackList:add({name=name, reason=reason})
+				blackList:add({name=name, reason=reason})
 			end
 			DB.realm.blackList[name] = reason
 		end
-		interface.blackList:update()
+		blackList:update()
 	end,
 	invitations = function(arr)
 		for i=1, #arr do
