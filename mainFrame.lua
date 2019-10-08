@@ -127,7 +127,7 @@ frame:SetLabel(L["Включить фильтры"])
 frame:SetTooltip("")
 -- fontSize(frame.text)
 frame.frame:HookScript("OnClick", function()
-	DB.enableFilters = mainCheckBoxGRP.enableFilters:GetValue()
+	DB.realm.enableFilters = mainCheckBoxGRP.enableFilters:GetValue()
 end)
 mainCheckBoxGRP:AddChild(frame)
 end
