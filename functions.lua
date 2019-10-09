@@ -7,7 +7,7 @@ local settings = L.settings
 local GUI = LibStub("AceGUI-3.0")
 local color = addon.color
 local FastGuildInvite = addon.lib
-addon.search = {progress=1, inviteList={}, timeShift=0, tempSendedInvites={}, whoQueryList = {}}
+addon.search = {progress=1, inviteList={}, timeShift=0, tempSendedInvites={}, whoQueryList = {}, oldCount = 0,}
 addon.removeMsgList = {}
 addon.libWho = {}
 local DB
@@ -139,6 +139,36 @@ function fn.fontSize(frame, font, size)
 	frame:SetFont(font, size)
 end
 
+
+FGI.animations.notification = CreateFrame("Frame")
+
+local anim = FGI.animations.notification
+anim:SetSize(1,1)
+anim:Hide()
+anim:SetPoint("TOP", UIParent, "TOP", 0, -150)
+anim.f = anim:CreateFontString(nil, "BACKGROUND", "GameFontHighlightSmall")
+anim.f.font = anim.f:GetFont()
+anim.f:SetText("Test TEXT")
+anim.f:SetPoint("CENTER", anim)
+anim.f.animation = anim:CreateAnimationGroup()
+local animation = anim.f.animation:CreateAnimation("Alpha")
+animation:SetDuration(0.5)
+animation:SetFromAlpha(1)
+animation:SetToAlpha(0)
+animation:SetStartDelay(3)
+anim.f.animation:SetScript("OnFinished", function()anim:Hide()end)
+
+function anim.Start(self, text, font, size)
+	if not text then return end
+	font = font or settings.Font
+	size = size or 21
+	text = "|cffffff00<|r|cff16ABB5FGI|r|cffffff00>|r "..text
+	anim.f:SetFont(font, size, "OUTLINE")
+	self.f:SetText(text)
+	
+	self:Show()
+	self.f.animation:Play()
+end
 
 
 function fn:parseBL(str)
@@ -387,7 +417,7 @@ function fn:invitePlayer(noInv)
 		debug(format("Invite: %s",list[1].name))
 		GuildInvite(list[1].name)
 	end
-	if not noInv or DB.rememberAll then
+	if not noInv or DB.global.rememberAll then
 		fn:rememberPlayer(list[1].name)
 	end
 	C_ChatInfo.SendAddonMessage(FGISYNCH_PREFIX, "REMEMBER|"..list[1].name, "GUILD")
@@ -696,9 +726,13 @@ local function searchWhoResultCallback(query, results)
 	-- 3lvl can't modified
 	end
 	
+	addon.search.oldCount = #addon.search.inviteList
 	for i=1,#results do
 		local player = results[i]
 		addNewPlayer(addon.search, player)
+	end
+	if DB.global.queueNotify and #addon.search.inviteList > addon.search.oldCount then
+		FGI.animations.notification:Start(format(L["Игроков найдено: %d"], #addon.search.inviteList - addon.search.oldCount))
 	end
 	interface.scanFrame.progressBar:SetMinMax(0, #addon.search.whoQueryList)
 	interface.scanFrame.progressBar:SetProgress(addon.search.progress-1)
@@ -706,7 +740,12 @@ local function searchWhoResultCallback(query, results)
 end
 
 function fn:nextSearch()
-	C_Timer.After(FGI_SCANINTERVALTIME, function() interface.scanFrame.pausePlay:SetDisabled(false) end)
+	C_Timer.After(FGI_SCANINTERVALTIME, function()
+		interface.scanFrame.pausePlay:SetDisabled(false)
+		if DB.global.searchAlertNotify then
+			FGI.animations.notification:Start(L["Поиск разблокирован"])
+		end
+	end)
 	if #addon.search.whoQueryList == 0 then
 		if  DB.realm.customWho then
 			for i=1, #DB.faction.customWhoList do

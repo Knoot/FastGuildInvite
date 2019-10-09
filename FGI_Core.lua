@@ -253,6 +253,9 @@ local defaultSettings =  {
 		debug = false,
 		security = {blacklist = true, sended = true},
 		addonMSG = false,
+		rememberAll = false,
+		queueNotify = true,
+		searchAlertNotify = true,
 	},
 } 
 

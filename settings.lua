@@ -101,7 +101,7 @@ settings:SetPoint("TOPLEFT", interface.settings, "TOPLEFT", 10, -10)
 settings.settingsCheckBoxGRP = GUI:Create("GroupFrame")
 local settingsCheckBoxGRP = settings.settingsCheckBoxGRP
 settingsCheckBoxGRP:SetLayout("NIL")
-settingsCheckBoxGRP:SetHeight(120)
+settingsCheckBoxGRP:SetHeight(160)
 settingsCheckBoxGRP:SetWidth(size.settingsCheckBoxGRP)
 settingsCheckBoxGRP:SetPoint("TOPLEFT", settings.frame, "TOPLEFT", 0, 0)
 settings:AddChild(settingsCheckBoxGRP)
@@ -111,7 +111,6 @@ local frame = settingsCheckBoxGRP.addonMSG
 frame:SetWidth(size.addonMSG)
 frame:SetLabel(L["Выключить сообщения аддона"])
 frame:SetTooltip(L["Не отображать в чате сообщения аддона"])
--- fontSize(frame.text)
 frame.frame:HookScript("OnClick", function()
 	DB.global.addonMSG = settingsCheckBoxGRP.addonMSG:GetValue()
 end)
@@ -123,7 +122,6 @@ local frame = settingsCheckBoxGRP.systemMSG
 frame:SetWidth(size.systemMSG)
 frame:SetLabel(L["Выключить системные сообщения"])
 frame:SetTooltip(L["Не отображать в чате системные сообщения"])
--- fontSize(frame.text)
 frame.frame:HookScript("OnClick", function()
 	DB.realm.systemMSG = settingsCheckBoxGRP.systemMSG:GetValue()
 	updateMsgFilters()
@@ -137,7 +135,6 @@ local frame = settingsCheckBoxGRP.sendMSG
 frame:SetWidth(size.sendMSG)
 frame:SetLabel(L["Выключить отправляемые сообщения"])
 frame:SetTooltip(L["Не отображать в чате отправляемые сообщения"])
--- fontSize(frame.text)
 frame.frame:HookScript("OnClick", function()
 	DB.realm.sendMSG = settingsCheckBoxGRP.sendMSG:GetValue()
 	
@@ -150,7 +147,6 @@ local frame = settingsCheckBoxGRP.minimapButton
 frame:SetWidth(size.minimapButton)
 frame:SetLabel(L["Не отображать значок у миникарты"])
 frame:SetTooltip("")
--- fontSize(frame.text)
 frame.frame:HookScript("OnClick", function()
 	DB.global.minimap.hide = settingsCheckBoxGRP.minimapButton:GetValue()
 	if DB.global.minimap.hide then
@@ -162,16 +158,35 @@ end)
 frame:SetPoint("TOPLEFT", settings.settingsCheckBoxGRP.sendMSG.frame, "BOTTOMLEFT", 0, 0)
 settingsCheckBoxGRP:AddChild(frame)
 
+settingsCheckBoxGRP.queueNotify = GUI:Create("TCheckBox")
+local frame = settingsCheckBoxGRP.queueNotify
+frame:SetWidth(size.queueNotify)
+frame:SetLabel(L["Уведомление о найденных игроках"])
+frame.frame:HookScript("OnClick", function()
+	DB.global.queueNotify = settingsCheckBoxGRP.queueNotify:GetValue()
+end)
+frame:SetPoint("TOPLEFT", settings.settingsCheckBoxGRP.minimapButton.frame, "BOTTOMLEFT", 0, 0)
+settingsCheckBoxGRP:AddChild(frame)
+
+settingsCheckBoxGRP.searchAlertNotify = GUI:Create("TCheckBox")
+local frame = settingsCheckBoxGRP.searchAlertNotify
+frame:SetWidth(size.searchAlertNotify)
+frame:SetLabel(L["Уведомление о готовности нового поиска"])
+frame.frame:HookScript("OnClick", function()
+	DB.global.searchAlertNotify = settingsCheckBoxGRP.searchAlertNotify:GetValue()
+end)
+frame:SetPoint("TOPLEFT", settings.settingsCheckBoxGRP.queueNotify.frame, "BOTTOMLEFT", 0, 0)
+settingsCheckBoxGRP:AddChild(frame)
+
 settingsCheckBoxGRP.rememberAll = GUI:Create("TCheckBox")
 local frame = settingsCheckBoxGRP.rememberAll
 frame:SetWidth(size.rememberAll)
 frame:SetLabel(L["Запоминать всех игроков"])
 frame:SetTooltip(L["Записывать игрока в базу данных даже если приглашение не было отправлено"])
--- fontSize(frame.text)
 frame.frame:HookScript("OnClick", function()
-	DB.rememberAll = settingsCheckBoxGRP.rememberAll:GetValue()
+	DB.global.rememberAll = settingsCheckBoxGRP.rememberAll:GetValue()
 end)
-frame:SetPoint("TOPLEFT", settings.settingsCheckBoxGRP.minimapButton.frame, "BOTTOMLEFT", 0, 0)
+frame:SetPoint("TOPLEFT", settings.settingsCheckBoxGRP.searchAlertNotify.frame, "BOTTOMLEFT", 0, 0)
 settingsCheckBoxGRP:AddChild(frame)
 
 
@@ -194,6 +209,7 @@ settings:AddChild(frame)
 
 
 
+
 -- set points
 local frame = CreateFrame('Frame')
 frame:RegisterEvent('PLAYER_LOGIN')
@@ -204,7 +220,9 @@ frame:SetScript('OnEvent', function()
 	settingsCheckBoxGRP.systemMSG:SetValue(DB.realm.systemMSG or false)
 	settingsCheckBoxGRP.sendMSG:SetValue(DB.realm.sendMSG or false)
 	settingsCheckBoxGRP.minimapButton:SetValue(DB.global.minimap.hide or false)
-	settingsCheckBoxGRP.rememberAll:SetValue(DB.rememberAll or false)
+	settingsCheckBoxGRP.rememberAll:SetValue(DB.global.rememberAll or false)
+	settingsCheckBoxGRP.queueNotify:SetValue(DB.global.queueNotify or false)
+	settingsCheckBoxGRP.searchAlertNotify:SetValue(DB.global.searchAlertNotify or false)
 	settings.clearDBtimes:SetValue(DB.global.clearDBtimes)
 	
 	
