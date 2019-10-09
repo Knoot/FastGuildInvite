@@ -108,7 +108,7 @@ frame:SetScript("OnEvent", function(_,_, msg,_,_,_,name,...)
 		return true, n, r
 	end
 	
-	if name == UnitName("Player") then print("player -> return")end
+	if name == UnitName("Player") then print("player -> exit")end
 	if not msg:find("^!") then return end
 	if msg:find("^!fgi") then
 		SendChatMessage(" "..L.blacklistAdd , "OFFICER",  GetDefaultLanguage("player"))
@@ -251,7 +251,8 @@ local defaultSettings =  {
 		clearDBtimes = 3,
 		minimap = {hide = false},
 		debug = false,
-		security = {blacklist = true, sended = true}
+		security = {blacklist = true, sended = true},
+		addonMSG = false,
 	},
 } 
 

@@ -225,7 +225,9 @@ end
 
 function fn:blackList(name, reason)
 	DB.realm.blackList[name] = reason or L.defaultReason
-	print(format("%s%s|r", color.red, format(L["Игрок %s добавлен в черный список."], name)))
+	if not DB.global.addonMSG then
+		print(format("%s%s|r", color.red, format(L["Игрок %s добавлен в черный список."], name)))
+	end
 	fn:blacklistKick()
 end
 
@@ -680,7 +682,9 @@ end
 local function searchWhoResultCallback(query, results)
 	local searchLvl = getSearchDeepLvl(query)
 	if #results >= FGI_MAXWHORETURN and DB.realm.customWho then
-		print(format(L["Поиск вернул 50 или более результатов, рекомендуется изменить настройки поиска. Запрос: %s"], query))
+		if not DB.global.addonMSG then
+			print(format(L["Поиск вернул 50 или более результатов, рекомендуется изменить настройки поиска. Запрос: %s"], query))
+		end
 		debug(format("Query (%s) return 50 or more results; SearchLevel-%d", query, searchLvl))
 	end
 	addon.search.progress = addon.search.progress + 1

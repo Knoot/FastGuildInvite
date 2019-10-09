@@ -111,10 +111,9 @@ local frame = settingsCheckBoxGRP.addonMSG
 frame:SetWidth(size.addonMSG)
 frame:SetLabel(L["Выключить сообщения аддона"])
 frame:SetTooltip(L["Не отображать в чате сообщения аддона"])
-frame:SetDisabled(true)
 -- fontSize(frame.text)
 frame.frame:HookScript("OnClick", function()
-	DB.realm.addonMSG = settingsCheckBoxGRP.addonMSG:GetValue()
+	DB.global.addonMSG = settingsCheckBoxGRP.addonMSG:GetValue()
 end)
 frame:SetPoint("TOPLEFT", settings.settingsCheckBoxGRP.frame, "TOPLEFT", 0, 0)
 settingsCheckBoxGRP:AddChild(frame)
@@ -201,13 +200,12 @@ frame:RegisterEvent('PLAYER_LOGIN')
 frame:SetScript('OnEvent', function()
 	DB = addon.DB
 	
-	settingsCheckBoxGRP.addonMSG:SetValue(DB.realm.addonMSG or false)
+	settingsCheckBoxGRP.addonMSG:SetValue(DB.global.addonMSG or false)
 	settingsCheckBoxGRP.systemMSG:SetValue(DB.realm.systemMSG or false)
 	settingsCheckBoxGRP.sendMSG:SetValue(DB.realm.sendMSG or false)
 	settingsCheckBoxGRP.minimapButton:SetValue(DB.global.minimap.hide or false)
 	settingsCheckBoxGRP.rememberAll:SetValue(DB.rememberAll or false)
 	settings.clearDBtimes:SetValue(DB.global.clearDBtimes)
-	-- settingsCheckBoxGRP.addonMSG:SetValue(true)
 	
 	
 	updateMsgFilters()
