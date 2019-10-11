@@ -4,7 +4,7 @@ end
 
 
 local L = LibStub("AceLocale-3.0"):NewLocale("FastGuildInvite", "ruRU", true)
---@localization(locale="ruRU", format="lua_additive_table", same-key-is-true=true)@
+L = FGI.Locale.ruRU
 
 L.synchBaseType = {
 	"blacklist",

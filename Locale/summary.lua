@@ -1,5 +1,22 @@
 local L = LibStub("AceLocale-3.0"):GetLocale("FastGuildInvite")
 
+local locale = GetLocale()
+local function GetL(ru,en,cur)
+  ru = ru or FGI.Locale["ruRU"]
+  en = en or FGI.Locale["enUS"] or {}
+  cur = cur or FGI.Locale[locale] or {}
+  local L = {}
+  for k,v in pairs(ru) do
+    if type(v) == "table" then
+      L[k] = GetL(v,en[k],cur[k])
+    else
+      L[k] = cur[k] or en[k] or v
+    end
+  end
+  return L
+end
+L = GetL()
+
 local size = L.settings.size
 
 L.race = L.race[UnitFactionGroup("player")]

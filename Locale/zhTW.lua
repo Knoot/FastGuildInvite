@@ -1,6 +1,6 @@
 local L = LibStub("AceLocale-3.0"):NewLocale("FastGuildInvite", "zhTW")
 if not L then return end
---@localization(locale="enUS", format="lua_additive_table", same-key-is-true=true)@
+L = FGI.Locale.zhTW
 
 L.synchBaseType = {
 	"blacklist",
