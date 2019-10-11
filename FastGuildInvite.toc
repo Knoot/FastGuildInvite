@@ -20,7 +20,6 @@ Libs\AceDB-3.0\AceDB-3.0.xml
 Libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
 Libs\AceEvent-3.0\AceEvent-3.0.xml
 Libs\AceGUI-3.0\AceGUI-3.0.xml
-Libs\AceLocale-3.0\AceLocale-3.0.xml
 
 
 Locale\Locale.xml

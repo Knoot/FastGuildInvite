@@ -1,6 +1,6 @@
 local addon = FGI
 local fn = addon.functions
-local L = LibStub("AceLocale-3.0"):GetLocale("FastGuildInvite")
+local L = FGI:GetLocale()
 local settings = L.settings
 local size = settings.size
 local color = addon.color
