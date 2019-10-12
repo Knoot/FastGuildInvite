@@ -5,6 +5,8 @@ local CLASS = L.class
 local interface = addon.interface
 local settings = L.settings
 local GUI = LibStub("AceGUI-3.0")
+local AceSerializer = LibStub("AceSerializer-3.0")
+local libc = LibStub:GetLibrary("LibCompress")
 local color = addon.color
 local FastGuildInvite = addon.lib
 addon.search = {progress=1, inviteList={}, timeShift=0, tempSendedInvites={}, whoQueryList = {}, oldCount = 0,}
@@ -893,11 +895,12 @@ local function readSynchStr(sender, mod)
 --print(str)
 	local str = ReceiveSynchStr[sender][mod]
 	local arr = {}
-	for S in str:gmatch("(.-);") do
+	--[[for S in str:gmatch("(.-);") do
 		local n, r = S:match("([^,]+),(.+)")
 		r = r:gsub("~", ',')
 		table.insert(arr, {n,r})
-	end
+	end]]
+	arr = AceSerializer:Deserialize(libc:Decompress(str))
 	
 	if writeReceiveData[mod] then
 		writeReceiveData[mod](arr)
@@ -929,13 +932,15 @@ local function getSynchRequest(requestMSG, sender, allowed)
 	
 	local SendSynchStr = ''
 	if requestType=='blacklist' then
-		for k,v in pairs(DB.realm.blackList) do
+		--[[for k,v in pairs(DB.realm.blackList) do
 			SendSynchStr = string.format("%s%s,%s;", SendSynchStr, k, tostring(v):gsub(',','~'))
-		end
+		end]]
+		SendSynchStr = libc:Compress(AceSerializer:Serialize(DB.realm.blackList))
 	elseif requestType=='invitations' then
-		for k,v in pairs(DB.realm.alreadySended) do
+		--[[for k,v in pairs(DB.realm.alreadySended) do
 			SendSynchStr = string.format("%s%s,%s;", SendSynchStr, k, tostring(v))
-		end
+		end]]
+		SendSynchStr = libc:Compress(AceSerializer:Serialize(DB.realm.alreadySended))
 	end
 	if SendSynchStr=='' then return end
 	fn.SendSynchArray(SendSynchStr, requestType, sender)
@@ -995,7 +1000,9 @@ synchFrame:SetScript("OnEvent", function(self, event, ...)
 		end
 	end
 end)
-
+print(AceSerializer:Serialize(DB.realm.alreadySended):len())
+	print(libc:Compress(AceSerializer:Serialize(DB.realm.alreadySended)):len())
+	print(libc:Decompress(libc:Compress(AceSerializer:Serialize(DB.realm.alreadySended))):len())
 
 function fn.SendSynchArray(str, mod, playerName)
 	local arr = {}
@@ -1008,11 +1015,9 @@ function fn.SendSynchArray(str, mod, playerName)
 	
 	local max = #arr
 	C_Timer.NewTicker(0.05, function()
-	-- for i=1, #arr do
 		if not arr[1] then return end
 		C_ChatInfo.SendAddonMessage(FGISYNCH_PREFIX, string.format(arr[1],max), "WHISPER", playerName)
 		table.remove(arr,1)
-	-- end
 	end, max)
 
 	return arr
