@@ -41,12 +41,12 @@ mainFrame.title:SetScript('OnMouseUp', function(mover)
 	status.left = frame:GetLeft()
 	
 	local point, relativeTo,relativePoint, xOfs, yOfs = mainFrame.frame:GetPoint(1)
-	DB.mainFrame = {}
-	DB.mainFrame.point=point
-	DB.mainFrame.relativeTo=relativeTo
-	DB.mainFrame.relativePoint=relativePoint
-	DB.mainFrame.xOfs=xOfs
-	DB.mainFrame.yOfs=yOfs
+	DB.global.mainFrame = {}
+	DB.global.mainFrame.point=point
+	DB.global.mainFrame.relativeTo=relativeTo
+	DB.global.mainFrame.relativePoint=relativePoint
+	DB.global.mainFrame.xOfs=xOfs
+	DB.global.mainFrame.yOfs=yOfs
 end)
 
 mainFrame.closeButton = GUI:Create('Button')
@@ -277,9 +277,9 @@ local frame = CreateFrame('Frame')
 frame:RegisterEvent('PLAYER_LOGIN')
 frame:SetScript('OnEvent', function()
 	DB = addon.DB
-	if DB.mainFrame then
+	if DB.global.mainFrame then
 		interface.mainFrame:ClearAllPoints()
-		interface.mainFrame:SetPoint(DB.mainFrame.point, UIParent, DB.mainFrame.relativePoint, DB.mainFrame.xOfs, DB.mainFrame.yOfs)
+		interface.mainFrame:SetPoint(DB.global.mainFrame.point, UIParent, DB.global.mainFrame.relativePoint, DB.global.mainFrame.xOfs, DB.global.mainFrame.yOfs)
 	else
 		interface.mainFrame:SetPoint("CENTER", UIParent)
 	end

@@ -80,12 +80,12 @@ scanFrame.title:SetScript('OnMouseUp', function(mover)
 	status.left = frame:GetLeft()
 	
 	local point, relativeTo,relativePoint, xOfs, yOfs = scanFrame.frame:GetPoint(1)
-	DB.scanFrame = {}
-	DB.scanFrame.point=point
-	DB.scanFrame.relativeTo=relativeTo
-	DB.scanFrame.relativePoint=relativePoint
-	DB.scanFrame.xOfs=xOfs
-	DB.scanFrame.yOfs=yOfs
+	DB.global.scanFrame = {}
+	DB.global.scanFrame.point=point
+	DB.global.scanFrame.relativeTo=relativeTo
+	DB.global.scanFrame.relativePoint=relativePoint
+	DB.global.scanFrame.xOfs=xOfs
+	DB.global.scanFrame.yOfs=yOfs
 end)
 
 scanFrame.closeButton = GUI:Create('Button')
@@ -245,9 +245,9 @@ local frame = CreateFrame('Frame')
 frame:RegisterEvent('PLAYER_LOGIN')
 frame:SetScript('OnEvent', function()
 	DB = addon.DB
-	if DB.scanFrame then
+	if DB.global.scanFrame then
 		interface.scanFrame:ClearAllPoints()
-		interface.scanFrame:SetPoint(DB.scanFrame.point, UIParent, DB.scanFrame.relativePoint, DB.scanFrame.xOfs, DB.scanFrame.yOfs)
+		interface.scanFrame:SetPoint(DB.global.scanFrame.point, UIParent, DB.global.scanFrame.relativePoint, DB.global.scanFrame.xOfs, DB.global.scanFrame.yOfs)
 	else
 		interface.scanFrame:SetPoint("CENTER", UIParent)
 	end

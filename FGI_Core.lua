@@ -314,7 +314,7 @@ function FastGuildInvite:OnInitialize()
 	end
 
 	
-	icon:Register("FGI", addon.dataBroker, DB.minimap)
+	icon:Register("FGI", addon.dataBroker, DB.global.minimap)
 	fn:initDB()
 end
 
@@ -409,28 +409,28 @@ function Console:FGIInput(str)
 		interface.blackList:SetPoint("CENTER", UIParent)
 		
 		local point, relativeTo,relativePoint, xOfs, yOfs = interface.mainFrame.frame:GetPoint(1)
-		DB.mainFrame = {point=point, relativeTo=relativeTo, relativePoint=relativePoint, xOfs=xOfs, yOfs=yOfs,}
+		DB.global.mainFrame = {point=point, relativeTo=relativeTo, relativePoint=relativePoint, xOfs=xOfs, yOfs=yOfs,}
 		
 		point, relativeTo,relativePoint, xOfs, yOfs = interface.scanFrame.frame:GetPoint(1)
-		DB.scanFrame = {point=point, relativeTo=relativeTo, relativePoint=relativePoint, xOfs=xOfs, yOfs=yOfs,}
+		DB.global.scanFrame = {point=point, relativeTo=relativeTo, relativePoint=relativePoint, xOfs=xOfs, yOfs=yOfs,}
 		
 		point, relativeTo,relativePoint, xOfs, yOfs = interface.settingsFrame.frame:GetPoint(1)
-		DB.settingsFrame = {point=point, relativeTo=relativeTo, relativePoint=relativePoint, xOfs=xOfs, yOfs=yOfs,}
+		DB.global.settingsFrame = {point=point, relativeTo=relativeTo, relativePoint=relativePoint, xOfs=xOfs, yOfs=yOfs,}
 		
 		point, relativeTo,relativePoint, xOfs, yOfs = interface.filtersFrame.frame:GetPoint(1)
-		DB.filtersFrame = {point=point, relativeTo=relativeTo, relativePoint=relativePoint, xOfs=xOfs, yOfs=yOfs,}
+		DB.global.filtersFrame = {point=point, relativeTo=relativeTo, relativePoint=relativePoint, xOfs=xOfs, yOfs=yOfs,}
 		
 		point, relativeTo,relativePoint, xOfs, yOfs = interface.addfilterFrame.frame:GetPoint(1)
-		DB.addfilterFrame = {point=point, relativeTo=relativeTo, relativePoint=relativePoint, xOfs=xOfs, yOfs=yOfs,}
+		DB.global.addfilterFrame = {point=point, relativeTo=relativeTo, relativePoint=relativePoint, xOfs=xOfs, yOfs=yOfs,}
 		
 		point, relativeTo,relativePoint, xOfs, yOfs = interface.messageFrame.frame:GetPoint(1)
-		DB.messageFrame = {point=point, relativeTo=relativeTo, relativePoint=relativePoint, xOfs=xOfs, yOfs=yOfs,}
+		DB.global.messageFrame = {point=point, relativeTo=relativeTo, relativePoint=relativePoint, xOfs=xOfs, yOfs=yOfs,}
 		
 		point, relativeTo,relativePoint, xOfs, yOfs = interface.chooseInvites.frame:GetPoint(1)
-		DB.chooseInvites = {point=point, relativeTo=relativeTo, relativePoint=relativePoint, xOfs=xOfs, yOfs=yOfs,}
+		DB.global.chooseInvites = {point=point, relativeTo=relativeTo, relativePoint=relativePoint, xOfs=xOfs, yOfs=yOfs,}
 		
 		point, relativeTo,relativePoint, xOfs, yOfs = interface.blackList.frame:GetPoint(1)
-		DB.blackListPos = {point=point, relativeTo=relativeTo, relativePoint=relativePoint, xOfs=xOfs, yOfs=yOfs,}
+		DB.global.blackListPos = {point=point, relativeTo=relativeTo, relativePoint=relativePoint, xOfs=xOfs, yOfs=yOfs,}
 		
 		C_UI.Reload()
 	elseif str == "factorySettings" then
