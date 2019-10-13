@@ -5,8 +5,9 @@ local CLASS = L.class
 local interface = addon.interface
 local settings = L.settings
 local GUI = LibStub("AceGUI-3.0")
-local AceSerializer = LibStub("AceSerializer-3.0")
-local libc = LibStub:GetLibrary("LibCompress")
+local libS = LibStub:GetLibrary("AceSerializer-3.0")
+local libC = LibStub:GetLibrary("LibCompress")
+local libCE = libC:GetAddonEncodeTable()
 local color = addon.color
 local FastGuildInvite = addon.lib
 addon.search = {progress=1, inviteList={}, timeShift=0, tempSendedInvites={}, whoQueryList = {}, oldCount = 0,}
@@ -892,16 +893,26 @@ local writeReceiveData = {
 }
 
 local function readSynchStr(sender, mod)
---print(str)
-	local str = ReceiveSynchStr[sender][mod]
-	local arr = {}
-	--[[for S in str:gmatch("(.-);") do
-		local n, r = S:match("([^,]+),(.+)")
-		r = r:gsub("~", ',')
-		table.insert(arr, {n,r})
-	end]]
-	arr = AceSerializer:Deserialize(libc:Decompress(str))
+	local str = table.concat(ReceiveSynchStr[sender][mod], '')
 	
+	-- Decode the compressed data
+	local one = libCE:Decode(str)
+	
+	--Decompress the decoded data
+	local two, message = libC:Decompress(one)
+	if(not two) then
+		print("FGI: error decompressing: " .. message)
+		return
+	end
+	
+	-- Deserialize the decompressed data
+	local success, final = libS:Deserialize(two)
+	if (not success) then
+		print("FGI: error deserializing " .. final)
+		return
+	end
+	
+	local arr = final
 	if writeReceiveData[mod] then
 		writeReceiveData[mod](arr)
 	else
@@ -931,26 +942,25 @@ local function getSynchRequest(requestMSG, sender, allowed)
 	C_ChatInfo.SendAddonMessage(FGISYNCH_PREFIX, 'SUCCESS|'..L["Начало синхронизации"], "WHISPER", sender)
 	
 	local SendSynchStr = ''
+	local data
 	if requestType=='blacklist' then
-		--[[for k,v in pairs(DB.realm.blackList) do
-			SendSynchStr = string.format("%s%s,%s;", SendSynchStr, k, tostring(v):gsub(',','~'))
-		end]]
-		SendSynchStr = libc:Compress(AceSerializer:Serialize(DB.realm.blackList))
+		data = DB.realm.blackList
 	elseif requestType=='invitations' then
-		--[[for k,v in pairs(DB.realm.alreadySended) do
-			SendSynchStr = string.format("%s%s,%s;", SendSynchStr, k, tostring(v))
-		end]]
-		SendSynchStr = libc:Compress(AceSerializer:Serialize(DB.realm.alreadySended))
+		data = DB.realm.alreadySended
 	end
-	if SendSynchStr=='' then return end
-	fn.SendSynchArray(SendSynchStr, requestType, sender)
+		
+	if not data then return end
+	
+	local one = libS:Serialize(data)
+	local two = libC:Compress(one)
+	local encodedMsg = libCE:Encode(two)
+	fn.SendSynchArray(encodedMsg, requestType, sender)
 	return
 end
 
 local synchFrame = CreateFrame("Frame")
 synchFrame:RegisterEvent("CHAT_MSG_ADDON")
-synchFrame:SetScript("OnEvent", function(self, event, ...)
-	local prefix, msg, channel, sender = ...
+synchFrame:SetScript("OnEvent", function(self, event, prefix, msg, channel, sender, ...)
 	msg = tostring(msg)
 	if prefix ~= FGISYNCH_PREFIX then return end
 	-- print(prefix, msg, channel, sender)
@@ -972,53 +982,59 @@ synchFrame:SetScript("OnEvent", function(self, event, ...)
 		elseif requestType == "LOGIN" and requestMSG == "GET_FGI_USERS" then
 			return synch.rightColumn.synchPlayerReadyDrop:AddItem(sender, sender)
 		end
+		
 		if synch.timer then synch.timer:Cancel() end
 		
-		local Start, End = msg:find("%(.+%)")
+		local Start, End = msg:find("^%(.-%)")
 		End = End or 0
 		local s,e,mod = msg:sub(Start, End):match("(%d+)[^%d](%d+);(%w+)")
 		if not mod then return end
 		s, e = tonumber(s), tonumber(e)
 		synch.infoLabel:Success(format(L[ [=[Синхронизация с %s.
 %d/%d]=] ], sender,s,e))
-		if s == 1 then ReceiveSynchStr[sender] = { [mod] = ''} end
-			msg = msg:sub(End+1, -1)
-			ReceiveSynchStr[sender][mod] = ReceiveSynchStr[sender][mod]..msg
+		if s == 1 then ReceiveSynchStr[sender] = { [mod] = {}} end
+		msg = msg:sub(End+1, -1)
+		ReceiveSynchStr[sender][mod][s] = msg
 		if s == e then
 			readSynchStr(sender, mod)
 			synch.infoLabel:Success(format(L["Данные синхронизированы с игроком %s."], sender))
 		end
-		
 	elseif channel == "GUILD" then
 		if requestType == "GET" then
 			getSynchRequest(requestMSG, sender)
 		elseif requestType == "LOGIN" and requestMSG == "GET_FGI_USERS" then
 			synch.rightColumn.synchPlayerReadyDrop:AddItem(sender, sender)
 			C_ChatInfo.SendAddonMessage(FGISYNCH_PREFIX, "LOGIN|GET_FGI_USERS", "WHISPER", sender)
-		elseif requestType == "REMEMBER"then
+		elseif requestType == "REMEMBER" then
 			fn:rememberPlayer(requestMSG)
 		end
 	end
 end)
-print(AceSerializer:Serialize(DB.realm.alreadySended):len())
-	print(libc:Compress(AceSerializer:Serialize(DB.realm.alreadySended)):len())
-	print(libc:Decompress(libc:Compress(AceSerializer:Serialize(DB.realm.alreadySended))):len())
 
 function fn.SendSynchArray(str, mod, playerName)
 	local arr = {}
 	local i = 0
-	local step = 250-15-mod:len()-1
-	repeat 
-		table.insert(arr, string.format("(%d/%%d;%s)%s", #arr+1, mod or '', str:sub(i+1,i+step)))
-		i=i+step
-	until i>=str:len()
+	local reservedLen = 15+mod:len()+1
+	local step = 250-reservedLen-1
+	local max = (math.ceil(str:len()/step))
 	
-	local max = #arr
+	local pos = 1
+	local textlen = str:len()
+	
+	
+	while pos <= textlen do
+		chunk = string.sub(str, pos, pos+step-1)
+		table.insert(arr, string.format("(%d/%d;%s)%s", #arr+1, max, mod or '', chunk))
+		pos = pos + step
+	end
+	
+
+	
+	local i = 1
 	C_Timer.NewTicker(0.05, function()
-		if not arr[1] then return end
-		C_ChatInfo.SendAddonMessage(FGISYNCH_PREFIX, string.format(arr[1],max), "WHISPER", playerName)
-		table.remove(arr,1)
-	end, max)
+		C_ChatInfo.SendAddonMessage(FGISYNCH_PREFIX, arr[i], "WHISPER", playerName)
+		i = i + 1
+	end, #arr)
 
 	return arr
 end
