@@ -701,12 +701,22 @@ local function addNewPlayer(t, p)
 	interface.chooseInvites.player:SetText(#list > 0 and format("%s%s %d %s %s|r", color[list[1].NoLocaleClass:upper()], list[1].name, list[1].lvl, list[1].class, list[1].race) or "")
 end
 
-local libWho = {whoQuery='', doHide=false, isFGI=false}
+local libWho = {whoQuery='', saveShown=false, isFGI=false}
 local function GetWho(query)
 	libWho.isFGI = true
 	libWho.whoQuery = query
-	-- FriendsTabHeader	GuildFrame	RaidFrame
-	libWho.doHide = (not WhoFrame:IsShown()) and (not FriendsFrame:IsShown())
+	libWho.saveShown = false
+	local i=1
+	
+	if FriendsFrame:IsShown() then
+		while(_G["FriendsFrameTab"..i]) do
+			if not _G["FriendsFrameTab"..i]:IsEnabled() then
+				libWho.saveShown = _G["FriendsFrameTab"..i]
+				break
+			end
+			i = i+1
+		end
+	end
 	C_FriendList.SetWhoToUi(true)
 	C_FriendList.SendWho(query)
 	WhoFrameEditBox:SetText(query)
@@ -773,10 +783,6 @@ local whoFrame = CreateFrame('Frame')
 whoFrame:RegisterEvent("WHO_LIST_UPDATE")
 whoFrame:SetScript("OnEvent", function()
 	if not libWho.isFGI then return end
-	if libWho.doHide then
-		-- FriendsFrame:Hide()
-		FriendsFrameCloseButton:Click()
-	end
 	libWho.isFGI = false
 	local result = {}
 
@@ -799,6 +805,11 @@ whoFrame:SetScript("OnEvent", function()
 	
 	C_FriendList.SetWhoToUi(false)
 	returnWho(result)
+	if libWho.saveShown then
+		libWho.saveShown:Click()
+	else
+		FriendsFrame:Hide()
+	end
 end)
 
 function dump(t,l)
