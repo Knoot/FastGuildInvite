@@ -886,8 +886,7 @@ ReceiveSynchStr = FGI.ReceiveSynchStr
 local writeReceiveData = {
 	blacklist = function(arr)
 		local blackList = interface.settings.Blacklist.content
-		for i=1, #arr do
-			local name, reason = arr[i][1], arr[i][2]
+		for name, reason in pairs(arr) do
 			if not DB.realm.blackList[name] then
 				blackList:add({name=name, reason=reason})
 			end
@@ -896,8 +895,7 @@ local writeReceiveData = {
 		blackList:update()
 	end,
 	invitations = function(arr)
-		for i=1, #arr do
-			local name, time = arr[i][1], tonumber(arr[i][2])
+		for name,time in pairs(arr) do
 			DB.realm.alreadySended[name] = math.max(time, DB.realm.alreadySended[name] or 0)
 		end
 	end,
@@ -923,9 +921,8 @@ local function readSynchStr(sender, mod)
 		return
 	end
 	
-	local arr = final
 	if writeReceiveData[mod] then
-		writeReceiveData[mod](arr)
+		writeReceiveData[mod](final)
 	else
 		print(color.red.."writeReceiveData WRONG MOD|r")
 	end
