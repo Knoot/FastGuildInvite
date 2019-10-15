@@ -701,7 +701,7 @@ local function addNewPlayer(t, p)
 	interface.chooseInvites.player:SetText(#list > 0 and format("%s%s %d %s %s|r", color[list[1].NoLocaleClass:upper()], list[1].name, list[1].lvl, list[1].class, list[1].race) or "")
 end
 
-local libWho = {whoQuery='', saveShown=false, isFGI=false}
+local libWho = {whoQuery='', saveShown=false, isFGI=false, frameAlpha = 1}
 local function GetWho(query)
 	libWho.isFGI = true
 	libWho.whoQuery = query
@@ -716,7 +716,12 @@ local function GetWho(query)
 			end
 			i = i+1
 		end
+	else
+		libWho.frameAlpha = FriendsFrame:GetAlpha()
+		FriendsFrame:SetAlpha(0)
+		FriendsFrame:Show()
 	end
+	
 	C_FriendList.SetWhoToUi(true)
 	C_FriendList.SendWho(query)
 	WhoFrameEditBox:SetText(query)
@@ -809,6 +814,7 @@ whoFrame:SetScript("OnEvent", function()
 		libWho.saveShown:Click()
 	else
 		FriendsFrame:Hide()
+		FriendsFrame:SetAlpha(libWho.frameAlpha)
 	end
 end)
 
