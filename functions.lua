@@ -7,12 +7,12 @@ local settings = L.settings
 local GUI = LibStub("AceGUI-3.0")
 local libS = LibStub:GetLibrary("AceSerializer-3.0")
 local libC = LibStub:GetLibrary("LibCompress")
+local libWho = LibStub("FGI-WhoLib")
 local libCE = libC:GetAddonEncodeTable()
 local color = addon.color
 local FastGuildInvite = addon.lib
 addon.search = {progress=1, inviteList={}, timeShift=0, tempSendedInvites={}, whoQueryList = {}, oldCount = 0,}
 addon.removeMsgList = {}
-addon.libWho = {}
 local DB
 local debugDB
 local nextSearch
@@ -701,32 +701,6 @@ local function addNewPlayer(t, p)
 	interface.chooseInvites.player:SetText(#list > 0 and format("%s%s %d %s %s|r", color[list[1].NoLocaleClass:upper()], list[1].name, list[1].lvl, list[1].class, list[1].race) or "")
 end
 
-local libWho = {whoQuery='', saveShown=false, isFGI=false, frameAlpha = 1}
-local function GetWho(query)
-	libWho.isFGI = true
-	libWho.whoQuery = query
-	libWho.saveShown = false
-	local i=1
-	
-	if FriendsFrame:IsShown() then
-		while(_G["FriendsFrameTab"..i]) do
-			if not _G["FriendsFrameTab"..i]:IsEnabled() then
-				libWho.saveShown = _G["FriendsFrameTab"..i]
-				break
-			end
-			i = i+1
-		end
-	else
-		libWho.frameAlpha = FriendsFrame:GetAlpha()
-		FriendsFrame:SetAlpha(0)
-		FriendsFrame:Show()
-	end
-	
-	C_FriendList.SetWhoToUi(true)
-	C_FriendList.SendWho(query)
-	WhoFrameEditBox:SetText(query)
-end
-
 local function searchWhoResultCallback(query, results)
 	local searchLvl = getSearchDeepLvl(query)
 	if #results >= FGI_MAXWHORETURN and DB.realm.customWho then
@@ -758,6 +732,7 @@ local function searchWhoResultCallback(query, results)
 end
 
 function fn:nextSearch()
+	libWho:SetCallback(searchWhoResultCallback)
 	C_Timer.After(FGI_SCANINTERVALTIME, function()
 		interface.scanFrame.pausePlay:SetDisabled(false)
 		if DB.global.searchAlertNotify then
@@ -777,46 +752,8 @@ function fn:nextSearch()
 	
 	addon.search.progress = (addon.search.progress <= (#addon.search.whoQueryList or 1)) and addon.search.progress or 1
 	local curQuery = addon.search.whoQueryList[addon.search.progress]
-	GetWho(curQuery)
+	libWho:GetWho(curQuery)
 end
-
-local function returnWho(result)
-	searchWhoResultCallback(libWho.whoQuery, result)
-end
-
-local whoFrame = CreateFrame('Frame')
-whoFrame:RegisterEvent("WHO_LIST_UPDATE")
-whoFrame:SetScript("OnEvent", function()
-	if not libWho.isFGI then return end
-	libWho.isFGI = false
-	local result = {}
-
-	local total, num = C_FriendList.GetNumWhoResults()
-	for i=1, num do
-	--	self.Result[i] = C_FriendList.GetWhoInfo(i)
-		local info = C_FriendList.GetWhoInfo(i)
-		--backwards compatibility START
-		info.Name=info.fullName
-		info.Guild=info.fullGuildName
-		info.Level=info.level
-		info.Race=info.raceStr
-		info.Class=info.classStr
-		info.Zone=info.area
-		info.NoLocaleClass=info.filename
-		info.Sex=info.gender
-		--backwards compatibility END
-		result[i] = info
-	end
-	
-	C_FriendList.SetWhoToUi(false)
-	returnWho(result)
-	if libWho.saveShown then
-		libWho.saveShown:Click()
-	else
-		FriendsFrame:Hide()
-		FriendsFrame:SetAlpha(libWho.frameAlpha)
-	end
-end)
 
 function dump(t,l)
   local str = '{'

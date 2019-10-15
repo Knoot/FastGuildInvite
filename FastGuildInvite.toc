@@ -22,6 +22,7 @@ Libs\AceEvent-3.0\AceEvent-3.0.xml
 Libs\AceGUI-3.0\AceGUI-3.0.xml
 Libs\AceSerializer-3.0\AceSerializer-3.0.xml
 Libs\LibCompress\lib.xml
+Libs\LibWho\LibWho.lua
 
 
 Locale\Locale.xml
