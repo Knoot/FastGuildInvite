@@ -71,14 +71,16 @@ local PopupUnits = {}
 UnitPopupButtons["BLACKLIST"] = { text = "FGI - Black List"}
 UnitPopupButtons["GUILD_INVITE"] = { text = "FGI - Guild Invite"}
 
-for i,UPMenus in pairs(UnitPopupMenus) do
-	for j=1, #UPMenus do
-		if UPMenus[j] == "WHISPER" then
-		  PopupUnits[#PopupUnits + 1] = i
-		  pos = j + 1
-		  table.insert( UnitPopupMenus[i] ,pos , "BLACKLIST" )
-		  table.insert( UnitPopupMenus[i] ,j , "GUILD_INVITE" )
-		  break
+local function addMenuButtons()
+	for i,UPMenus in pairs(UnitPopupMenus) do
+		for j=1, #UPMenus do
+			if UPMenus[j] == "WHISPER" then
+				PopupUnits[#PopupUnits + 1] = i
+				pos = j + 1
+				table.insert( UnitPopupMenus[i] ,pos , "BLACKLIST" )
+				table.insert( UnitPopupMenus[i] ,j , "GUILD_INVITE" )
+				break
+			end
 		end
 	end
 end
@@ -142,6 +144,7 @@ end
 
 
 function FastGuildInvite:OnEnable()
+	if DB.global.createMenuButtons then addMenuButtons() end
 	addon.debug = DB.global.debug
 	fn:blackListAutoKick()
 	local parent = interface.settings.filters.content.filtersFrame
@@ -258,6 +261,7 @@ local defaultSettings =  {
 		rememberAll = false,
 		queueNotify = true,
 		searchAlertNotify = true,
+		createMenuButtons = true,
 	},
 } 
 

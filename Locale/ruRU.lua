@@ -31,6 +31,7 @@ L.settings = {
 		systemMSG = 245,
 		sendMSG = 270,
 		minimapButton = 260,
+		createMenuButtons = 340,
 		queueNotify = 260,
 		searchAlertNotify = 300,
 		rememberAll = 260,
