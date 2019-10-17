@@ -88,18 +88,18 @@ end
 
 local function getClassFilter()
 	arr = {
-		[L.DeathKnight] = addfilterFrame.classesCheckBoxDeathKnight:GetValue() or nil,
-		[L.DemonHunter] = addfilterFrame.classesCheckBoxDemonHunter:GetValue() or nil,
-		[L.Monk] = addfilterFrame.classesCheckBoxMonk:GetValue() or nil,
-		[L.ruid] = addfilterFrame.classesCheckBoxDruid:GetValue() or nil,
-		[L.Hunter] = addfilterFrame.classesCheckBoxHunter:GetValue() or nil,
-		[L.Mage] = addfilterFrame.classesCheckBoxMage:GetValue() or nil,
-		[L.Paladin] = addfilterFrame.classesCheckBoxPaladin:GetValue() or nil,
-		[L.Priest] = addfilterFrame.classesCheckBoxPriest:GetValue() or nil,
-		[L.Rogue] = addfilterFrame.classesCheckBoxRogue:GetValue() or nil,
-		[L.Shaman] = addfilterFrame.classesCheckBoxShaman:GetValue() or nil,
-		[L.Warlock] = addfilterFrame.classesCheckBoxWarlock:GetValue() or nil,
-		[L.Warrior] = addfilterFrame.classesCheckBoxWarrior:GetValue() or nil
+		[L.class.DeathKnight] = addfilterFrame.classesCheckBoxDeathKnight:GetValue() or nil,
+		[L.class.DemonHunter] = addfilterFrame.classesCheckBoxDemonHunter:GetValue() or nil,
+		[L.class.Monk] = addfilterFrame.classesCheckBoxMonk:GetValue() or nil,
+		[L.class.Druid] = addfilterFrame.classesCheckBoxDruid:GetValue() or nil,
+		[L.class.Hunter] = addfilterFrame.classesCheckBoxHunter:GetValue() or nil,
+		[L.class.Mage] = addfilterFrame.classesCheckBoxMage:GetValue() or nil,
+		[L.class.Paladin] = addfilterFrame.classesCheckBoxPaladin:GetValue() or nil,
+		[L.class.Priest] = addfilterFrame.classesCheckBoxPriest:GetValue() or nil,
+		[L.class.Rogue] = addfilterFrame.classesCheckBoxRogue:GetValue() or nil,
+		[L.class.Shaman] = addfilterFrame.classesCheckBoxShaman:GetValue() or nil,
+		[L.class.Warlock] = addfilterFrame.classesCheckBoxWarlock:GetValue() or nil,
+		[L.class.Warrior] = addfilterFrame.classesCheckBoxWarrior:GetValue() or nil
 	}
 	return arr
 end
@@ -108,7 +108,7 @@ local function createClassBoxes()
 addfilterFrame.classesCheckBoxDeathKnight = GUI:Create("TCheckBox")
 local frame = addfilterFrame.classesCheckBoxDeathKnight
 frame:SetWidth(size.DeathKnight)
-frame:SetLabel(L.DeathKnight)
+frame:SetLabel(L.class.DeathKnight)
 fontSize(frame.text)
 frame:SetPoint("TOPLEFT", addfilterFrame.classesCheckBoxIgnore.frame, "BOTTOMLEFT", 0, -2)
 addfilterFrame:AddChild(frame)
@@ -116,7 +116,7 @@ addfilterFrame:AddChild(frame)
 addfilterFrame.classesCheckBoxDemonHunter = GUI:Create("TCheckBox")
 local frame = addfilterFrame.classesCheckBoxDemonHunter
 frame:SetWidth(size.DemonHunter)
-frame:SetLabel(L.DemonHunter)
+frame:SetLabel(L.class.DemonHunter)
 fontSize(frame.text)
 frame:SetPoint("TOPLEFT", addfilterFrame.classesCheckBoxDeathKnight.frame, "BOTTOMLEFT", 0, 0)
 addfilterFrame:AddChild(frame)
@@ -124,7 +124,7 @@ addfilterFrame:AddChild(frame)
 addfilterFrame.classesCheckBoxMonk = GUI:Create("TCheckBox")
 local frame = addfilterFrame.classesCheckBoxMonk
 frame:SetWidth(size.Monk)
-frame:SetLabel(L.Monk)
+frame:SetLabel(L.class.Monk)
 fontSize(frame.text)
 frame:SetPoint("TOPLEFT", addfilterFrame.classesCheckBoxDemonHunter.frame, "BOTTOMLEFT", 0, 0)
 addfilterFrame:AddChild(frame)
