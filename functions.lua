@@ -174,6 +174,38 @@ function anim.Start(self, text, font, size)
 end
 
 
+local function inviteBtnText(text)
+	interface.scanFrame.invite:SetText(text)
+end
+
+local function IsInBlackList(name)
+	return DB.realm.blackList[name] and true or false
+end
+
+local function IsInLeaveList(name)
+	return DB.realm.leave[name] and true or false
+end
+
+local function IsInTempList(arr, name)
+	return arr.tempSendedInvites[name] and true or false
+end
+
+local function IsInAlreadySendedList(name)
+	return DB.realm.alreadySended[name] and true or false
+end
+
+local function IsCustomFiltered(player)
+	return (DB.realm.enableFilters and filtered(player)) and true or false
+end
+
+local function onListUpdate()
+	local list = addon.search.inviteList
+	
+	interface.chooseInvites.player:SetText(#list > 0 and format("%s%s %d %s %s|r", color[list[1].NoLocaleClass:upper()], list[1].name, list[1].lvl, list[1].class, list[1].race) or "")
+	inviteBtnText(format(L["Пригласить: %d"], #list))
+end
+
+
 function fn:parseBL(str)
 	local name, reason
 	str = str:gsub("blacklist", '')
@@ -396,10 +428,6 @@ function fn:sendWhisper(msg, name)
 	end
 end
 
-local function inviteBtnText(text)
-	interface.scanFrame.invite:SetText(text)
-end
-
 function fn:rememberPlayer(name)
 	DB.realm.alreadySended[name] = time({year = date("%Y"), month = date("%m"), day = date("%d")})
 	addon.search.tempSendedInvites[name] = nil
@@ -409,6 +437,7 @@ end
 function fn:invitePlayer(noInv)
 	local list = addon.search.inviteList
 	if #list==0 then return end
+	-- if IsInAlreadySendedList(list[1].name) then return table.remove(list, 1) end
 	if DB.global.inviteType == 2 and not noInv then
 		addon.msgQueue[list[1].name] = true
 	elseif DB.global.inviteType == 3 and not noInv then
@@ -422,15 +451,13 @@ function fn:invitePlayer(noInv)
 	end
 	if not noInv or DB.global.rememberAll then
 		fn:rememberPlayer(list[1].name)
+		C_ChatInfo.SendAddonMessage(FGISYNCH_PREFIX, "REMEMBER|"..list[1].name, "GUILD")
 	end
-	C_ChatInfo.SendAddonMessage(FGISYNCH_PREFIX, "REMEMBER|"..list[1].name, "GUILD")
 	if not noInv then
 		addon.searchInfo.sended()
 	end
 	table.remove(list, 1)
-	inviteBtnText(format(L["Пригласить: %d"], #list))
-	
-	interface.chooseInvites.player:SetText(#list > 0 and format("%s%s %d %s %s|r", color[list[1].NoLocaleClass:upper()], list[1].name, list[1].lvl, list[1].class, list[1].race) or "")
+	onListUpdate()
 end
 
 local function SearchOnUpdate()
@@ -665,17 +692,17 @@ local function filtered(player)
 	return false
 end
 
-local function addNewPlayer(t, p)
-	local blackList = DB.realm.blackList[p.Name] and true or false
+local function addNewPlayer(p)
+	local list = addon.search.inviteList
 	local playerInfoStr = format("%s - lvl:%d; race:%s; class:%s; Guild: \"%s\"", p.Name, p.Level, p.Race, p.Class, p.Guild)
 	if p.Guild == "" then
-		if not blackList then
-			if not DB.realm.leave[p.Name] then
-				if not t.tempSendedInvites[p.Name] then
-					if not DB.realm.alreadySended[p.Name] then
-						if ((DB.realm.enableFilters and not filtered(p)) or not DB.realm.enableFilters) then
-							table.insert(t.inviteList, {name = p.Name, lvl = p.Level, race = p.Race, class = p.Class,  NoLocaleClass = p.NoLocaleClass})
-							t.tempSendedInvites[p.Name] = true
+		if not IsInBlackList(p.Name) then
+			if not IsInLeaveList(p.Name) then
+				if not IsInTempList(addon.search, p.Name) then
+					if not IsInAlreadySendedList(p.Name) then
+						if not IsCustomFiltered(p) then
+							table.insert(list, {name = p.Name, lvl = p.Level, race = p.Race, class = p.Class,  NoLocaleClass = p.NoLocaleClass})
+							addon.search.tempSendedInvites[p.Name] = true
 							debug(format("Add player %s", playerInfoStr), color.green)
 						else
 							addon.searchInfo.filtered()
@@ -697,8 +724,6 @@ local function addNewPlayer(t, p)
 	else
 		debug(format("Player (%s) already have guild.", playerInfoStr), color.yellow)
 	end
-	local list = t.inviteList
-	interface.chooseInvites.player:SetText(#list > 0 and format("%s%s %d %s %s|r", color[list[1].NoLocaleClass:upper()], list[1].name, list[1].lvl, list[1].class, list[1].race) or "")
 end
 
 local function searchWhoResultCallback(query, results)
@@ -721,14 +746,16 @@ local function searchWhoResultCallback(query, results)
 	addon.search.oldCount = #addon.search.inviteList
 	for i=1,#results do
 		local player = results[i]
-		addNewPlayer(addon.search, player)
+		addNewPlayer(player)
 	end
 	if DB.global.queueNotify and #addon.search.inviteList > addon.search.oldCount then
 		FGI.animations.notification:Start(format(L["Игроков найдено: %d"], #addon.search.inviteList - addon.search.oldCount))
 	end
+	local list = addon.search.inviteList
 	interface.scanFrame.progressBar:SetMinMax(0, #addon.search.whoQueryList)
 	interface.scanFrame.progressBar:SetProgress(addon.search.progress-1)
-	inviteBtnText(format(L["Пригласить: %d"], #addon.search.inviteList))
+	
+	onListUpdate()
 end
 
 function fn:nextSearch()
@@ -958,6 +985,14 @@ synchFrame:SetScript("OnEvent", function(self, event, prefix, msg, channel, send
 			C_ChatInfo.SendAddonMessage(FGISYNCH_PREFIX, "LOGIN|GET_FGI_USERS", "WHISPER", sender)
 		elseif requestType == "REMEMBER" then
 			fn:rememberPlayer(requestMSG)
+			local list = addon.search.inviteList
+			for i=1,#list do
+				if list[i].name == requestMSG then
+					table.remove(list, i)
+					onListUpdate()
+					break
+				end
+			end
 		end
 	end
 end)
