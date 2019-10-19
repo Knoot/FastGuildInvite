@@ -195,7 +195,7 @@ local function IsInAlreadySendedList(name)
 end
 
 local function IsCustomFiltered(player)
-	return (DB.realm.enableFilters and filtered(player)) and true or false
+	return (DB.realm.enableFilters and fn:filtered(player)) and true or false
 end
 
 local function onListUpdate()
@@ -649,7 +649,7 @@ local function findRace(raceName)
 	return false
 end
 
-local function filtered(player)
+function fn:filtered(player)
 	for k,v in pairs(DB.realm.filtersList) do
 		if v.filterOn then
 			if v.lvlRange then
