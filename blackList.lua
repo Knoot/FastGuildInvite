@@ -10,6 +10,13 @@ local FastGuildInvite = addon.lib
 local DB
 local fontSize = fn.fontSize
 
+local function btnText(frame)
+	local text = frame.text
+	text:ClearAllPoints()
+	text:SetPoint("TOPLEFT", 5, -1)
+	text:SetPoint("BOTTOMRIGHT", -5, 1)
+end
+
 local blackList, scrollBar
 local w,h = 623, 568
 
@@ -29,7 +36,65 @@ scrollBar:SetPoint("TOPLEFT", blackList.frame, "TOPLEFT", 0, 0)
 blackList:AddChild(scrollBar)
 scrollBar:SetLayout("Flow")
 
-scrollBar.items = {}
+blackList.items = {}
+blackList.page = 1
+blackList.pageCount = 1
+
+
+local function lockPageButtons()
+	if blackList.pageCount <= 1 then
+		blackList.prevPage:SetDisabled(true)
+		blackList.nextPage:SetDisabled(true)
+		return
+	end
+	if blackList.page <= 1 then
+		blackList.prevPage:SetDisabled(true)
+	else
+		blackList.prevPage:SetDisabled(false)
+	end
+	if blackList.page >= blackList.pageCount then
+		blackList.nextPage:SetDisabled(true)
+	else
+		blackList.nextPage:SetDisabled(false)
+	end
+end
+
+
+blackList.nextPage = GUI:Create("Button")
+local frame = blackList.nextPage
+frame:SetText("+")
+btnText(frame)
+frame:SetWidth(20)
+frame:SetHeight(20)
+frame:SetPoint("BOTTOMRIGHT", blackList.frame, "BOTTOMRIGHT", 0, 0)
+frame:SetCallback("OnClick", function()
+	blackList.page = blackList.page + 1
+	blackList:update()
+end)
+blackList:AddChild(frame)
+
+blackList.pageLabel = GUI:Create("TLabel")
+local frame = blackList.pageLabel
+frame:SetText(1)
+fontSize(frame.label)
+frame.label:SetJustifyH("CENTER")
+frame:SetWidth(40)
+frame:SetPoint("RIGHT", blackList.nextPage.frame, "LEFT", -5, 0)
+blackList:AddChild(frame)
+
+blackList.prevPage = GUI:Create("Button")
+local frame = blackList.prevPage
+frame:SetText("-")
+btnText(frame)
+frame:SetWidth(20)
+frame:SetHeight(20)
+frame:SetDisabled(true)
+frame:SetPoint("RIGHT", blackList.pageLabel.frame, "LEFT", -5, 0)
+frame:SetCallback("OnClick", function()
+	blackList.page = blackList.page - 1
+	blackList:update()
+end)
+blackList:AddChild(frame)
 
 StaticPopupDialogs["FGI_BLACKLIST_CHANGE"] = {
 	text = L["Причина"],
@@ -42,7 +107,7 @@ StaticPopupDialogs["FGI_BLACKLIST_CHANGE"] = {
 			data.frame.r:SetText(reason)
 			data.frame.r:SetTooltip(reason)
 		else
-			blackList:add({name=data.name, reason=reason})
+			-- blackList:add({name=data.name, reason=reason})
 			SendChatMessage(format("%s %s - %s", format(L["Игрок %s добавлен в черный список."], data.name), L["Причина"], reason) , "OFFICER",  GetDefaultLanguage("player"))
 		end
 		StaticPopup_Hide("FGI_BLACKLIST_CHANGE")
@@ -89,16 +154,14 @@ local function AddHookClick(frame, parent)
 	end)
 end
 local help = "RBM - change"
-function blackList:add(data)
-	for i=1, #scrollBar.items do
-		if not scrollBar.items[i].frame:IsShown() then return blackList:update() end
-	end
-	scrollBar.items[#scrollBar.items+1] = GUI:Create("SimpleGroup")
-	local frame = scrollBar.items[#scrollBar.items]
+
+for i=1,FGI_BLACKLIST_MAX do
+	blackList.items[i] = GUI:Create("SimpleGroup")
+	local frame = blackList.items[#blackList.items]
 	frame:SetFullWidth(true)
 	frame:SetLayout("NIL")
 	frame.n = GUI:Create("TLabel")
-		frame.n:SetText(data.name)
+		frame.n:SetText(i)
 		frame.n:SetWidth(120)
 		frame.n:SetHeight(20)
 		frame.n:SetTooltip(help)
@@ -107,39 +170,47 @@ function blackList:add(data)
 	fn.fontSize(frame.n.label)
 	frame:AddChild(frame.n)
 	frame.r = GUI:Create("TLabel")
-		frame.r:SetText(data.reason)
+		frame.r:SetText("reason")
 		frame.r.label:SetMaxLines(1)
 		frame.r:SetWidth(623-frame.n.frame:GetWidth()-50)
 		frame.r:SetHeight(20)
-		frame.r:SetTooltip(data.reason)
+		frame.r:SetTooltip('data.reason')
 		frame.r:SetPoint("TOPLEFT", frame.n.frame, "TOPRIGHT", 0, 0)
 	fn.fontSize(frame.r.label)
 	frame:AddChild(frame.r)
 	frame:SetHeight(frame.n.frame:GetHeight())
-	scrollBar:AddChild(frame)
-	if #scrollBar.items == 1 then
-		frame:SetPoint("TOPLEFT", scrollBar.frame, "TOPLEFT", 0, 0)
+	blackList:AddChild(frame)
+	if i == 1 then
+		frame:SetPoint("TOPLEFT", blackList.frame, "TOPLEFT", 0, 0)
 	else
-		frame:SetPoint("TOPLEFT", scrollBar.items[#scrollBar.items-1].frame, "BOTTOMLEFT", 0, -5)
+		frame:SetPoint("TOPLEFT", blackList.items[i-1].frame, "BOTTOMLEFT", 0, -5)
 	end
-	blackList:update()
 end
 
 function blackList:update()
-	local i=1
+	local p = blackList.page
+	local list = {}
 	for name, reason in fn:pairsByKeys(DB.realm.blackList) do
-		local f = scrollBar.items[i]
-		if not f then return end
-		f.n:SetText(name)
-		f.r:SetText(tostring(reason))
-		f.r:SetTooltip(tostring(reason))
-		AddHookClick(f.n, f)
-		f.frame:Show()
-		i = i+1
+		table.insert(list, {name=name, reason=reason})
 	end
-	for i=i, #scrollBar.items do
-		scrollBar.items[i].frame:Hide()
+	
+	for i=1, FGI_BLACKLIST_MAX do
+		local data = list[(p-1)*FGI_BLACKLIST_MAX+i]
+		local f = blackList.items[i]
+		if data then
+			if not f then return end
+			f.n:SetText(data.name)
+			f.r:SetText(tostring(data.reason))
+			f.r:SetTooltip(tostring(data.reason))
+			AddHookClick(f.n, f)
+			f.frame:Show()
+		else
+			f.frame:Hide()
+		end
 	end
+	blackList.pageLabel:SetText(p)
+	blackList.pageCount = math.ceil(#list/FGI_BLACKLIST_MAX)
+	lockPageButtons()
 end
 
 local function showNext()
@@ -182,7 +253,5 @@ local frame = CreateFrame('Frame')
 frame:RegisterEvent('PLAYER_LOGIN')
 frame:SetScript('OnEvent', function()
 	DB = addon.DB
-	for k,v in pairs(DB.realm.blackList) do
-		blackList:add({name=tostring(k),reason=tostring(v)})
-	end
+	blackList:update()
 end)
