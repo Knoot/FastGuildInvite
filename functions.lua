@@ -179,7 +179,7 @@ local function inviteBtnText(text)
 end
 
 local function IsInBlackList(name)
-	return DB.realm.blackList[name] and true or false
+	return (DB.realm.blackList[name:lower()] or DB.realm.blackList[name:gsub("^%l", string.upper)]) and true or false
 end
 
 local function IsInLeaveList(name)
@@ -210,7 +210,7 @@ function fn:parseBL(str)
 	local name, reason
 	str = str:gsub("blacklist", '')
 	if str:find('-') then
-		name,reason = str:match("([^%s-]+)[%s-]+([^-]+)")
+		name,reason = str:match("([^%s-]+)[^%s]+[%s-]+([^-]+)")
 	else
 		name = str:match("([^-%s]+)")
 		reason = false
@@ -253,10 +253,6 @@ function fn:initDB()
 	debugDB = addon.debugDB
 end
 
-local function IsInBlacklist(name)
-	return DB.realm.blackList[name] and true or false
-end
-
 local function guildKick(name)
 	StaticPopupDialogs["FGI_BLACKLIST"].add(name)
 end
@@ -264,7 +260,7 @@ end
 function fn:blacklistKick()
 	for i=1, GetNumGuildMembers() do
 		local name = GetGuildRosterInfo(i):match("(.*)-")
-		if IsInBlacklist(name) then guildKick(name) end
+		if IsInBlackList(name) then guildKick(name) end
 	end
 end
 
@@ -282,7 +278,7 @@ function fn:blackListAutoKick()
 			local n = strsub(msg,place)
 			local name = strsub(n,1,(strfind(n,"%s") or 2)-1)
 			if format(ERR_GUILD_JOIN_S,name) == msg then
-				if IsInBlacklist(name) then guildKick(name) end
+				if IsInBlackList(name) then guildKick(name) end
 			end
 		end
 	end)

@@ -382,10 +382,6 @@ function Console:FGIInput(str)
 		local name,reason = fn:parseBL(str)
 		if not name then return print('Blacklist: nil name') end
 		fn:blackList(name, reason)
-		if name and reason then
-			interface.settings.Blacklist.content:add({name=name, reason=reason})
-			return
-		end
 		if not reason then
 			StaticPopup_Show("FGI_BLACKLIST_CHANGE", _,_,  {name = name})
 		end
