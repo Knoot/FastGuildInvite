@@ -34,6 +34,7 @@ L.settings = {
 		createMenuButtons = 340,
 		queueNotify = 260,
 		searchAlertNotify = 300,
+		blacklistOfficer = 450,
 		rememberAll = 260,
 		clearDBtimes = 150,
 		filters = 150,

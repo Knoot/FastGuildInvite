@@ -108,7 +108,9 @@ StaticPopupDialogs["FGI_BLACKLIST_CHANGE"] = {
 			data.frame.r:SetTooltip(reason)
 		else
 			-- blackList:add({name=data.name, reason=reason})
-			SendChatMessage(format("%s %s - %s", format(L["Игрок %s добавлен в черный список."], data.name), L["Причина"], reason) , "OFFICER",  GetDefaultLanguage("player"))
+			if DB.global.blacklistOfficer then
+				SendChatMessage(format("%s %s - %s", format(L["Игрок %s добавлен в черный список."], data.name), L["Причина"], reason) , "OFFICER",  GetDefaultLanguage("player"))
+			end
 		end
 		StaticPopup_Hide("FGI_BLACKLIST_CHANGE")
 		blackList:update()

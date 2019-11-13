@@ -101,7 +101,7 @@ settings:SetPoint("TOPLEFT", interface.settings, "TOPLEFT", 10, -10)
 settings.settingsCheckBoxGRP = GUI:Create("GroupFrame")
 local settingsCheckBoxGRP = settings.settingsCheckBoxGRP
 settingsCheckBoxGRP:SetLayout("NIL")
-settingsCheckBoxGRP:SetHeight(185)
+settingsCheckBoxGRP:SetHeight(205)
 settingsCheckBoxGRP:SetWidth(size.settingsCheckBoxGRP)
 settingsCheckBoxGRP:SetPoint("TOPLEFT", settings.frame, "TOPLEFT", 0, 0)
 settings:AddChild(settingsCheckBoxGRP)
@@ -189,6 +189,16 @@ end)
 frame:SetPoint("TOPLEFT", settings.settingsCheckBoxGRP.queueNotify.frame, "BOTTOMLEFT", 0, 0)
 settingsCheckBoxGRP:AddChild(frame)
 
+settingsCheckBoxGRP.blacklistOfficer = GUI:Create("TCheckBox")
+local frame = settingsCheckBoxGRP.blacklistOfficer
+frame:SetWidth(size.blacklistOfficer)
+frame:SetLabel(L["Сообщать о добавлении в черный список в офицерский канал."])
+frame.frame:HookScript("OnClick", function()
+	DB.global.blacklistOfficer = settingsCheckBoxGRP.blacklistOfficer:GetValue()
+end)
+frame:SetPoint("TOPLEFT", settings.settingsCheckBoxGRP.searchAlertNotify.frame, "BOTTOMLEFT", 0, 0)
+settingsCheckBoxGRP:AddChild(frame)
+
 settingsCheckBoxGRP.rememberAll = GUI:Create("TCheckBox")
 local frame = settingsCheckBoxGRP.rememberAll
 frame:SetWidth(size.rememberAll)
@@ -197,7 +207,7 @@ frame:SetTooltip(L["Записывать игрока в базу данных �
 frame.frame:HookScript("OnClick", function()
 	DB.global.rememberAll = settingsCheckBoxGRP.rememberAll:GetValue()
 end)
-frame:SetPoint("TOPLEFT", settings.settingsCheckBoxGRP.searchAlertNotify.frame, "BOTTOMLEFT", 0, 0)
+frame:SetPoint("TOPLEFT", settings.settingsCheckBoxGRP.blacklistOfficer.frame, "BOTTOMLEFT", 0, 0)
 settingsCheckBoxGRP:AddChild(frame)
 
 
@@ -211,7 +221,7 @@ frame:SetList({L["Отключить"], L["1 день"], L["1 неделя"], L[
 frame:SetCallback("OnValueChanged", function(key)
 	DB.global.clearDBtimes = settings.clearDBtimes:GetValue()
 end)
-frame:SetPoint("TOPLEFT", settings.settingsCheckBoxGRP.frame, "BOTTOMLEFT", 0, 0)
+frame:SetPoint("TOPLEFT", settings.settingsCheckBoxGRP.rememberAll.frame, "BOTTOMLEFT", 0, 0)
 settings:AddChild(frame)
 
 
@@ -235,6 +245,7 @@ frame:SetScript('OnEvent', function()
 	settingsCheckBoxGRP.createMenuButtons:SetValue(DB.global.createMenuButtons or false)
 	settingsCheckBoxGRP.queueNotify:SetValue(DB.global.queueNotify or false)
 	settingsCheckBoxGRP.searchAlertNotify:SetValue(DB.global.searchAlertNotify or false)
+	settingsCheckBoxGRP.blacklistOfficer:SetValue(DB.global.blacklistOfficer or false)
 	settings.clearDBtimes:SetValue(DB.global.clearDBtimes)
 	
 	
