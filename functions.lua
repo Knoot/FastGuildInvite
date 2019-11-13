@@ -854,9 +854,6 @@ local writeReceiveData = {
 	blacklist = function(arr)
 		local blackList = interface.settings.Blacklist.content
 		for name, reason in pairs(arr) do
-			if not DB.realm.blackList[name] then
-				blackList:add({name=name, reason=reason})
-			end
 			DB.realm.blackList[name] = reason
 		end
 		blackList:update()
