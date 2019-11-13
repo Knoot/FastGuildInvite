@@ -44,19 +44,30 @@ end
 
 local function MenuButtons(self)
 	local button = self.value;
+	local dropdownFrame = UIDROPDOWNMENU_INIT_MENU;
+	local name = dropdownFrame.name;
+	local server = dropdownFrame.server;
+	
+	local canInvited = true
+	if server ~= nil then
+		canInvited = false
+		for i=1,#addon.autoCompleteRealms do
+			if addon.autoCompleteRealms[i] == server then
+				canInvited = true
+				name = format("%s-%s",name,server)
+				break;
+			end
+		end
+	end
+	if not canInvited then
+		return print(L["Unable to complete the action."].." "..name)
+	end
 	if (button == "BLACKLIST") then
-		local dropdownFrame = UIDROPDOWNMENU_INIT_MENU;
-		local name = dropdownFrame.name;
-		local server = dropdownFrame.server;
-		
 		fn:blackList(name)
 		interface.settings.Blacklist.content:update()
 		StaticPopup_Show("FGI_BLACKLIST_CHANGE", _,_,  {name = name})
-		
 	elseif (button == "GUILD_INVITE") then
-		local dropdownFrame = UIDROPDOWNMENU_INIT_MENU;
 		local unit = dropdownFrame.unit;
-		local name = dropdownFrame.name;
 		GuildInvite(name)
 		fn:rememberPlayer(name)
 	end

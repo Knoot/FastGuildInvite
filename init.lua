@@ -8,6 +8,8 @@ GUI:RegisterLayout("NIL", function(content, children)  end)
 addon.DB = {}
 addon.ruReg = "[%aабвгдеёжзийклмнопрстуфхцчшщъьыэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЬЫЭЮЯ'%s]"
 addon.functions = {}
+addon.autoCompleteRealms = GetAutoCompleteRealms()
+addon.realm = GetRealmName()
 addon.interface = {}
 addon.version = GetAddOnMetadata('FastGuildInvite', 'Version')
 addon.versionN = tonumber(GetAddOnMetadata('FastGuildInvite', 'Version')) or 0
