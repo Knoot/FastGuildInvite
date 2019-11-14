@@ -42,58 +42,109 @@ function addon.dataBroker.OnClick(self, button)
 	end
 end
 
-local function MenuButtons(self)
-	local button = self.value;
-	local dropdownFrame = UIDROPDOWNMENU_INIT_MENU;
-	local name = dropdownFrame.name;
-	local server = dropdownFrame.server;
-	
-	local canInvited = true
-	if server ~= nil then
-		canInvited = false
-		for i=1,#addon.autoCompleteRealms do
-			if addon.autoCompleteRealms[i] == server then
-				canInvited = true
-				name = format("%s-%s",name,server)
-				break;
+local function CanInteraction(name, server, unit)
+	if unit and not UnitIsPlayer(unit) then return false end
+	if name then
+		local canInvited = true
+		if server ~= nil then
+			canInvited = false
+			for i=1,#addon.autoCompleteRealms do
+				if addon.autoCompleteRealms[i] == server then
+					canInvited = true
+					name = format("%s-%s",name,server)
+					break;
+				end
 			end
 		end
+		
+		return canInvited
 	end
-	if not canInvited then
-		return print(L["Невозможно выполнить действие."].." "..name)
-	end
-	if (button == "BLACKLIST") then
-		fn:blackList(name)
-		interface.settings.Blacklist.content:update()
-		StaticPopup_Show("FGI_BLACKLIST_CHANGE", _,_,  {name = name})
-	elseif (button == "GUILD_INVITE") then
-		local unit = dropdownFrame.unit;
-		GuildInvite(name)
-		fn:rememberPlayer(name)
-	end
+	return false
 end
 
-local FGIBlackList = CreateFrame("Frame","FGIMenuButtons")
-FGIBlackList:SetScript("OnEvent", function() hooksecurefunc("UnitPopup_OnClick", MenuButtons) end)
-FGIBlackList:RegisterEvent("PLAYER_LOGIN")
+local supportedTypes = {
+	-- SELF = 1, -- do we really need this? can always target self anywhere else and copy our own url
+	PARTY = 1,
+	PLAYER = 1,
+	RAID_PLAYER = 1,
+	RAID = 1,
+	FRIEND = 1,
+	-- BN_FRIEND = 1,
+	GUILD = 1,
+	GUILD_OFFLINE = 1,
+	CHAT_ROSTER = 1,
+	TARGET = 1,
+	ARENAENEMY = 1,
+	FOCUS = 1,
+	WORLD_STATE_SCORE = 1,
+	COMMUNITIES_WOW_MEMBER = 1,
+	COMMUNITIES_GUILD_MEMBER = 1,
+}
 
-local PopupUnits = {}
+local f = GUI:Create("SimpleGroup")
+f:SetWidth(150)
+f:SetHeight(42)
+f:SetLayout("NIL")
 
-UnitPopupButtons["BLACKLIST"] = { text = "FGI - Black List"}
-UnitPopupButtons["GUILD_INVITE"] = { text = "FGI - Guild Invite"}
+local invite = GUI:Create('Button')
+invite:SetText('FGI - Guild Invite')
+invite:SetWidth(150)
+invite:SetHeight(20)
+invite:SetCallback('OnClick', function()
+	local name = f.name
+	GuildInvite(name)
+	fn:rememberPlayer(name)
+	DropDownList1:Hide()
+end)
+invite:SetPoint("TOPLEFT", f.frame, "TOPLEFT", 0, 0)
+f:AddChild(invite)
 
-local function addMenuButtons()
-	for i,UPMenus in pairs(UnitPopupMenus) do
-		for j=1, #UPMenus do
-			if UPMenus[j] == "WHISPER" then
-				PopupUnits[#PopupUnits + 1] = i
-				pos = j + 1
-				table.insert( UnitPopupMenus[i] ,pos , "BLACKLIST" )
-				table.insert( UnitPopupMenus[i] ,j , "GUILD_INVITE" )
-				break
+local blacklist = GUI:Create('Button')
+blacklist:SetText('FGI - Black List')
+blacklist:SetWidth(150)
+blacklist:SetHeight(20)
+blacklist:SetCallback('OnClick', function()
+	local name = f.name
+	fn:blackList(name)
+	interface.settings.Blacklist.content:update()
+	StaticPopup_Show("FGI_BLACKLIST_CHANGE", _,_,  {name = name})
+	DropDownList1:Hide()
+end)
+blacklist:SetPoint("TOPLEFT", invite.frame, "BOTTOMLEFT", 0, 0)
+f:AddChild(blacklist)
+
+local function DropDownOnShow(self)
+	local dropdown = self.dropdown
+	if not dropdown then
+		return
+	end
+	if dropdown.Button == _G.LFGListFrameDropDownButton then -- LFD
+		-- ShowCustomDropDown(self, dropdown, dropdown.menuList[2].arg1)
+	elseif dropdown.which and supportedTypes[dropdown.which] then -- UnitPopup
+		local dropdownFullName
+		if dropdown.name then
+			if dropdown.server and not dropdown.name:find("-") then
+				dropdownFullName = dropdown.name .. "-" .. dropdown.server
+			else
+				dropdownFullName = dropdown.name
 			end
 		end
+		if not CanInteraction(dropdownFullName, dropdown.server, dropdown.unit) then return end
+		f.name = dropdownFullName
+	else
+		return
 	end
+	if DropDownList1:GetLeft() >= DropDownList1:GetWidth() then
+		f:ClearAllPoints()
+		f:SetPoint("TOPRIGHT", DropDownList1, "TOPLEFT",0,0)
+	else
+		f:ClearAllPoints()
+		f:SetPoint("TOPLEFT", DropDownList1, "TOPRIGHT",0,0)
+	end
+	f.frame:Show()
+end
+local function DropDownOnHide()
+	f.frame:Hide()
 end
 
 local frame = CreateFrame("Frame")
@@ -155,7 +206,11 @@ end
 
 
 function FastGuildInvite:OnEnable()
-	if DB.global.createMenuButtons then addMenuButtons() end
+	if DB.global.createMenuButtons then
+		DropDownList1:HookScript("OnShow", DropDownOnShow)
+		DropDownList1:HookScript("OnHide", DropDownOnHide)
+	end
+	
 	addon.debug = DB.global.debug
 	fn:blackListAutoKick()
 	local parent = interface.settings.filters.content.filtersFrame
