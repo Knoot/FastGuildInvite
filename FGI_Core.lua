@@ -60,7 +60,7 @@ local function MenuButtons(self)
 		end
 	end
 	if not canInvited then
-		return print(L["Unable to complete the action."].." "..name)
+		return print(L["Невозможно выполнить действие."].." "..name)
 	end
 	if (button == "BLACKLIST") then
 		fn:blackList(name)
