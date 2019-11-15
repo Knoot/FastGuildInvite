@@ -9,7 +9,7 @@ addon.DB = {}
 addon.ruReg = "[%aабвгдеёжзийклмнопрстуфхцчшщъьыэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЬЫЭЮЯ'%s]"
 addon.functions = {}
 addon.autoCompleteRealms = GetAutoCompleteRealms()
-addon.realm = GetRealmName()
+table.insert(addon.autoCompleteRealms, (GetRealmName():gsub(" ", '')))
 addon.interface = {}
 addon.version = GetAddOnMetadata('FastGuildInvite', 'Version')
 addon.versionN = tonumber(GetAddOnMetadata('FastGuildInvite', 'Version')) or 0
