@@ -13,10 +13,10 @@ local fontSize = fn.fontSize
 local CustomizePost
 
 local function defaultValues()
-	CustomizePost.drop:SetList(DB.realm.messageList)
-	CustomizePost.drop:SetValue(DB.realm.curMessage)
-	CustomizePost.message:SetText(DB.realm.messageList[DB.realm.curMessage] or "")
-	local msg = DB.realm.messageList[DB.realm.curMessage]
+	CustomizePost.drop:SetList(DB.factionrealm.messageList)
+	CustomizePost.drop:SetValue(DB.factionrealm.curMessage)
+	CustomizePost.message:SetText(DB.factionrealm.messageList[DB.factionrealm.curMessage] or "")
+	local msg = DB.factionrealm.messageList[DB.factionrealm.curMessage]
 	if msg then msg = fn:msgMod(msg) end
 	CustomizePost.curMessage:SetText(format(L["Предпросмотр: %s"], msg or ''))
 end
@@ -58,8 +58,8 @@ CustomizePost.drop = GUI:Create("Dropdown")
 local frame = CustomizePost.drop
 frame:SetWidth(CustomizePost.frame:GetWidth()-30)
 frame:SetCallback("OnValueChanged", function(key)
-	CustomizePost.message:SetText(DB.realm.messageList[CustomizePost.drop:GetValue()] or "")
-	local msg = DB.realm.messageList[CustomizePost.drop:GetValue()]
+	CustomizePost.message:SetText(DB.factionrealm.messageList[CustomizePost.drop:GetValue()] or "")
+	local msg = DB.factionrealm.messageList[CustomizePost.drop:GetValue()]
 	if msg then msg = fn:msgMod(msg) end
 	CustomizePost.curMessage:SetText(format(L["Предпросмотр: %s"], msg or ''))
 end)
@@ -93,8 +93,8 @@ frame:SetCallback("OnClick", function()
 		return message(L["Нельзя сохранить пустое сообщение"])
 	else
 		
-		DB.realm.messageList[CustomizePost.drop:GetValue()] = msg
-		DB.realm.curMessage = CustomizePost.drop:GetValue()
+		DB.factionrealm.messageList[CustomizePost.drop:GetValue()] = msg
+		DB.factionrealm.curMessage = CustomizePost.drop:GetValue()
 		defaultValues()
 	end
 end)
@@ -113,8 +113,8 @@ frame:SetCallback("OnClick", function()
 		BasicMessageDialog:SetFrameStrata("TOOLTIP")
 		return message(L["Нельзя добавить пустое сообщение"])
 	else
-		table.insert(DB.realm.messageList, msg)
-		DB.realm.curMessage = #DB.realm.messageList
+		table.insert(DB.factionrealm.messageList, msg)
+		DB.factionrealm.curMessage = #DB.factionrealm.messageList
 		defaultValues()
 	end
 end)
@@ -129,16 +129,16 @@ frame:SetWidth(size.delete)
 frame:SetHeight(40)
 frame:SetCallback("OnClick", function()
 	local msg = CustomizePost.drop:GetValue()
-	if DB.realm.messageList[msg] == nil then
+	if DB.factionrealm.messageList[msg] == nil then
 		BasicMessageDialog:SetFrameStrata("TOOLTIP")
 		return message(L["Выберите сообщение"])
 	else
-		if DB.realm.curMessage == msg then
-			DB.realm.curMessage = 1
-		elseif DB.realm.curMessage > msg then
-			DB.realm.curMessage = DB.realm.curMessage - 1
+		if DB.factionrealm.curMessage == msg then
+			DB.factionrealm.curMessage = 1
+		elseif DB.factionrealm.curMessage > msg then
+			DB.factionrealm.curMessage = DB.factionrealm.curMessage - 1
 		end
-		table.remove(DB.realm.messageList, msg)
+		table.remove(DB.factionrealm.messageList, msg)
 		defaultValues()
 	end
 end)

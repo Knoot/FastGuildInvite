@@ -160,7 +160,7 @@ frame:SetScript("OnEvent", function(_,_,msg)
 		auto_decline[name] = true
 	elseif type == "invite" then
 		local list = addon.search.inviteList
-		local msg = DB.realm.messageList[DB.realm.curMessage]
+		local msg = DB.factionrealm.messageList[DB.factionrealm.curMessage]
 		if DB.global.inviteType == 2 then
 			C_Timer.After(1, function() if not auto_decline[name] and addon.msgQueue[name] then fn:sendWhisper(msg, name); addon.msgQueue[name] = nil end end)
 		end

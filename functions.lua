@@ -437,7 +437,7 @@ function fn:invitePlayer(noInv)
 	if DB.global.inviteType == 2 and not noInv then
 		addon.msgQueue[list[1].name] = true
 	elseif DB.global.inviteType == 3 and not noInv then
-		local msg = DB.realm.messageList[math.random(1, math.max(1,#DB.realm.messageList))]
+		local msg = DB.factionrealm.messageList[math.random(1, math.max(1,#DB.factionrealm.messageList))]
 		debug(format("Send whisper: %s %s",list[1].name, msg or 'nil'))
 		if not msg then return print("<FGI> - "..L["Выберите сообщение"]) end
 		fn:sendWhisper(msg, list[1].name)

@@ -304,8 +304,6 @@ local defaultSettings =  {
 		addonMSG = false,
 		systemMSG = false,
 		sendMSG = false,
-		curMessage = 1,
-		messageList = {},
 		filtersList = {},
 		blackList = {},
 		alreadySended = {},
@@ -313,6 +311,10 @@ local defaultSettings =  {
 	},
 	faction = {
 		customWhoList = {"1-15 c-\"Class\" r-\"Race\""},
+	},
+	factionrealm  = {
+		curMessage = 1,
+		messageList = {},
 	},
 	global = {
 		inviteType = 1,
@@ -348,34 +350,9 @@ function FastGuildInvite:OnInitialize()
 	addon.debugDB = debugDB[#debugDB]
 
 	-- for DB update
-	if DB.global.customWhoList then
-		DB.faction.customWhoList = DB.global.customWhoList
-		DB.global.customWhoList = nil
-	end
-	if DB.global.blackList then
-		DB.realm.blackList = DB.global.blackList
-		DB.global.blackList = nil
-	end
-	if DB.global.messageList then
-		DB.realm.messageList = DB.global.messageList
-		DB.global.messageList = nil
-	end
-	if DB.realm.messageList[0] then
-		table.insert(DB.realm.messageList, DB.realm.messageList[0])
-		DB.realm.messageList[0] = nil
-		DB.realm.curMessage = 1
-	end
-	if DB.global.alredySended then
-		DB.realm.alreadySended = DB.global.alredySended
-		DB.global.alredySended = nil
-	end
-	if DB.global.filtersList then
-		DB.realm.filtersList = DB.global.filtersList
-		DB.global.filtersList = nil
-	end
-	if DB.global.leave then
-		DB.realm.leave = DB.global.leave
-		DB.global.leave = nil
+	if DB.realm.messageList then
+		DB.factionrealm.messageList = DB.realm.messageList
+		DB.realm.messageList = nil
 	end
 	-- / for DB update
 	if DB.global.clearDBtimes>1 then
