@@ -60,6 +60,16 @@ local function playerHaveInvite(msg)
 		end
 	end
 	
+	place = strfind(ERR_GUILD_DECLINE_S ,"%s",1,true)
+	if (place) then
+		n = strsub(msg,place)
+		name = strsub(n,1,(strfind(n,"%s") or 2)-1)
+		if format(ERR_GUILD_DECLINE_S ,name) == msg then
+			print("decline", name)
+			return "decline", name
+		end
+	end
+	
 	return "unregistered_event", name
 end
 
@@ -156,13 +166,19 @@ frame:SetScript("OnEvent", function(_,_,msg)
 		DB.realm.alreadySended[name] = nil
 		debug(format(ERR_GUILD_PLAYER_NOT_FOUND_S, name).." "..L["Игрок не добавлен в список исключений."], color.yellow)
 	elseif type == "auto_decline" then
-		debug(format(ERR_CHAT_PLAYER_NOT_FOUND_S, name), color.yellow)
+		debug(format(ERR_GUILD_DECLINE_AUTO_S, name), color.yellow)
 		auto_decline[name] = true
+	elseif type == "decline" then
+		debug(format(ERR_GUILD_DECLINE_S, name), color.yellow)
+		if DB.global.inviteType == 4 then
+			-- local msg = fn:getRndMsg()
+			C_Timer.After(1, function() if addon.msgQueue[name] then fn:sendWhisper(name); addon.msgQueue[name] = nil end end)
+		end
 	elseif type == "invite" then
-		local list = addon.search.inviteList
-		local msg = DB.factionrealm.messageList[DB.factionrealm.curMessage]
+		-- local list = addon.search.inviteList
+		-- local msg = fn:getRndMsg()
 		if DB.global.inviteType == 2 then
-			C_Timer.After(1, function() if not auto_decline[name] and addon.msgQueue[name] then fn:sendWhisper(msg, name); addon.msgQueue[name] = nil end end)
+			C_Timer.After(1, function() if not auto_decline[name] and addon.msgQueue[name] then fn:sendWhisper(name); addon.msgQueue[name] = nil end end)
 		end
 	end
 end)

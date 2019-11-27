@@ -81,7 +81,7 @@ inviteTypeGRP.drop = GUI:Create("Dropdown")
 local frame = inviteTypeGRP.drop
 frame:SetWidth(size.inviteTypeGRP)
 -- frame:SetList(L.invType)
-frame:SetList({L["Только пригласить"], L["Отправить сообщение и пригласить"], L["Только сообщение"],})
+frame:SetList({L["Только пригласить"], L["Отправить сообщение и пригласить"], L["Только сообщение"], L["Сообщение, если приглашение отклонено"],})
 frame:SetValue(1)
 frame:SetCallback("OnValueChanged", function(key)
 	DB.global.inviteType = inviteTypeGRP.drop:GetValue()

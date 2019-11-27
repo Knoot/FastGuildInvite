@@ -408,8 +408,12 @@ function fn.hideWhisper(...)
 	end
 end
 
-function fn:sendWhisper(msg, name)
-	if not msg or not name then return end
+function fn:sendWhisper(name)
+	local msg = fn:getRndMsg()
+	if not msg then return print("<FGI> - "..L["Выберите сообщение"]) end
+	if not name then return debug("send message - nil name")  end
+	
+	debug(format("Send whisper: %s %s",name, msg))
 	msg = fn:msgMod(msg, name)
 	
 	if msg ~= nil then
@@ -419,8 +423,6 @@ function fn:sendWhisper(msg, name)
 		for i=0, msg:len(), 255 do
 			SendChatMessage(msg:sub(i+1, i+255), 'WHISPER', GetDefaultLanguage("player"), name)
 		end
-	else
-		print(L["Выберите сообщение"])
 	end
 end
 
@@ -430,19 +432,20 @@ function fn:rememberPlayer(name)
 	debug(format("Remember: %s",name))
 end
 
+function fn:getRndMsg()
+	return DB.factionrealm.messageList[math.random(1, math.max(1,#DB.factionrealm.messageList))]
+end
+
 function fn:invitePlayer(noInv)
 	local list = addon.search.inviteList
 	if #list==0 then return end
 	-- if IsInAlreadySendedList(list[1].name) then return table.remove(list, 1) end
-	if DB.global.inviteType == 2 and not noInv then
+	if (DB.global.inviteType == 2 or DB.global.inviteType == 4) and not noInv then
 		addon.msgQueue[list[1].name] = true
 	elseif DB.global.inviteType == 3 and not noInv then
-		local msg = DB.factionrealm.messageList[math.random(1, math.max(1,#DB.factionrealm.messageList))]
-		debug(format("Send whisper: %s %s",list[1].name, msg or 'nil'))
-		if not msg then return print("<FGI> - "..L["Выберите сообщение"]) end
-		fn:sendWhisper(msg, list[1].name)
+		fn:sendWhisper(list[1].name)
 	end
-	if (DB.global.inviteType == 1 or DB.global.inviteType == 2) and not noInv then
+	if (DB.global.inviteType == 1 or DB.global.inviteType == 2 or DB.global.inviteType == 4) and not noInv then
 		debug(format("Invite: %s",list[1].name))
 		GuildInvite(list[1].name)
 	end
