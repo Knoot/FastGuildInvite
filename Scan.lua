@@ -65,7 +65,6 @@ local function playerHaveInvite(msg)
 		n = strsub(msg,place)
 		name = strsub(n,1,(strfind(n,"%s") or 2)-1)
 		if format(ERR_GUILD_DECLINE_S ,name) == msg then
-			print("decline", name)
 			return "decline", name
 		end
 	end
