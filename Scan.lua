@@ -202,7 +202,7 @@ frame.frame.pause = true
 frame.frame:SetNormalTexture("Interface\\Buttons\\UI-SpellbookIcon-NextPage-Up")
 frame:SetCallback("OnClick", function(self)
 	if not fn:inGuildCanInvite() then return print(L["Вы не состоите в гильдии или у вас нет прав для приглашения."]) end
-	scanFrame.pausePlay:SetDisabled(true)
+	--[[scanFrame.pausePlay:SetDisabled(true)
 	scanFrame.pausePlayLabel.timer = FGI_SCANINTERVALTIME
 	scanFrame.pausePlayLabel.frame:SetFrameStrata("TOOLTIP")
 	scanFrame.pausePlayLabel.frame:Show()
@@ -212,7 +212,7 @@ frame:SetCallback("OnClick", function(self)
 		scanFrame.pausePlayLabel:SetText(scanFrame.pausePlayLabel.timer)
 		if scanFrame.pausePlayLabel.timer == 0 then scanFrame.pausePlayLabel.frame:Hide() end
 	end, FGI_SCANINTERVALTIME)
-	scanFrame.pausePlayLabel:SetText(scanFrame.pausePlayLabel.timer)
+	scanFrame.pausePlayLabel:SetText(scanFrame.pausePlayLabel.timer)]]
 	fn:nextSearch()
 end)
 scanFrame:AddChild(frame)

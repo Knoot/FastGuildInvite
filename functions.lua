@@ -758,14 +758,33 @@ local function searchWhoResultCallback(query, results)
 	onListUpdate()
 end
 
+local function timeCallbackStart()
+	interface.scanFrame.pausePlay:SetDisabled(true)
+	interface.scanFrame.pausePlayLabel.timer = libWho:GetInterval()
+	interface.scanFrame.pausePlayLabel.frame:SetFrameStrata("TOOLTIP")
+	interface.scanFrame.pausePlayLabel.frame:Show()
+	C_Timer.NewTicker(1, function()
+		local n = interface.scanFrame.pausePlayLabel.timer
+		interface.scanFrame.pausePlayLabel.timer = interface.scanFrame.pausePlayLabel.timer-1
+		interface.scanFrame.pausePlayLabel:SetText(interface.scanFrame.pausePlayLabel.timer)
+		if interface.scanFrame.pausePlayLabel.timer == 0 then interface.scanFrame.pausePlayLabel.frame:Hide() end
+	end, libWho:GetInterval())
+	interface.scanFrame.pausePlayLabel:SetText(interface.scanFrame.pausePlayLabel.timer)
+end
+
+local function timeCallbackEnd()
+	interface.scanFrame.pausePlay:SetDisabled(false)
+	if DB.global.searchAlertNotify then
+		FGI.animations.notification:Start(L["Поиск разблокирован"])
+	end
+end
+
+libWho:SetCallback(searchWhoResultCallback)
+libWho:SetInterval(FGI_SCANINTERVALTIME)
+libWho:SetTimeCallbackStart(timeCallbackStart)
+libWho:SetTimeCallbackEnd(timeCallbackEnd)
+	
 function fn:nextSearch()
-	libWho:SetCallback(searchWhoResultCallback)
-	C_Timer.After(FGI_SCANINTERVALTIME, function()
-		interface.scanFrame.pausePlay:SetDisabled(false)
-		if DB.global.searchAlertNotify then
-			FGI.animations.notification:Start(L["Поиск разблокирован"])
-		end
-	end)
 	if #addon.search.whoQueryList == 0 then
 		if  DB.realm.customWho then
 			for i=1, #DB.faction.customWhoList do
