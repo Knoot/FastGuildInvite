@@ -383,6 +383,30 @@ function fn:FiltersUpdate()
 end
 
 
+function fn:messageSplit(str, arr)
+  arr = arr or {''}
+  while(str:len()>0) do
+    local _,e = str:find("[%s%.%,]")
+    local s = ''
+    if e then
+      s = str:sub(1,e)
+      str = str:sub(e+1, -1)
+    else
+      s = str
+      str = ''
+    end
+    if arr[#arr]:len()+s:len()<=255 then
+      arr[#arr] = arr[#arr] .. s
+    else
+      table.insert(arr, s)
+    end
+  end
+  for i=1, #arr do
+	if arr[i]:len()>255 then arr={};break;end
+  end
+  return arr
+end
+
 
 
 function fn:msgMod(msg, name)
@@ -420,8 +444,8 @@ function fn:sendWhisper(name)
 		if DB.realm.sendMSG then
 			addon.removeMsgList[name:match("([^-]*)")] = true
 		end
-		for i=0, msg:len(), 255 do
-			SendChatMessage(msg:sub(i+1, i+255), 'WHISPER', GetDefaultLanguage("player"), name)
+		for _,message in pairs(fn:messageSplit(msg)) do
+			SendChatMessage(message, 'WHISPER', GetDefaultLanguage("player"), name)
 		end
 	end
 end
