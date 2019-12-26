@@ -34,5 +34,5 @@ addon.color = {
 	orange='|cffFFA500',
 	blue='|cff00BFFF',
 	purple='|cFF660099',
-	pink='|cFFFFC0CB',
+	pink='|cFFff6cff',
 }

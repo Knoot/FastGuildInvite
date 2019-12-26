@@ -210,7 +210,7 @@ function fn:parseBL(str)
 	local name, reason
 	str = str:gsub("blacklist", '')
 	if str:find('-') then
-		name,reason = str:match("([^%s-]+)[^%s]+[%s-]+([^-]+)")
+		name,reason = str:match("([^%s-]+)[^%s]*[%s-]+([^-]+)")
 	else
 		name = str:match("([^-%s]+)")
 		reason = false
