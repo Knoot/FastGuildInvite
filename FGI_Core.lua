@@ -144,7 +144,7 @@ local function DropDownOnShow(self)
 	f.frame:Show()
 end
 local function DropDownOnHide()
-	f.frame:Hide()
+	C_Timer.After(0.1,function()f.frame:Hide()end)
 end
 
 local frame = CreateFrame("Frame")
