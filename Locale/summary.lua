@@ -31,7 +31,7 @@ L.synchType = {
 L.femaleRace = {
 	Orc = L["Orc"],
 	Tauren = L["Tauren"],
-	Dwarf = L["Tauren"],
+	Dwarf = L["Dwarf"],
 	Gnome = L["Gnome"],
 	NightElf = L["NightElf"],
 	BloodElf = L["BloodElf"],
@@ -45,6 +45,7 @@ L.femaleRace = {
 	LightforgedDraenei = L["LightforgedDraenei"],
 	VoidElf = L["VoidElf"],
 	KulTiran = L["KulTiran"],
+	Mechagnome = L["Mechagnome"],
 }
 
 L.class = {
@@ -74,6 +75,7 @@ L.race = {
 		Nightborne = GetRaceName(27),	--	"Ночнорожденный"
 		Pandaren = GetRaceName(26),	--	"Пандарен"
 		ZandalariTroll = GetRaceName(31),	--	"Зандалар"
+		Vulpera = GetRaceName(35),	--	"Вульпера"
 	},
 	Alliance = {
 		Dwarf = GetRaceName(3),	--	"Дворф"
@@ -87,6 +89,7 @@ L.race = {
 		VoidElf = GetRaceName(29),	--	"Эльф Бездны"
 		Worgen = GetRaceName(22),	--	"Ворген"
 		KulTiran = GetRaceName(32),	--	"Култирасец"
+		Mechagnome = GetRaceName(37),	--	"Механогном"
 	},
 }
 --[===[@non-retail@
