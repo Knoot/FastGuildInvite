@@ -108,6 +108,8 @@ L.settings = {
 		DarkIronDwarf = 160,
 		ZandalariTroll = 120,
 		KulTiran = 120,
+		Mechagnome = 150,
+		Vulpera = 120,
 		
 		
 		filterNameLabel = 200,
