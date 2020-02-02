@@ -80,35 +80,35 @@ local supportedTypes = {
 	COMMUNITIES_WOW_MEMBER = 1,
 	COMMUNITIES_GUILD_MEMBER = 1,
 }
-
-local f = GUI:Create("SimpleGroup")
-f:SetWidth(150)
+addon.MENU = GUI:Create("SimpleGroup")
+local f = addon.MENU
+f:SetWidth(135)
 f:SetHeight(42)
 f:SetLayout("NIL")
 
 local invite = GUI:Create('Button')
 invite:SetText('FGI - Guild Invite')
-invite:SetWidth(150)
+invite:SetWidth(135)
 invite:SetHeight(20)
 invite:SetCallback('OnClick', function()
 	local name = f.name
 	GuildInvite(name)
 	fn:rememberPlayer(name)
-	DropDownList1:Hide()
+	CloseDropDownMenus()
 end)
 invite:SetPoint("TOPLEFT", f.frame, "TOPLEFT", 0, 0)
 f:AddChild(invite)
 
 local blacklist = GUI:Create('Button')
 blacklist:SetText('FGI - Black List')
-blacklist:SetWidth(150)
+blacklist:SetWidth(135)
 blacklist:SetHeight(20)
 blacklist:SetCallback('OnClick', function()
 	local name = f.name
 	fn:blackList(name)
 	interface.settings.Blacklist.content:update()
 	StaticPopup_Show("FGI_BLACKLIST_CHANGE", _,_,  {name = name})
-	DropDownList1:Hide()
+	CloseDropDownMenus()
 end)
 blacklist:SetPoint("TOPLEFT", invite.frame, "BOTTOMLEFT", 0, 0)
 f:AddChild(blacklist)
@@ -118,6 +118,12 @@ local function DropDownOnShow(self)
 	if not dropdown then
 		return
 	end
+	
+	f.frame:SetParent(self)
+	f.frame:SetFrameStrata(self:GetFrameStrata())
+	f.frame:SetFrameLevel(self:GetFrameLevel() + 2)
+	f:ClearAllPoints()
+	
 	if dropdown.Button == _G.LFGListFrameDropDownButton then -- LFD
 		-- ShowCustomDropDown(self, dropdown, dropdown.menuList[2].arg1)
 	elseif dropdown.which and supportedTypes[dropdown.which] then -- UnitPopup
@@ -134,17 +140,16 @@ local function DropDownOnShow(self)
 	else
 		return
 	end
-	if DropDownList1:GetLeft() >= DropDownList1:GetWidth() then
-		f:ClearAllPoints()
-		f:SetPoint("TOPRIGHT", DropDownList1, "TOPLEFT",0,0)
+	
+	if self:GetLeft() >= self:GetWidth() then
+		f:SetPoint("TOPRIGHT", self, "TOPLEFT",0,0)
 	else
-		f:ClearAllPoints()
-		f:SetPoint("TOPLEFT", DropDownList1, "TOPRIGHT",0,0)
+		f:SetPoint("TOPLEFT", self, "TOPRIGHT",0,0)
 	end
 	f.frame:Show()
 end
 local function DropDownOnHide()
-	C_Timer.After(0.1,function()f.frame:Hide()end)
+	f.frame:Hide()
 end
 
 local frame = CreateFrame("Frame")
@@ -209,6 +214,16 @@ function FastGuildInvite:OnEnable()
 	if DB.global.createMenuButtons then
 		DropDownList1:HookScript("OnShow", DropDownOnShow)
 		DropDownList1:HookScript("OnHide", DropDownOnHide)
+		local originalFunction = UIDropDownMenu_HandleGlobalMouseEvent
+		UIDropDownMenu_HandleGlobalMouseEvent = function (button, event)
+			if event == "GLOBAL_MOUSE_DOWN" and (button == "LeftButton" or button == "RightButton") then
+				if addon.MENU:IsShown() and (blacklist.frame:IsMouseOver() or invite.frame:IsMouseOver()) then
+					return
+				end
+			end
+
+			originalFunction(button, event)
+		end
 	end
 	
 	addon.debug = DB.global.debug
