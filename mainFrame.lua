@@ -10,7 +10,7 @@ local FastGuildInvite = addon.lib
 local DB
 local fontSize = fn.fontSize
 
-local gratitudeFrame, scrollBar, mainFrame, inviteTypeGRP, mainCheckBoxGRP, searchRangeGRP, mainButtonsGRP
+local scrollBar, mainFrame, inviteTypeGRP, mainCheckBoxGRP, searchRangeGRP, mainButtonsGRP
 
 
 
@@ -28,7 +28,7 @@ mainFrame = interface.mainFrame
 mainFrame:SetTitle("Fast Guild Invite v."..addon.version)
 mainFrame:SetWidth(size.mainFrameW)
 mainFrame:SetHeight(size.mainFrameH)
-mainFrame:SetLayout("List")
+mainFrame:SetLayout("NIL")
 
 mainFrame.title:SetScript('OnMouseUp', function(mover)
 	local frame = mover:GetParent()
@@ -64,7 +64,7 @@ mainFrame:AddChild(frame)
 do		--	inviteTypeGRP
 mainFrame.inviteTypeGRP = GUI:Create("GroupFrame")
 inviteTypeGRP = mainFrame.inviteTypeGRP
-inviteTypeGRP:SetLayout("List")
+inviteTypeGRP:SetLayout("NIL")
 inviteTypeGRP:SetHeight(50)
 inviteTypeGRP:SetWidth(size.inviteTypeGRP)
 mainFrame:AddChild(inviteTypeGRP)
@@ -93,7 +93,7 @@ end
 do		--	mainCheckBoxGRP
 mainFrame.mainCheckBoxGRP = GUI:Create("GroupFrame")
 mainCheckBoxGRP = mainFrame.mainCheckBoxGRP
-mainCheckBoxGRP:SetLayout("List")
+mainCheckBoxGRP:SetLayout("NIL")
 mainCheckBoxGRP:SetHeight(120)
 mainCheckBoxGRP:SetWidth(size.mainCheckBoxGRP)
 mainFrame:AddChild(mainCheckBoxGRP)
@@ -136,8 +136,8 @@ end
 do		--	mainButtonsGRP
 mainFrame.mainButtonsGRP = GUI:Create("GroupFrame")
 mainButtonsGRP = mainFrame.mainButtonsGRP
-mainButtonsGRP:SetLayout("Flow")
-mainButtonsGRP:SetHeight(80)
+mainButtonsGRP:SetLayout("NIL")
+mainButtonsGRP:SetHeight(40)
 mainButtonsGRP:SetWidth(size.mainFrameW-20)
 -- mainButtonsGRP:SetWidth(size.mainButtonsGRP)
 mainFrame:AddChild(mainButtonsGRP)
@@ -187,7 +187,7 @@ end
 do		--	searchRangeGRP
 mainFrame.searchRangeGRP = GUI:Create("GroupFrame")
 searchRangeGRP = mainFrame.searchRangeGRP
-searchRangeGRP:SetLayout("List")
+searchRangeGRP:SetLayout("NIL")
 searchRangeGRP:SetHeight(50)
 searchRangeGRP:SetWidth(size.searchRangeGRP)
 mainFrame:AddChild(searchRangeGRP)
@@ -307,11 +307,17 @@ frame:SetScript('OnEvent', function()
 	inviteTypeGRP.inviteType:ClearAllPoints()
 	inviteTypeGRP.inviteType:SetPoint("TOPLEFT", inviteTypeGRP.frame, "TOPLEFT", 0, 0)
 	
+	inviteTypeGRP.drop:ClearAllPoints()
+	inviteTypeGRP.drop:SetPoint("TOPLEFT", inviteTypeGRP.inviteType.frame, "BOTTOMLEFT", 0, -10)
+	
 	mainCheckBoxGRP:ClearAllPoints()
 	mainCheckBoxGRP:SetPoint("TOPLEFT", inviteTypeGRP.frame, "BOTTOMLEFT", 0, -20)
 	
 	mainCheckBoxGRP.customList:ClearAllPoints()
 	mainCheckBoxGRP.customList:SetPoint("TOPLEFT", mainCheckBoxGRP.frame, "TOPLEFT", 0, 0)
+	
+	mainCheckBoxGRP.enableFilters:ClearAllPoints()
+	mainCheckBoxGRP.enableFilters:SetPoint("TOPLEFT", mainCheckBoxGRP.customList.frame, "BOTTOMLEFT", 0, 0)
 	
 	mainFrame.wheelHint:ClearAllPoints()
 	mainFrame.wheelHint:SetPoint("TOPLEFT", inviteTypeGRP.frame, "TOPRIGHT", 15, 0)
@@ -323,7 +329,7 @@ frame:SetScript('OnEvent', function()
 	searchRangeGRP.lvlRange:SetPoint("TOPLEFT", searchRangeGRP.frame, "TOPLEFT", 0, 0)
 	
 	searchRangeGRP.lvlRangeLine:ClearAllPoints()
-	searchRangeGRP.lvlRangeLine:SetPoint("TOP", searchRangeGRP.lvlRange.frame, "BOTTOM", 0, -10)
+	searchRangeGRP.lvlRangeLine:SetPoint("TOPLEFT", searchRangeGRP.lvlRange.frame, "BOTTOM", 0, -10)
 	
 	searchRangeGRP.lvlRangeMin:ClearAllPoints()
 	searchRangeGRP.lvlRangeMin:SetPoint("RIGHT", searchRangeGRP.lvlRangeLine.frame, "LEFT", 0, 0)
@@ -335,7 +341,7 @@ frame:SetScript('OnEvent', function()
 	mainFrame.searchInfo:SetPoint("BOTTOMRIGHT", mainButtonsGRP.frame, "TOPRIGHT", 0, 0)
 	
 	mainButtonsGRP:ClearAllPoints()
-	mainButtonsGRP:SetPoint("TOPLEFT", mainCheckBoxGRP.frame, "BOTTOMLEFT", 0, -10)
+	mainButtonsGRP:SetPoint("BOTTOM", mainFrame.frame, "BOTTOM", 10, 20)
 	
 	mainButtonsGRP.startScan:ClearAllPoints()
 	mainButtonsGRP.startScan:SetPoint("TOPLEFT", mainButtonsGRP.frame, "TOPLEFT", 0, 0)
@@ -349,6 +355,5 @@ frame:SetScript('OnEvent', function()
 	
 	
 	mainFrame:Hide()
-	-- gratitudeFrame:Hide()
 	end)
 end)

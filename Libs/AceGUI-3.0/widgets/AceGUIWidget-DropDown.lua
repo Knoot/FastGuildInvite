@@ -1,10 +1,10 @@
---[[ $Id$ ]]--
+--[[ $Id: AceGUIWidget-DropDown.lua 1209 2019-06-24 21:01:01Z nevcairiel $ ]]--
 local AceGUI = LibStub("AceGUI-3.0")
 
 -- Lua APIs
 local min, max, floor = math.min, math.max, math.floor
 local select, pairs, ipairs, type, tostring = select, pairs, ipairs, type, tostring
-local tonumber, tsort, error = tonumber, table.sort, error
+local tsort = table.sort
 
 -- WoW APIs
 local PlaySound = PlaySound
@@ -600,47 +600,21 @@ do
 			return tostring(x) < tostring(y)
 		end
 	end
-
-	-- these were added by ElvUI
-	local sortStr1, sortStr2 = "%((%d+)%)", "%[(%d+)]"
-	local sortValue = function(a,b)
-		if a and b and (a[2] and b[2]) then
-			local a2 = tonumber(a[2]:match(sortStr1) or a[2]:match(sortStr2))
-			local b2 = tonumber(b[2]:match(sortStr1) or b[2]:match(sortStr2))
-			if a2 and b2 and (a2 ~= b2) then
-				return a2 < b2 -- try to sort by the number inside of brackets if we can
-			end
-			return a[2] < b[2]
-		end
-	end
-
-	local function SetList(self, list, order, itemType, sortByValue)
+	local function SetList(self, list, order, itemType)
 		self.list = list
 		self.pullout:Clear()
 		self.hasClose = nil
 		if not list then return end
 
 		if type(order) ~= "table" then
-			if sortByValue then -- added by ElvUI
-				for k, v in pairs(list) do
-					sortlist[#sortlist + 1] = {k,v}
-				end
-				tsort(sortlist, sortValue)
+			for v in pairs(list) do
+				sortlist[#sortlist + 1] = v
+			end
+			tsort(sortlist, sortTbl)
 
-				for i, sortedList in ipairs(sortlist) do
-					AddListItem(self, sortedList[1], sortedList[2], itemType)
-					sortlist[i] = nil
-				end
-			else -- this is the default way (unchanged by ElvUI)
-				for v in pairs(list) do
-					sortlist[#sortlist + 1] = v
-				end
-				tsort(sortlist, sortTbl)
-
-				for i, key in ipairs(sortlist) do
-					AddListItem(self, key, list[key], itemType)
-					sortlist[i] = nil
-				end
+			for i, key in ipairs(sortlist) do
+				AddListItem(self, key, list[key], itemType)
+				sortlist[i] = nil
 			end
 		else
 			for i, key in ipairs(order) do

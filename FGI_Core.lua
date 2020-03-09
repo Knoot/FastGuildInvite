@@ -80,6 +80,13 @@ local supportedTypes = {
 	COMMUNITIES_WOW_MEMBER = 1,
 	COMMUNITIES_GUILD_MEMBER = 1,
 }
+local function HandlesGlobalMouseEvent(self, button, event)
+	if event == "GLOBAL_MOUSE_DOWN" and (button == "LeftButton" or button == "RightButton")then
+		return true
+	end
+	return false
+end
+
 addon.MENU = GUI:Create("SimpleGroup")
 local f = addon.MENU
 f:SetWidth(135)
@@ -90,6 +97,7 @@ local invite = GUI:Create('Button')
 invite:SetText('FGI - Guild Invite')
 invite:SetWidth(135)
 invite:SetHeight(20)
+invite.frame.HandlesGlobalMouseEvent = HandlesGlobalMouseEvent
 invite:SetCallback('OnClick', function()
 	local name = f.name
 	GuildInvite(name)
@@ -103,6 +111,7 @@ local blacklist = GUI:Create('Button')
 blacklist:SetText('FGI - Black List')
 blacklist:SetWidth(135)
 blacklist:SetHeight(20)
+blacklist.frame.HandlesGlobalMouseEvent = HandlesGlobalMouseEvent
 blacklist:SetCallback('OnClick', function()
 	local name = f.name
 	fn:blackList(name)
@@ -214,16 +223,6 @@ function FastGuildInvite:OnEnable()
 	if DB.global.createMenuButtons then
 		DropDownList1:HookScript("OnShow", DropDownOnShow)
 		DropDownList1:HookScript("OnHide", DropDownOnHide)
-		local originalFunction = UIDropDownMenu_HandleGlobalMouseEvent
-		UIDropDownMenu_HandleGlobalMouseEvent = function (button, event)
-			if event == "GLOBAL_MOUSE_DOWN" and (button == "LeftButton" or button == "RightButton") then
-				if addon.MENU:IsShown() and (blacklist.frame:IsMouseOver() or invite.frame:IsMouseOver()) then
-					return
-				end
-			end
-
-			originalFunction(button, event)
-		end
 	end
 	
 	addon.debug = DB.global.debug

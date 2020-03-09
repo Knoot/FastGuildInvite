@@ -78,6 +78,8 @@ local scanFrame = interface.scanFrame
 scanFrame:SetTitle("FGI Scan")
 scanFrame:SetWidth(size.scanFrameW)
 scanFrame:SetHeight(size.scanFrameH)
+scanFrame:SetLayout("NIL")
+
 scanFrame.title:SetScript('OnMouseUp', function(mover)
 	local frame = mover:GetParent()
 	frame:StopMovingOrSizing()

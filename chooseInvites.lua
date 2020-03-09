@@ -25,6 +25,7 @@ chooseInvites = interface.chooseInvites
 chooseInvites:SetTitle("FGI Choose Invites")
 chooseInvites:SetWidth(size.chooseInvitesW)
 chooseInvites:SetHeight(size.chooseInvitesH)
+chooseInvites:SetLayout("NIL")
 
 chooseInvites.title:SetScript('OnMouseUp', function(mover)
 	local DB = addon.DB

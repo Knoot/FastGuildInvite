@@ -13,7 +13,6 @@
 	<Script file="widgets\AceGUIContainer-Window.lua"/>
 	<!-- Widgets -->
 	<Script file="widgets\AceGUIWidget-Button.lua"/>
-	<Script file="widgets\AceGUIWidget-Button-ElvUI.lua"/>
 	<Script file="widgets\AceGUIWidget-CheckBox.lua"/>
 	<Script file="widgets\AceGUIWidget-ColorPicker.lua"/>
 	<Script file="widgets\AceGUIWidget-DropDown.lua"/>
@@ -26,5 +25,4 @@
 	<Script file="widgets\AceGUIWidget-Label.lua"/>
 	<Script file="widgets\AceGUIWidget-MultiLineEditBox.lua"/>
 	<Script file="widgets\AceGUIWidget-Slider.lua"/>
-	<Script file="widgets\AceGUIWidget-Slider-ElvUI.lua"/>
 </Ui>
