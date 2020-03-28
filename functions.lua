@@ -506,8 +506,10 @@ frame:SetScript('OnEvent', function()
 end)
 
 local function getSearchDeepLvl(query)
-	local l2 = (("%%d+-%%d+ %s\"%s+"):format(L["r-"],addon.ruReg)):gsub("-","%%-")
-	local l3 = (("%%d+-%%d+ %s\"%s+%%\" %s"):format(L["r-"],addon.ruReg,L["c-"])):gsub("-","%%-")
+	-- local l2 = (("%%d+-%%d+ %s\"%s+"):format(L["r-"],addon.ruReg)):gsub("-","%%-")
+	local l2 = L["r-"]:gsub("-","%%-")
+	-- local l3 = (("%%d+-%%d+ %s\"%s+%%\" %s"):format(L["r-"],addon.ruReg,L["c-"])):gsub("-","%%-")
+	local l3 = (("%s.+ %s"):format(L["r-"],L["c-"])):gsub("-","%%-")
 	if query:find(l3) then
 		return 3
 	elseif query:find(l2) then
