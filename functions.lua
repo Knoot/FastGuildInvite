@@ -246,6 +246,7 @@ frame:SetScript("OnEvent", function(_,_,msg)
 			if DB.realm.alreadySended[name] then
 				addon.searchInfo.invited()
 			end
+			fn:setNote(name)
 		end
 	end
 end)
@@ -253,6 +254,28 @@ end)
 function fn:initDB()
 	DB = addon.DB
 	debugDB = addon.debugDB
+end
+
+function fn:setNote(name)
+	if DB.global.setNote or DB.global.setOfficerNote then
+		for index=1, GetNumGuildMembers() do
+			local n, _, _, _, _, _, publicNote, officerNote = GetGuildRosterInfo(index)
+			if name ~= nil and n:match("(.*)-") ~= name then
+				if DB.global.setNote and CanEditPublicNote() and publicNote == "" then
+					-- GuildRosterSetPublicNote(index, DB.global.noteText)
+					print("set note \""..DB.global.noteText.."\" for "..name)
+				end
+				if DB.global.setOfficerNote and C_GuildInfo.CanEditOfficerNote() and officerNote == "" then
+					-- GuildRosterSetOfficerNote(index, DB.global.officerNoteText)
+					print("set officer note \""..DB.global.officerNoteText.."\" for "..name)
+				end
+			end
+		end
+	end
+end
+
+function fn:getCharLen(str)
+	return #(str):gsub('[\128-\191]', '')
 end
 
 local function guildKick(name)
@@ -720,10 +743,10 @@ function fn:filtered(player)
 	return false
 end
 
-local function addNewPlayer(p)
+function fn:addNewPlayer(p)
 	local list = addon.search.inviteList
 	local playerInfoStr = format("%s - lvl:%d; race:%s; class:%s; Guild: \"%s\"", p.Name, p.Level, p.Race, p.Class, p.Guild)
-	if p.Guild == "" then
+	if p.Guild == "" or FGI.ai then
 		if not IsInBlackList(p.Name) then
 			if not IsInLeaveList(p.Name) then
 				if not IsInTempList(addon.search, p.Name) then
@@ -774,7 +797,7 @@ local function searchWhoResultCallback(query, results)
 	addon.search.oldCount = #addon.search.inviteList
 	for i=1,#results do
 		local player = results[i]
-		addNewPlayer(player)
+		fn:addNewPlayer(player)
 	end
 	if DB.global.queueNotify and #addon.search.inviteList > addon.search.oldCount then
 		FGI.animations.notification:Start(format(L["Игроков найдено: %d"], #addon.search.inviteList - addon.search.oldCount))

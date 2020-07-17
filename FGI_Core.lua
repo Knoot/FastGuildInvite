@@ -345,6 +345,10 @@ local defaultSettings =  {
 		queueNotify = true,
 		searchAlertNotify = true,
 		createMenuButtons = true,
+		setNote = false,
+		noteText = "",
+		setOfficerNote = false,
+		officerNoteText = "",
 	},
 } 
 
