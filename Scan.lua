@@ -196,6 +196,10 @@ frame.timer = 0
 fontSize(frame.label, nil, 18)
 scanFrame:AddChild(frame)
 
+
+SOUNDKIT.IG_CHARACTER_INFO_TAB_old = SOUNDKIT.IG_CHARACTER_INFO_TAB
+SOUNDKIT.IG_MAINMENU_CLOSE_old = SOUNDKIT.IG_MAINMENU_CLOSE
+
 scanFrame.pausePlay = GUI:Create("Button")
 local frame = scanFrame.pausePlay
 frame:SetWidth(38)
@@ -223,6 +227,19 @@ frame:SetCallback("OnClick", function(self)
 		end
 	end)
 end)
+frame.frame:SetScript("PreClick", function()
+	SOUNDKIT.IG_CHARACTER_INFO_TAB=0
+	SOUNDKIT.IG_MAINMENU_CLOSE=0
+end)
+frame.frame:SetScript("PostClick", function()C_Timer.After(0.5, function()
+	SOUNDKIT.IG_CHARACTER_INFO_TAB = SOUNDKIT.IG_CHARACTER_INFO_TAB_old
+	SOUNDKIT.IG_MAINMENU_CLOSE = SOUNDKIT.IG_MAINMENU_CLOSE_old
+end) end)
+local function Button_OnClick_NoSound(frame, ...)
+	GUI:ClearFocus()
+	frame.obj:Fire("OnClick", ...)
+end
+frame.frame:SetScript("OnClick", Button_OnClick_NoSound)
 scanFrame:AddChild(frame)
 
 
