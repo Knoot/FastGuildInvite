@@ -238,6 +238,16 @@ end)
 frame:SetPoint("TOPLEFT", settings.settingsCheckBoxGRP.rememberAll.frame, "BOTTOMLEFT", 0, 0)
 settings:AddChild(frame)
 
+settingsCheckBoxGRP.confirmSearchClear = GUI:Create("TCheckBox")
+local frame = settingsCheckBoxGRP.confirmSearchClear
+frame:SetWidth(size.confirmSearchClear)
+frame:SetLabel(L["Требовать подтверждение сброса поиска"])
+frame.frame:HookScript("OnClick", function()
+	DB.global.confirmSearchClear = settingsCheckBoxGRP.confirmSearchClear:GetValue()
+end)
+frame:SetPoint("TOPLEFT", settings.clearDBtimes.frame, "BOTTOMLEFT", 0, 0)
+settingsCheckBoxGRP:AddChild(frame)
+
 settingsCheckBoxGRP.setNote = GUI:Create("TCheckBox")
 local frame = settingsCheckBoxGRP.setNote
 frame:SetWidth(size.setNote)
@@ -246,7 +256,7 @@ frame:SetTooltip(L["Установить заметку для новых чле
 frame.frame:HookScript("OnClick", function()
 	DB.global.setNote = settingsCheckBoxGRP.setNote:GetValue()
 end)
-frame:SetPoint("TOPLEFT", settings.clearDBtimes.frame, "BOTTOMLEFT", 0, 0)
+frame:SetPoint("TOPLEFT", settingsCheckBoxGRP.confirmSearchClear.frame, "BOTTOMLEFT", 0, 0)
 settingsCheckBoxGRP:AddChild(frame)
 
 settingsCheckBoxGRP.noteText = GUI:Create("EditBox")
@@ -303,6 +313,12 @@ frame:SetPoint("TOPLEFT", settings.settingsCheckBoxGRP.setOfficerNote.frame, "BO
 settingsCheckBoxGRP:AddChild(frame)
 
 
+settingsCheckBoxGRP.setNote.frame:Hide()	-- BETA
+settingsCheckBoxGRP.noteText.frame:Hide()	-- BETA
+settingsCheckBoxGRP.setOfficerNote.frame:Hide()	-- BETA
+settingsCheckBoxGRP.officerNoteText.frame:Hide()	-- BETA
+
+
 
 
 
@@ -325,6 +341,7 @@ frame:SetScript('OnEvent', function()
 	settingsCheckBoxGRP.searchAlertNotify:SetValue(DB.global.searchAlertNotify or false)
 	settingsCheckBoxGRP.blacklistOfficer:SetValue(DB.global.blacklistOfficer or false)
 	settings.clearDBtimes:SetValue(DB.global.clearDBtimes)
+	settingsCheckBoxGRP.confirmSearchClear:SetValue(DB.global.confirmSearchClear or false)
 	settingsCheckBoxGRP.setNote:SetValue(DB.global.setNote or false)
 	settingsCheckBoxGRP.noteText:SetText(DB.global.noteText or ""); settingsCheckBoxGRP.noteText.temptext = settingsCheckBoxGRP.noteText:GetText()
 	settingsCheckBoxGRP.setOfficerNote:SetValue(DB.global.setOfficerNote or false)

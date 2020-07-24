@@ -349,6 +349,7 @@ local defaultSettings =  {
 		noteText = "",
 		setOfficerNote = false,
 		officerNoteText = "",
+		confirmSearchClear = true,
 	},
 } 
 

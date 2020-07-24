@@ -257,21 +257,22 @@ function fn:initDB()
 end
 
 function fn:setNote(name)
-	if DB.global.setNote or DB.global.setOfficerNote then
+	return 	--BETA
+	--[[if DB.global.setNote or DB.global.setOfficerNote then
 		for index=1, GetNumGuildMembers() do
 			local n, _, _, _, _, _, publicNote, officerNote = GetGuildRosterInfo(index)
 			if name ~= nil and n:match("(.*)-") ~= name then
 				if DB.global.setNote and CanEditPublicNote() and publicNote == "" then
-					-- GuildRosterSetPublicNote(index, DB.global.noteText)
-					print("set note \""..DB.global.noteText.."\" for "..name)
+					-- GuildRosterSetPublicNote(index, DB.global.noteText)	--BETA
+					-- print("set note \""..DB.global.noteText.."\" for "..name)
 				end
 				if DB.global.setOfficerNote and C_GuildInfo.CanEditOfficerNote() and officerNote == "" then
-					-- GuildRosterSetOfficerNote(index, DB.global.officerNoteText)
-					print("set officer note \""..DB.global.officerNoteText.."\" for "..name)
+					-- GuildRosterSetOfficerNote(index, DB.global.officerNoteText)	--BETA
+					-- print("set officer note \""..DB.global.officerNoteText.."\" for "..name)
 				end
 			end
 		end
-	end
+	end]]
 end
 
 function fn:getCharLen(str)
@@ -849,6 +850,9 @@ function fn:nextSearch()
 	
 	addon.search.progress = (addon.search.progress <= (#addon.search.whoQueryList or 1)) and addon.search.progress or 1
 	local curQuery = addon.search.whoQueryList[addon.search.progress]
+	if curQuery == nil then
+		return	print("epmty search query")
+	end
 	libWho:GetWho(curQuery)
 end
 
