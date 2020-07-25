@@ -181,7 +181,16 @@ local function inviteBtnText(text)
 end
 
 local function IsInBlackList(name)
-	return (DB.realm.blackList[name:lower()] or DB.realm.blackList[name:gsub("^%l", string.upper)]) and true or false
+	local n1 = name:lower()
+	local n2 = name:gsub("^%l", string.upper)
+	if DB.realm.blackList[n1] then return n1 end
+	if DB.realm.blackList[n2] then return n2 end
+	for k,v in pairs(DB.realm.blackList) do
+		if k:find(n1) or k:find(n2) then
+			return k
+		end
+	end
+	return false
 end
 
 local function IsInLeaveList(name)
@@ -207,10 +216,15 @@ local function onListUpdate()
 	inviteBtnText(format(L["Пригласить: %d"], #list))
 end
 
+function fn:blacklistRemove(name)
+	DB.realm.blackList[name:lower()] = nil
+	DB.realm.blackList[name:gsub("^%l", string.upper)] = nil
+end
 
-function fn:parseBL(str)
+
+function fn:parseBL(cmd, str)
 	local name, reason
-	str = str:gsub("blacklist", '')
+	str = str:gsub(cmd, '')
 	if str:find('-') then
 		name,reason = str:match("([^%s-]+)[^%s]*[%s-]+([^-]+)")
 	else
@@ -311,11 +325,21 @@ function fn:blackListAutoKick()
 end
 
 function fn:blackList(name, reason)
-	DB.realm.blackList[name] = reason or L.defaultReason
+	DB.realm.blackList[name] = reason or (DB.global.blacklistReasonText == nil and L.defaultReason or DB.global.blacklistReasonText)
 	if not DB.global.addonMSG then
 		print(format("%s%s|r", color.red, format(L["Игрок %s добавлен в черный список."], name)))
 	end
 	fn:blacklistKick()
+end
+
+function fn:unblacklist(name)
+	local inBlacklist = IsInBlackList(name)
+	if inBlacklist then
+		fn:blacklistRemove(inBlacklist)
+		print(format(L["Игрок %s удален из черного списка"], inBlacklist))
+	else
+		print(format(L["Игрок %s не найден в черном списке"], name))
+	end
 end
 
 function fn:closeBtn(obj)

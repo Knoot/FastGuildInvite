@@ -248,6 +248,43 @@ end)
 frame:SetPoint("TOPLEFT", settings.clearDBtimes.frame, "BOTTOMLEFT", 0, 0)
 settingsCheckBoxGRP:AddChild(frame)
 
+settingsCheckBoxGRP.blacklistReason = GUI:Create("TLabel")
+local frame = settingsCheckBoxGRP.blacklistReason
+frame:SetText(L["Причина по умолчанию для черного списка"])
+fontSize(frame.label)
+frame.label:SetJustifyH("LEFT")
+frame:SetWidth(size.blacklistReason)
+frame:SetPoint("TOPLEFT", settings.settingsCheckBoxGRP.confirmSearchClear.frame, "BOTTOMLEFT", 0, 0)
+settingsCheckBoxGRP:AddChild(frame)
+
+settingsCheckBoxGRP.blacklistReasonText = GUI:Create("EditBox")
+local frame = settingsCheckBoxGRP.blacklistReasonText
+frame:SetWidth(settings.frame:GetWidth()-30)
+frame:DisableButton(true)
+EditBoxChange(frame)
+frame:SetCallback("OnTextChanged", function(self,_,msg)
+	DB.global.blacklistReasonText = msg
+	self.temptext = msg
+end)
+frame.editbox:SetScript("OnEscapePressed", function(self)
+	DB.global.blacklistReasonText = self.lasttext
+	self:SetText(self.lasttext or "")
+	self:ClearFocus()
+end)
+frame:SetPoint("TOPLEFT", settings.settingsCheckBoxGRP.blacklistReason.frame, "BOTTOMLEFT", 0, 0)
+settingsCheckBoxGRP:AddChild(frame)
+
+settingsCheckBoxGRP.fastBlacklist = GUI:Create("TCheckBox")
+local frame = settingsCheckBoxGRP.fastBlacklist
+frame:SetWidth(size.fastBlacklist)
+frame:SetLabel(L["Быстрое добавление в черный список"])
+frame:SetTooltip(L["Не отображать окно ввода причины для черного списка"])
+frame.frame:HookScript("OnClick", function()
+	DB.global.fastBlacklist = settingsCheckBoxGRP.fastBlacklist:GetValue()
+end)
+frame:SetPoint("TOPLEFT", settingsCheckBoxGRP.blacklistReasonText.frame, "BOTTOMLEFT", 0, 0)
+settingsCheckBoxGRP:AddChild(frame)
+
 settingsCheckBoxGRP.setNote = GUI:Create("TCheckBox")
 local frame = settingsCheckBoxGRP.setNote
 frame:SetWidth(size.setNote)
@@ -342,6 +379,8 @@ frame:SetScript('OnEvent', function()
 	settingsCheckBoxGRP.blacklistOfficer:SetValue(DB.global.blacklistOfficer or false)
 	settings.clearDBtimes:SetValue(DB.global.clearDBtimes)
 	settingsCheckBoxGRP.confirmSearchClear:SetValue(DB.global.confirmSearchClear or false)
+	settingsCheckBoxGRP.blacklistReasonText:SetText(DB.global.blacklistReasonText == nil and L["defaultReason"] or DB.global.blacklistReasonText)
+	settingsCheckBoxGRP.fastBlacklist:SetValue(DB.global.fastBlacklist or false)
 	settingsCheckBoxGRP.setNote:SetValue(DB.global.setNote or false)
 	settingsCheckBoxGRP.noteText:SetText(DB.global.noteText or ""); settingsCheckBoxGRP.noteText.temptext = settingsCheckBoxGRP.noteText:GetText()
 	settingsCheckBoxGRP.setOfficerNote:SetValue(DB.global.setOfficerNote or false)
