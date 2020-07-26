@@ -224,6 +224,9 @@ function fn:blacklistRemove(name)
 	DB.realm.blackList[name:gsub("^%l", string.upper)] = nil
 end
 
+function fn:parseName(name)
+	return name:match("([^%s-]+)")
+end
 
 function fn:parseBL(cmd, str)
 	local name, reason

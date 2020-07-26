@@ -90,7 +90,7 @@ end
 addon.MENU = GUI:Create("SimpleGroup")
 local f = addon.MENU
 f:SetWidth(135)
-f:SetHeight(42)
+f:SetHeight(63)
 f:SetLayout("NIL")
 
 local invite = GUI:Create('Button')
@@ -113,7 +113,7 @@ blacklist:SetWidth(135)
 blacklist:SetHeight(20)
 blacklist.frame.HandlesGlobalMouseEvent = HandlesGlobalMouseEvent
 blacklist:SetCallback('OnClick', function()
-	local name = f.name
+	local name = fn:parseName(f.name)
 	fn:blackList(name)
 	interface.settings.Blacklist.content:update()
 	if not DB.global.fastBlacklist then
@@ -123,6 +123,19 @@ blacklist:SetCallback('OnClick', function()
 end)
 blacklist:SetPoint("TOPLEFT", invite.frame, "BOTTOMLEFT", 0, 0)
 f:AddChild(blacklist)
+
+local unblacklist = GUI:Create('Button')
+unblacklist:SetText('FGI - Unlacklist')
+unblacklist:SetWidth(135)
+unblacklist:SetHeight(20)
+unblacklist.frame.HandlesGlobalMouseEvent = HandlesGlobalMouseEvent
+unblacklist:SetCallback('OnClick', function()
+	local name = fn:parseName(f.name)
+	fn:unblacklist(name)
+	CloseDropDownMenus()
+end)
+unblacklist:SetPoint("TOPLEFT", blacklist.frame, "BOTTOMLEFT", 0, 0)
+f:AddChild(unblacklist)
 
 local function DropDownOnShow(self)
 	local dropdown = self.dropdown
