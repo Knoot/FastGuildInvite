@@ -180,11 +180,14 @@ local function inviteBtnText(text)
 	interface.scanFrame.invite:SetText(text)
 end
 
-local function IsInBlackList(name)
+local function IsInBlackList(name, full)
 	local n1 = name:lower()
 	local n2 = name:gsub("^%l", string.upper)
 	if DB.realm.blackList[n1] then return n1 end
 	if DB.realm.blackList[n2] then return n2 end
+	if not full then return false end
+	n1 = "^"..n1
+	n2 = "^"..n2
 	for k,v in pairs(DB.realm.blackList) do
 		if k:find(n1) or k:find(n2) then
 			return k
@@ -333,7 +336,7 @@ function fn:blackList(name, reason)
 end
 
 function fn:unblacklist(name)
-	local inBlacklist = IsInBlackList(name)
+	local inBlacklist = IsInBlackList(name, true)
 	if inBlacklist then
 		fn:blacklistRemove(inBlacklist)
 		print(format(L["Игрок %s удален из черного списка"], inBlacklist))
