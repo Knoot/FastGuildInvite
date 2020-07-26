@@ -118,4 +118,6 @@ whoFrame:SetScript("OnEvent", function()
 		FriendsFrame:Hide()
 		FriendsFrame:SetAlpha(libWho.frameAlpha or 1)
 	end
+	SOUNDKIT.IG_CHARACTER_INFO_TAB = SOUNDKIT.IG_CHARACTER_INFO_TAB_old
+	SOUNDKIT.IG_MAINMENU_CLOSE = SOUNDKIT.IG_MAINMENU_CLOSE_old
 end)
