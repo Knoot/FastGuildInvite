@@ -185,7 +185,23 @@ frame:SetScript("OnEvent", function(_,_,msg)
 		-- local list = addon.search.inviteList
 		-- local msg = fn:getRndMsg()
 		if DB.global.inviteType == 2 then
-			C_Timer.After(1, function() if not auto_decline[name] and addon.msgQueue[name] then fn:sendWhisper(name); addon.msgQueue[name] = nil end end)
+			C_Timer.After(1, function()
+				-- if not auto_decline[name] and addon.msgQueue[name] then
+					-- fn:sendWhisper(name)
+					-- addon.msgQueue[name] = nil
+				-- end
+				if auto_decline[name] then return end
+				if not addon.msgQueue[name] then
+					for k,v in pairs(addon.msgQueue) do
+						if k:find("^"..name.."-") then
+							name = k
+						end
+					end
+				end
+				
+				fn:sendWhisper(name)
+				addon.msgQueue[name] = nil
+			end)
 		end
 	end
 end)
