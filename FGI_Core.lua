@@ -125,7 +125,7 @@ blacklist:SetPoint("TOPLEFT", invite.frame, "BOTTOMLEFT", 0, 0)
 f:AddChild(blacklist)
 
 local unblacklist = GUI:Create('Button')
-unblacklist:SetText('FGI - Unlacklist')
+unblacklist:SetText('FGI - Unblacklist')
 unblacklist:SetWidth(135)
 unblacklist:SetHeight(20)
 unblacklist.frame.HandlesGlobalMouseEvent = HandlesGlobalMouseEvent
