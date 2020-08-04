@@ -190,17 +190,22 @@ frame:SetScript("OnEvent", function(_,_,msg)
 					-- fn:sendWhisper(name)
 					-- addon.msgQueue[name] = nil
 				-- end
+				local fullName = false
 				if auto_decline[name] then return end
 				if not addon.msgQueue[name] then
 					for k,v in pairs(addon.msgQueue) do
 						if k:find("^"..name.."-") then
-							name = k
+							fullName = k
+							break;
 						end
 					end
+				else
+					fullName = name
 				end
+				if not fullName then return end
 				
-				fn:sendWhisper(name)
-				addon.msgQueue[name] = nil
+				fn:sendWhisper(fullName)
+				addon.msgQueue[fullName] = nil
 			end)
 		end
 	end
