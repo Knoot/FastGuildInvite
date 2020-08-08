@@ -12,6 +12,27 @@ local fontSize = fn.fontSize
 
 local settings
 
+local noteHelp = "\n\n"..
+'%c - date and time (' .. date('%c') .. ")\n"..
+'%Y - year (' .. date('%Y') .. ")\n"..
+'%y - year (' .. date('%y') .. ")\n"..
+'%m - month (' .. date('%m') .. ")\n"..
+'%d - day (' .. date('%d') .. ")\n"..
+'%H - hour, using a 24-hour clock (' .. date('%H') .. ")\n"..
+'%M - minute (' .. date('%M') .. ")\n"..
+'%S - second (' .. date('%S') .. ")\n"..
+'%B - month (' .. date('%B') .. ")\n"..
+'%b - month (' .. date('%b') .. ")\n"..
+'%A - weekday (' .. date('%A') .. ")\n"..
+'%a - weekday ' .. date('%a') .. ")\n"..
+'%w - weekday (' .. date('%w') .. ")\n"..
+'%I - hour, using a 12-hour clock (' .. date('%I') .. ")\n"..
+'%p - "AM" or "PM" (' .. date('%p') .. ")\n"..
+'%x - date (' .. date('%x') .. ")\n"..
+'%X - time (' .. date('%X') .. ")\n"..
+'%% - the character (' .. date('%%') .. ")\n"..
+"\n\n Joined: %m/%d/%Y = "..date('Joined: %m/%d/%Y')
+
 local function updateMsgFilters()
 	if DB.realm.systemMSG then
 		ChatFrame_AddMessageEventFilter("CHAT_MSG_SYSTEM", fn.hideSysMsg)
@@ -289,11 +310,11 @@ settingsCheckBoxGRP.setNote = GUI:Create("TCheckBox")
 local frame = settingsCheckBoxGRP.setNote
 frame:SetWidth(size.setNote)
 frame:SetLabel(L["Заметка для новых игроков"])
-frame:SetTooltip(L["Установить заметку для новых членов гильдии"])
+frame:SetTooltip(L["Установить заметку для новых членов гильдии"]..noteHelp)
 frame.frame:HookScript("OnClick", function()
 	DB.global.setNote = settingsCheckBoxGRP.setNote:GetValue()
 end)
-frame:SetPoint("TOPLEFT", settingsCheckBoxGRP.confirmSearchClear.frame, "BOTTOMLEFT", 0, 0)
+frame:SetPoint("TOPLEFT", settingsCheckBoxGRP.fastBlacklist.frame, "BOTTOMLEFT", 0, 0)
 settingsCheckBoxGRP:AddChild(frame)
 
 settingsCheckBoxGRP.noteText = GUI:Create("EditBox")
@@ -321,7 +342,7 @@ settingsCheckBoxGRP.setOfficerNote = GUI:Create("TCheckBox")
 local frame = settingsCheckBoxGRP.setOfficerNote
 frame:SetWidth(size.setOfficerNote)
 frame:SetLabel(L["Заметка для офицеров для новых игроков"])
-frame:SetTooltip(L["Установить заметку для офицеров для новых членов гильдии"])
+frame:SetTooltip(L["Установить заметку для офицеров для новых членов гильдии"]..noteHelp)
 frame.frame:HookScript("OnClick", function()
 	DB.global.setOfficerNote = settingsCheckBoxGRP.setOfficerNote:GetValue()
 end)
@@ -348,12 +369,6 @@ frame.editbox:SetScript("OnEscapePressed", function(self)
 end)
 frame:SetPoint("TOPLEFT", settings.settingsCheckBoxGRP.setOfficerNote.frame, "BOTTOMLEFT", 0, 0)
 settingsCheckBoxGRP:AddChild(frame)
-
-
-settingsCheckBoxGRP.setNote.frame:Hide()	-- BETA
-settingsCheckBoxGRP.noteText.frame:Hide()	-- BETA
-settingsCheckBoxGRP.setOfficerNote.frame:Hide()	-- BETA
-settingsCheckBoxGRP.officerNoteText.frame:Hide()	-- BETA
 
 
 

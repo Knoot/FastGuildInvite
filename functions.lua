@@ -266,7 +266,7 @@ frame:SetScript("OnEvent", function(_,_,msg)
 			if DB.realm.alreadySended[name] then
 				addon.searchInfo.invited()
 			end
-			fn:setNote(name)
+			C_Timer.After(1, function() fn:setNote(name) end)
 		end
 	end
 end)
@@ -277,22 +277,24 @@ function fn:initDB()
 end
 
 function fn:setNote(name)
-	return 	--BETA
-	--[[if DB.global.setNote or DB.global.setOfficerNote then
+	if name == nil or name == '' then return end
+	if DB.global.setNote or DB.global.setOfficerNote then
+		name = name:match("([^-]+)-?")
 		for index=1, GetNumGuildMembers() do
 			local n, _, _, _, _, _, publicNote, officerNote = GetGuildRosterInfo(index)
-			if name ~= nil and n:match("(.*)-") ~= name then
-				if DB.global.setNote and CanEditPublicNote() and publicNote == "" then
-					-- GuildRosterSetPublicNote(index, DB.global.noteText)	--BETA
+			if n:match("([^-]+)-?") == name then
+				if DB.global.setNote and DB.global.setNote ~= "" and CanEditPublicNote() and publicNote == "" then
+					GuildRosterSetPublicNote(index, date(DB.global.noteText))
 					-- print("set note \""..DB.global.noteText.."\" for "..name)
 				end
-				if DB.global.setOfficerNote and C_GuildInfo.CanEditOfficerNote() and officerNote == "" then
-					-- GuildRosterSetOfficerNote(index, DB.global.officerNoteText)	--BETA
+				if DB.global.setOfficerNote and DB.global.setOfficerNote ~= "" and C_GuildInfo.CanEditOfficerNote() and officerNote == "" then
+					GuildRosterSetOfficerNote(index, date(DB.global.officerNoteText))
 					-- print("set officer note \""..DB.global.officerNoteText.."\" for "..name)
 				end
+				return
 			end
 		end
-	end]]
+	end
 end
 
 function fn:getCharLen(str)
