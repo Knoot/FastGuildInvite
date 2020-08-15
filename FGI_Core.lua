@@ -366,6 +366,7 @@ local defaultSettings =  {
 		officerNoteText = "",
 		confirmSearchClear = true,
 		fastBlacklist = false,
+		introShow = true,
 	},
 } 
 
