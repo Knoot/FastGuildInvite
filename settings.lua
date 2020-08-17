@@ -31,6 +31,7 @@ local noteHelp = "\n\n"..
 '%x - date (' .. date('%x') .. ")\n"..
 '%X - time (' .. date('%X') .. ")\n"..
 '%% - the character (' .. date('%%') .. ")\n"..
+'NAME - the character name (' .. UnitName('player') .. ")\n"..
 "\n\n Joined: %m/%d/%Y = "..date('Joined: %m/%d/%Y')
 
 local function updateMsgFilters()

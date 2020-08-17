@@ -284,12 +284,14 @@ function fn:setNote(name)
 			local n, _, _, _, _, _, publicNote, officerNote = GetGuildRosterInfo(index)
 			if n:match("([^-]+)-?") == name then
 				if DB.global.setNote and DB.global.setNote ~= "" and CanEditPublicNote() and publicNote == "" then
-					GuildRosterSetPublicNote(index, date(DB.global.noteText))
-					-- print("set note \""..DB.global.noteText.."\" for "..name)
+					-- GuildRosterSetPublicNote(index, date(DB.global.noteText))
+					GuildRosterSetPublicNote(index, date(fn:msgMod(DB.global.noteText, name)))
+					-- print("set note \""..date(DB.global.noteText).."\" for "..name)
 				end
 				if DB.global.setOfficerNote and DB.global.setOfficerNote ~= "" and C_GuildInfo.CanEditOfficerNote() and officerNote == "" then
-					GuildRosterSetOfficerNote(index, date(DB.global.officerNoteText))
-					-- print("set officer note \""..DB.global.officerNoteText.."\" for "..name)
+					-- GuildRosterSetOfficerNote(index, date(DB.global.officerNoteText))
+					GuildRosterSetOfficerNote(index, date(fn:msgMod(DB.global.officerNoteText, name)))
+					-- print("set officer note \""..date(DB.global.officerNoteText).."\" for "..name)
 				end
 				return
 			end
