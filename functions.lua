@@ -444,40 +444,60 @@ end
 
 
 function fn:messageSplit(str, arr)
-  arr = arr or {''}
-  while(str:len()>0) do
-    local _,e = str:find("[%s%.%,]")
-    local s = ''
-    if e then
-      s = str:sub(1,e)
-      str = str:sub(e+1, -1)
-    else
-      s = str
-      str = ''
-    end
-    if arr[#arr]:len()+s:len()<=255 then
-      arr[#arr] = arr[#arr] .. s
-    else
-      table.insert(arr, s)
-    end
-  end
-  for i=1, #arr do
-	if arr[i]:len()>255 then arr={};break;end
-  end
-  return arr
+	if not str then return {} end
+	arr = arr or {''}
+	while(str:len()>0) do
+		local _,e = str:find("[%s%.%,]")
+		local s = ''
+		if e then
+			s = str:sub(1,e)
+			str = str:sub(e+1, -1)
+		else
+			s = str
+			str = ''
+		end
+		if arr[#arr]:len()+s:len()<=255 then
+			arr[#arr] = arr[#arr] .. s
+		else
+			table.insert(arr, s)
+		end
+	end
+	for i=1, #arr do
+		if arr[i]:len()>255 then arr={};break;end
+	end
+	return arr
 end
 
 
 
-function fn:msgMod(msg, name)
+function fn:msgMod(msg, name, noErr)
 	if not msg then return end
 	if msg:find("NAME") then
-		local guildName, guildRankName, guildRankIndex, realm = GetGuildInfo("player")
 		msg = msg:gsub("NAME", name or 'PLAYER_NAME')
+	end
+	if msg:find("GUILDLINK") then
+		local club, link
+		DB.global.guildLinks = DB.global.guildLinks or {}
+		if DB.global.guildLinks[GetGuildInfo("player")] then
+			link = DB.global.guildLinks[GetGuildInfo("player")]
+		elseif ClubFinderGetCurrentClubListingInfo then
+			club = ClubFinderGetCurrentClubListingInfo(C_Club.GetGuildClubId())
+			if club then
+				link = GetClubFinderLink(club.clubFinderGUID, club.name)
+				DB.global.guildLinks[link:match("%[.*: (.*)%]")] = link
+			end
+		end
+		
+		msg = msg:gsub("GUILDLINK", link and link:gsub(" ", " ") or 'G_LINK')
+		
+		if not link and not noErr then
+			print(L["Невозможно создать ссылку гильдии. Откройте окно гильдии и попробуйте снова. Если проблема не устранена, вероятно вы не можете создавать ссылку гильдии."])
+			return nil
+		end
 	end
 	if msg:find("GUILD") then
 		local guildName, guildRankName, guildRankIndex, realm = GetGuildInfo("player")
-		msg = msg:gsub("GUILD", format("<%s>",guildName or 'GUILD_NAME'))
+		msg = msg:gsub("GUILD", format("<%s>", guildName and guildName:gsub(" ", " ") or 'GUILD_NAME'))
 	end
 	return msg
 end
@@ -505,7 +525,7 @@ function fn:sendWhisper(name)
 			addon.removeMsgList[name:match("([^-]*)")] = true
 		end
 		for _,message in pairs(fn:messageSplit(msg)) do
-			SendChatMessage(message, 'WHISPER', GetDefaultLanguage("player"), name)
+			SendChatMessage(message:gsub(" ", " "), 'WHISPER', GetDefaultLanguage("player"), name)
 		end
 	end
 end

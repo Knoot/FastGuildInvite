@@ -14,10 +14,12 @@ local CustomizePost
 
 local function previewSet(msg)
 	msg = msg or DB.factionrealm.messageList[DB.factionrealm.curMessage] or ''
-	if msg then msg = fn:msgMod(msg) end
+	if msg then msg = fn:msgMod(msg, nil, true) end
 	local MSG = ''
-	for _,v in pairs(fn:messageSplit(msg)) do
-		MSG = MSG .. v .. "\n"
+	if msg ~= nil then
+		for _,v in pairs(fn:messageSplit(msg)) do
+			MSG = MSG .. v .. "\n"
+		end
 	end
 	CustomizePost.curMessage:SetText(format(L["Предпросмотр: %s"], MSG or ''))
 end
@@ -72,7 +74,7 @@ frame:SetCallback("OnValueChanged", function(key)
 	CustomizePost.curMessage:SetText(format(L["Предпросмотр: %s"], msg or ''))]]
 	previewSet(msg)
 end)
-frame:SetPoint("TOP", CustomizePost.intro.frame, "BOTTOM", 0, -10)
+frame:SetPoint("TOP", CustomizePost.intro.frame, "BOTTOM", 0, -20)
 CustomizePost:AddChild(frame)
 
 CustomizePost.message = GUI:Create("EditBox")
