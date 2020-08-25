@@ -274,6 +274,7 @@ end)
 function fn:initDB()
 	DB = addon.DB
 	debugDB = addon.debugDB
+	addon.search = DB.factionrealm.search and DB.factionrealm.search or addon.search
 end
 
 function fn:setNote(name)
@@ -857,6 +858,9 @@ local function searchWhoResultCallback(query, results)
 	if DB.global.queueNotify and #addon.search.inviteList > addon.search.oldCount then
 		FGI.animations.notification:Start(format(L["Игроков найдено: %d"], #addon.search.inviteList - addon.search.oldCount))
 	end
+	
+	DB.factionrealm.search = addon.search
+	
 	local list = addon.search.inviteList
 	interface.scanFrame.progressBar:SetMinMax(0, #addon.search.whoQueryList)
 	interface.scanFrame.progressBar:SetProgress(addon.search.progress-1)

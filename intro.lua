@@ -8,15 +8,21 @@ local fontSize = fn.fontSize
 local L = {
 	ruRU = {
 		head = "Спасибо, что помогаете делать аддон лучше.",
-		body = "Аддон появился в феврале 2019, с тех пор было добавлено множество функций. Благодаря вашей активности мы с вами в течении недели преодолели отключение автоматического поиска в сентябре 2019. Я не планирую прекращать разработку аддона, спасибо вам за ваши идеи по усовершенствованию аддона. Ниже вы можете найти ссылки если вы хотите материально поддержать автора.",
+		support = "Ниже вы можете найти ссылки если вы хотите материально поддержать автора.",
 		laterButton = "Напомнить при обновлении аддона",
 		neverButton = "Больше не показывать",
+		updates = {
+			"Все данные поиска сохраняются между сессиями. Таким образом, когда вы возвращаетесь в игру, прогресс поиска и список найденных игроков будут сохранены.",
+		},
 	},
 	enUS = {
 		head = "Thanks for helping make the addon better.",
-		body = "The addon appeared in February 2019, and many features have been added since then. Thanks to your activity, we overcame the automatic search disablement in September 2019 within a week. I do not plan to stop developing the addon, thank you for your ideas on improving the addon. Below you can find links if you want to financially support the author.",
+		support = "Below you can find links if you want to financially support the author.",
 		laterButton = "Remind me when updating addon",
 		neverButton = "Do not show again",
+		updates = {
+			"All search data is saved between sessions. So now, when you come back to the game, the search progress and the list of players found will be saved.",
+		},
 	}
 }
 L = GetLocale() == "ruRU" and L.ruRU or L.enUS
@@ -43,7 +49,7 @@ interface.intro = GUI:Create("ClearFrame")
 intro = interface.intro
 intro:SetTitle("Fast Guild Invite v."..addon.version)
 intro:SetWidth(600)
-intro:SetHeight(440)
+intro:SetHeight(640)
 intro:SetLayout("NIL")
 intro:SetPoint("CENTER", UIParent)
 
@@ -57,68 +63,27 @@ frame:SetWidth(intro.frame:GetWidth() - 40)
 frame:SetPoint("TOP", intro.frame, "TOP", 0, -40)
 intro:AddChild(frame)
 
+intro.updates = GUI:Create("TLabel")
+local frame = intro.updates
+fontSize(frame.label)
+frame.label:SetJustifyH("LEFT")
+frame:SetWidth(intro.frame:GetWidth() - 40)
+frame:SetPoint("TOP", intro.head.frame, "BOTTOM", 0, -20)
+intro:AddChild(frame)
+
 intro.body = GUI:Create("TLabel")
 local frame = intro.body
-frame:SetText(L.body)
+frame:SetText(L.support)
 fontSize(frame.label)
 frame.label:SetJustifyH("CENTER")
 frame:SetWidth(intro.frame:GetWidth() - 40)
-frame:SetPoint("TOP", intro.head.frame, "BOTTOM", 0, -40)
+frame:SetPoint("TOP", intro.updates.frame, "BOTTOM", 0, -20)
 intro:AddChild(frame)
 
-intro.paypalL = GUI:Create("TLabel")
-local frame = intro.paypalL
-frame:SetText(color.blue.."PayPal")
-fontSize(frame.label)
-frame.label:SetJustifyH("LEFT")
-frame:SetWidth(intro.frame:GetWidth() - 40)
-frame:SetPoint("TOPLEFT", intro.head.frame, "BOTTOMLEFT", 0, -140)
-intro:AddChild(frame)
 
-intro.paypalE = GUI:Create("EditBox")
-local frame = intro.paypalE
-frame:SetWidth(250)
-frame:DisableButton(true)
-EditBoxChange(frame)
-frame:SetPoint("TOPLEFT", intro.paypalL.frame, "BOTTOMLEFT", 0, 0)
-frame:SetText(color.blue.."https://www.paypal.me/Knoot")
-intro:AddChild(frame)
 
-intro.patreonL = GUI:Create("TLabel")
-local frame = intro.patreonL
-frame:SetText(color.orange.."Patreon")
-fontSize(frame.label)
-frame.label:SetJustifyH("LEFT")
-frame:SetWidth(intro.frame:GetWidth() - 40)
-frame:SetPoint("TOPLEFT", intro.paypalE.frame, "BOTTOMLEFT", 0, -20)
-intro:AddChild(frame)
 
-intro.patreonE = GUI:Create("EditBox")
-local frame = intro.patreonE
-frame:SetWidth(250)
-frame:DisableButton(true)
-EditBoxChange(frame)
-frame:SetPoint("TOPLEFT", intro.patreonL.frame, "BOTTOMLEFT", 0, 0)
-frame:SetText(color.orange.."https://www.patreon.com/FastGuildInvite")
-intro:AddChild(frame)
 
-intro.discordL = GUI:Create("TLabel")
-local frame = intro.discordL
-frame:SetText("Discord")
-fontSize(frame.label)
-frame.label:SetJustifyH("LEFT")
-frame:SetWidth(intro.frame:GetWidth() - 40)
-frame:SetPoint("TOPLEFT", intro.patreonE.frame, "BOTTOMLEFT", 0, -20)
-intro:AddChild(frame)
-
-intro.discordE = GUI:Create("EditBox")
-local frame = intro.discordE
-frame:SetWidth(250)
-frame:DisableButton(true)
-EditBoxChange(frame)
-frame:SetPoint("TOPLEFT", intro.discordL.frame, "BOTTOMLEFT", 0, 0)
-frame:SetText("https://discord.gg/4mU5att")
-intro:AddChild(frame)
 
 intro.showLater = GUI:Create("Button")
 local frame = intro.showLater
@@ -148,6 +113,60 @@ end)
 frame:SetPoint("LEFT", intro.showLater.frame, "RIGHT", 0, 0)
 intro:AddChild(frame)
 
+intro.discordE = GUI:Create("EditBox")
+local frame = intro.discordE
+frame:SetWidth(250)
+frame:DisableButton(true)
+EditBoxChange(frame)
+frame:SetPoint("BOTTOMLEFT", intro.showLater.frame, "TOPLEFT", 0, 20)
+frame:SetText("https://discord.gg/4mU5att")
+intro:AddChild(frame)
+
+intro.discordL = GUI:Create("TLabel")
+local frame = intro.discordL
+frame:SetText("Discord")
+fontSize(frame.label)
+frame.label:SetJustifyH("LEFT")
+frame:SetWidth(intro.frame:GetWidth() - 40)
+frame:SetPoint("BOTTOMLEFT", intro.discordE.frame, "TOPLEFT", 0, 0)
+intro:AddChild(frame)
+
+intro.patreonE = GUI:Create("EditBox")
+local frame = intro.patreonE
+frame:SetWidth(250)
+frame:DisableButton(true)
+EditBoxChange(frame)
+frame:SetPoint("BOTTOMLEFT", intro.discordL.frame, "TOPLEFT", 0, 20)
+frame:SetText(color.orange.."https://www.patreon.com/FastGuildInvite")
+intro:AddChild(frame)
+
+intro.patreonL = GUI:Create("TLabel")
+local frame = intro.patreonL
+frame:SetText(color.orange.."Patreon")
+fontSize(frame.label)
+frame.label:SetJustifyH("LEFT")
+frame:SetWidth(intro.frame:GetWidth() - 40)
+frame:SetPoint("BOTTOMLEFT", intro.patreonE.frame, "TOPLEFT", 0, 0)
+intro:AddChild(frame)
+
+intro.paypalE = GUI:Create("EditBox")
+local frame = intro.paypalE
+frame:SetWidth(250)
+frame:DisableButton(true)
+EditBoxChange(frame)
+frame:SetPoint("BOTTOMLEFT", intro.patreonL.frame, "TOPLEFT", 0, 20)
+frame:SetText(color.blue.."https://www.paypal.me/Knoot")
+intro:AddChild(frame)
+
+intro.paypalL = GUI:Create("TLabel")
+local frame = intro.paypalL
+frame:SetText(color.blue.."PayPal")
+fontSize(frame.label)
+frame.label:SetJustifyH("LEFT")
+frame:SetWidth(intro.frame:GetWidth() - 40)
+frame:SetPoint("BOTTOMLEFT", intro.paypalE.frame, "TOPLEFT", 0, 0)
+intro:AddChild(frame)
+
 end
 
 
@@ -162,5 +181,11 @@ frame:SetScript('OnEvent', function()
 	
 	if not DB.global.introShow or DB.global.introShow == addon.version or tonumber(FGI.version) == nil then
 		intro:Hide()
+	else
+		local str = ""
+		for i=1, #L.updates do
+			str = format("%s\n    %d. %s", str, i, L.updates[i])
+		end
+		intro.updates:SetText(str)
 	end
 end)
