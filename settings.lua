@@ -371,6 +371,20 @@ end)
 frame:SetPoint("TOPLEFT", settings.settingsCheckBoxGRP.setOfficerNote.frame, "BOTTOMLEFT", 0, 0)
 settingsCheckBoxGRP:AddChild(frame)
 
+settingsCheckBoxGRP.saveSearch = GUI:Create("TCheckBox")
+local frame = settingsCheckBoxGRP.saveSearch
+frame:SetWidth(size.saveSearch)
+frame:SetLabel(L["Сохранить состояние поиска"])
+frame:SetTooltip(L["Сохранить состояние поиска между сессиями"])
+frame.frame:HookScript("OnClick", function()
+	DB.global.saveSearch = settingsCheckBoxGRP.saveSearch:GetValue()
+	if not DB.global.saveSearch then
+		DB.factionrealm.search = nil
+	end
+end)
+frame:SetPoint("TOPLEFT", settingsCheckBoxGRP.officerNoteText.frame, "BOTTOMLEFT", 0, 0)
+settingsCheckBoxGRP:AddChild(frame)
+
 
 
 
@@ -401,6 +415,7 @@ frame:SetScript('OnEvent', function()
 	settingsCheckBoxGRP.noteText:SetText(DB.global.noteText or ""); settingsCheckBoxGRP.noteText.temptext = settingsCheckBoxGRP.noteText:GetText()
 	settingsCheckBoxGRP.setOfficerNote:SetValue(DB.global.setOfficerNote or false)
 	settingsCheckBoxGRP.officerNoteText:SetText(DB.global.officerNoteText or ""); settingsCheckBoxGRP.officerNoteText.temptext = settingsCheckBoxGRP.officerNoteText:GetText()
+	settingsCheckBoxGRP.saveSearch:SetValue(DB.global.saveSearch or false)
 	
 	
 	updateMsgFilters()

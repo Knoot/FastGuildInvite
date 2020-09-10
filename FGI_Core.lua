@@ -367,6 +367,7 @@ local defaultSettings =  {
 		confirmSearchClear = true,
 		fastBlacklist = false,
 		introShow = true,
+		saveSearch = true
 	},
 } 
 
