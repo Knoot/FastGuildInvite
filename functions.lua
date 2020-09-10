@@ -266,7 +266,7 @@ frame:SetScript("OnEvent", function(_,_,msg)
 			if DB.realm.alreadySended[name] then
 				addon.searchInfo.invited()
 			end
-			C_Timer.After(1, function() fn:setNote(name) end)
+			C_Timer.After(5, function() fn:setNote(name) end)
 		end
 	end
 end)
@@ -283,7 +283,7 @@ function fn:setNote(name)
 		name = name:match("([^-]+)-?")
 		for index=1, GetNumGuildMembers() do
 			local n, _, _, _, _, _, publicNote, officerNote = GetGuildRosterInfo(index)
-			if n:match("([^-]+)-?") == name then
+			if n and n:match("([^-]+)-?") == name then
 				if DB.global.setNote and DB.global.setNote ~= "" and CanEditPublicNote() and publicNote == "" then
 					-- GuildRosterSetPublicNote(index, date(DB.global.noteText))
 					GuildRosterSetPublicNote(index, date(fn:msgMod(DB.global.noteText, name)))
