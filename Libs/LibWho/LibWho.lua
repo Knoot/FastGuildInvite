@@ -1,4 +1,4 @@
-local MAJOR,MINOR = "FGI-WhoLib", 2
+local MAJOR,MINOR = "FGI-WhoLib", 3
 local libWho, oldminor = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not libWho then return end
@@ -16,6 +16,8 @@ libWho.callback = false
 libWho.timeCallbackStart = false
 libWho.timeCallbackEnd = false
 libWho.interval = 5
+libWho.IG_CHARACTER_INFO_TAB = SOUNDKIT.IG_CHARACTER_INFO_TAB
+libWho.IG_MAINMENU_CLOSE = SOUNDKIT.IG_MAINMENU_CLOSE
 
 local function searchIntervalActionEnd()
 	C_Timer.After(libWho.interval, function()
@@ -54,6 +56,8 @@ function libWho:SetTimeCallbackEnd(callback)
 end
 
 function libWho:GetWho(query)
+	SOUNDKIT.IG_CHARACTER_INFO_TAB=0
+	SOUNDKIT.IG_MAINMENU_CLOSE=0
 	libWho.isAddon = true
 	libWho.whoQuery = query
 	libWho.saveShown = false
@@ -88,8 +92,16 @@ end
 whoFrame = CreateFrame('Frame')
 whoFrame:RegisterEvent("WHO_LIST_UPDATE")
 whoFrame:SetScript("OnEvent", function()
-	searchIntervalActionStart()
+	if libWho.saveShown then
+		libWho.saveShown:Click()
+	else
+		FriendsFrame:Hide()
+		FriendsFrame:SetAlpha(libWho.frameAlpha or 1)
+	end
+	SOUNDKIT.IG_CHARACTER_INFO_TAB = libWho.IG_CHARACTER_INFO_TAB
+	SOUNDKIT.IG_MAINMENU_CLOSE = libWho.IG_MAINMENU_CLOSE
 	if not libWho.isAddon then return end
+	searchIntervalActionStart()
 	libWho.isAddon = false
 	result = {}
 
@@ -112,12 +124,4 @@ whoFrame:SetScript("OnEvent", function()
 	
 	C_FriendList.SetWhoToUi(false)
 	libWho:returnWho(result)
-	if libWho.saveShown then
-		libWho.saveShown:Click()
-	else
-		FriendsFrame:Hide()
-		FriendsFrame:SetAlpha(libWho.frameAlpha or 1)
-	end
-	SOUNDKIT.IG_CHARACTER_INFO_TAB = SOUNDKIT.IG_CHARACTER_INFO_TAB_old
-	SOUNDKIT.IG_MAINMENU_CLOSE = SOUNDKIT.IG_MAINMENU_CLOSE_old
 end)
