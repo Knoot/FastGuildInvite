@@ -12,9 +12,8 @@ local L = {
 		laterButton = "Напомнить при обновлении аддона",
 		neverButton = "Больше не показывать",
 		updates = {
-			"Увеличена задержка для добавления заметки. Если у вас все еще возникают проблемы пожалуйста сообщите об этом.",
-			"Исправлено открытие окна \"Кто\". Почему иногда в чате появляется информация об игроках все еще не известно.",
-			"Добавлен флажок \"Сохранить состояние поиска\" чтобы вы самостоятельно выбрали, сохранять поиск между сессиями или нет. По умолчанию включен.",
+			"Устранена причина закрытия окна \"кто\" при ручном использовании.",
+			"Почему в чате появляется информация об игроках все еще не известно.",
 		},
 	},
 	enUS = {
@@ -23,9 +22,8 @@ local L = {
 		laterButton = "Remind me when updating addon",
 		neverButton = "Do not show again",
 		updates = {
-			"Increased the delay for adding a note. If you still have problems please report it.",
-			"Fixed opening of the \"Who\" window. Why sometimes information about players appears in the chat is still unknown.",
-			"Added \"Save search state\" checkbox so that you can choose whether to save the search between sessions or not. Enabled by default.",
+			"The reason for closing the \"who\" window during manual use has been eliminated.",
+			"Why information about players appears in the chat is still unknown.",
 		},
 	}
 }
