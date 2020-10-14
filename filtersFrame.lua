@@ -599,9 +599,9 @@ local function saveFilter()
 		table.insert(errors, format("%s \n %s", L["Имя фильтра"], L["Имя фильтра занято"]))
 	end
 	
-	if filterByName and not filterByName:find("^"..addon.ruReg.."+$") then
-		table.insert(errors, format("%s \n %s", L["Фильтр по имени"], L["Поле может содержать только буквы"]))
-	end
+	-- if filterByName and not filterByName:find("^"..addon.ruReg.."+$") then
+		-- table.insert(errors, format("%s \n %s", L["Фильтр по имени"], L["Поле может содержать только буквы"]))
+	-- end
 	if lvlRange then
 		if lvlRange:find(("[\-]?%d+:[\-]?%d+")) then
 			min, max = fn:split(lvlRange, ":", -1)
