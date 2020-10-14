@@ -12,7 +12,7 @@ local L = {
 		laterButton = "Напомнить при обновлении аддона",
 		neverButton = "Больше не показывать",
 		updates = {
-			"Устранена причина закрытия окна \"кто\" при ручном использовании.",
+			"Быстрое исправление причин неработоспособности аддона в SL.",
 			"Почему в чате появляется информация об игроках все еще не известно.",
 		},
 	},
@@ -22,7 +22,7 @@ local L = {
 		laterButton = "Remind me when updating addon",
 		neverButton = "Do not show again",
 		updates = {
-			"The reason for closing the \"who\" window during manual use has been eliminated.",
+			"Quick fix for the reasons for the inoperability of the add-on in SL.",
 			"Why information about players appears in the chat is still unknown.",
 		},
 	}
