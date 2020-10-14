@@ -24,7 +24,7 @@ FGISYNCH_PREFIX = "FGI_SYNCH"
 C_ChatInfo.RegisterAddonMessagePrefix(FGISYNCH_PREFIX)
 
 
-FGI_MAXLVL = 120
+FGI_MAXLVL = 60
 --[===[@non-retail@
 FGI_MAXLVL = 60
 --@end-non-retail@]===]
