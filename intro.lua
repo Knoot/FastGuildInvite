@@ -11,19 +11,23 @@ local L = {
 		support = "Ниже вы можете найти ссылки если вы хотите материально поддержать автора.",
 		laterButton = "Напомнить при обновлении аддона",
 		neverButton = "Больше не показывать",
+		
+		
 		updates = {
-			"Быстрое исправление причин неработоспособности аддона в SL.",
-			"Почему в чате появляется информация об игроках все еще не известно.",
+			"Добавлен чекбокс для отображения текущего поискового запроса в окне чата.",
 		},
+		
+		
 	},
 	enUS = {
 		head = "Thanks for helping make the addon better.",
 		support = "Below you can find links if you want to financially support the author.",
 		laterButton = "Remind me when updating addon",
 		neverButton = "Do not show again",
+		
+		
 		updates = {
-			"Quick fix for the reasons for the inoperability of the add-on in SL.",
-			"Why information about players appears in the chat is still unknown.",
+			"Added a checkbox to display the current search query in the chat window.",
 		},
 	}
 }

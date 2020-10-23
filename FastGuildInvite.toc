@@ -53,3 +53,4 @@ synch.lua
 credits.lua
 security.lua
 intro.lua
+logs.lua

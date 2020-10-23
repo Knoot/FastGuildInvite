@@ -113,6 +113,11 @@ settings.credits.name = L["Благодарности"]
 settings.credits.parent = settings.name
 InterfaceOptions_AddCategory(settings.credits)
 
+settings.Logs = CreateFrame("Frame", settings)
+settings.Logs.name = L["Логи"]
+settings.Logs.parent = settings.name
+InterfaceOptions_AddCategory(settings.Logs)
+
 --[[settings.db = CreateFrame("Frame", settings)
 settings.db.name = "DB"
 settings.db.parent = settings.name

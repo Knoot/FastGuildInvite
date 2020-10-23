@@ -835,6 +835,7 @@ end
 
 local function searchWhoResultCallback(query, results)
 	local searchLvl = getSearchDeepLvl(query)
+	if DB.global.logs.on then print(("%s " .. L["Запрос: %s. Поиск вернул игроков: %d"]):format("|cffffff00<|r|cff16ABB5FGI|r|cffffff00>|r", query, #results)) end
 	if #results >= FGI_MAXWHORETURN and DB.realm.customWho then
 		if not DB.global.addonMSG then
 			print(format(L["Поиск вернул 50 или более результатов, рекомендуется изменить настройки поиска. Запрос: %s"], query))
