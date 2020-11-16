@@ -39,7 +39,16 @@ frame:DisableButton(true)
 frame:SetPoint("TOP", CustomList.frame, "TOP", 0, 0)
 CustomList:AddChild(frame)
 
-
+CustomList.customList = GUI:Create("TCheckBox")
+local frame = CustomList.customList
+frame:SetWidth(size.customListBtn)
+frame:SetLabel(L["Вкл/Выкл"])
+frame:SetTooltip(L["Использовать пользовательский список запросов"])
+frame:SetPoint("TOPLEFT", CustomList.list.frame, "BOTTOMLEFT", 0, 0)
+frame.frame:HookScript("OnClick", function()
+	DB.realm.customWho = CustomList.customList:GetValue()
+end)
+CustomList:AddChild(frame)
 
 CustomList.saveButton = GUI:Create("Button")
 local frame = CustomList.saveButton
@@ -71,4 +80,6 @@ frame:SetScript('OnEvent', function()
 		str = format("%s%s\n", str, DB.faction.customWhoList[i])
 		CustomList.list:SetText(str)
 	end
+	
+	CustomList.customList:SetValue(DB.realm.customWho or false)
 end)

@@ -98,17 +98,6 @@ mainCheckBoxGRP:SetHeight(120)
 mainCheckBoxGRP:SetWidth(size.mainCheckBoxGRP)
 mainFrame:AddChild(mainCheckBoxGRP)
 
-mainCheckBoxGRP.customList = GUI:Create("TCheckBox")
-local frame = mainCheckBoxGRP.customList
-frame:SetWidth(size.customListBtn)
-frame:SetLabel(L["Пользовательский список"])
-frame:SetTooltip(L["Использовать пользовательский список запросов"])
--- fontSize(frame.text)
-frame.frame:HookScript("OnClick", function()
-	DB.realm.customWho = mainCheckBoxGRP.customList:GetValue()
-end)
-mainCheckBoxGRP:AddChild(frame)
-
 --[[mainCheckBoxGRP.backgroundRun = GUI:Create("TCheckBox")
 local frame = mainCheckBoxGRP.backgroundRun
 frame:SetWidth(size.backgroundRun)
@@ -287,7 +276,6 @@ frame:SetScript('OnEvent', function()
 	C_Timer.After(0.1, function()
 	inviteTypeGRP.drop:SetValue(DB.global.inviteType)
 	
-	mainCheckBoxGRP.customList:SetValue(DB.realm.customWho or false)
 	-- mainCheckBoxGRP.backgroundRun:SetValue(DB.backgroundRun or false)
 	mainCheckBoxGRP.enableFilters:SetValue(DB.realm.enableFilters or false)
 	
@@ -313,11 +301,8 @@ frame:SetScript('OnEvent', function()
 	mainCheckBoxGRP:ClearAllPoints()
 	mainCheckBoxGRP:SetPoint("TOPLEFT", inviteTypeGRP.frame, "BOTTOMLEFT", 0, -20)
 	
-	mainCheckBoxGRP.customList:ClearAllPoints()
-	mainCheckBoxGRP.customList:SetPoint("TOPLEFT", mainCheckBoxGRP.frame, "TOPLEFT", 0, 0)
-	
 	mainCheckBoxGRP.enableFilters:ClearAllPoints()
-	mainCheckBoxGRP.enableFilters:SetPoint("TOPLEFT", mainCheckBoxGRP.customList.frame, "BOTTOMLEFT", 0, 0)
+	mainCheckBoxGRP.enableFilters:SetPoint("TOPLEFT", mainCheckBoxGRP.frame, "TOPLEFT", 0, 0)
 	
 	mainFrame.wheelHint:ClearAllPoints()
 	mainFrame.wheelHint:SetPoint("TOPLEFT", inviteTypeGRP.frame, "TOPRIGHT", 15, 0)
