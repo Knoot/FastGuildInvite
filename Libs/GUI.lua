@@ -353,6 +353,7 @@ local function Constructor()
 	titletext:SetPoint("TOP", titlebg, "TOP", 0, -14)
 
 	local titlebg_l = frame:CreateTexture(nil, "OVERLAY")
+	titlebg_l:SetParent(title)
 	titlebg_l:SetTexture(131080) -- Interface\\DialogFrame\\UI-DialogBox-Header
 	titlebg_l:SetTexCoord(0.21, 0.31, 0, 0.63)
 	titlebg_l:SetPoint("RIGHT", titlebg, "LEFT")
@@ -360,6 +361,7 @@ local function Constructor()
 	titlebg_l:SetHeight(40)
 
 	local titlebg_r = frame:CreateTexture(nil, "OVERLAY")
+	titlebg_r:SetParent(title)
 	titlebg_r:SetTexture(131080) -- Interface\\DialogFrame\\UI-DialogBox-Header
 	titlebg_r:SetTexCoord(0.67, 0.77, 0, 0.63)
 	titlebg_r:SetPoint("LEFT", titlebg, "RIGHT")
