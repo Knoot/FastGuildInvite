@@ -371,6 +371,12 @@ local defaultSettings =  {
 		logs = {
 			on = false,
 			
+		},
+		scanFrameChilds = {
+			title = true,
+			player = true,
+			progress = true,
+			buttons = true,
 		}
 	},
 } 

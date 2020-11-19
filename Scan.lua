@@ -14,7 +14,7 @@ local debug = fn.debug
 local auto_decline = {}
 addon.msgQueue = {}
 
-
+local testnew = true
 
 local function Button_OnClick_NoSound(frame, ...)
 	GUI:ClearFocus()
@@ -81,9 +81,55 @@ end
 interface.scanFrame = GUI:Create("ClearFrame")
 local scanFrame = interface.scanFrame
 scanFrame:SetTitle("FGI Scan")
-scanFrame:SetWidth(size.scanFrameW)
-scanFrame:SetHeight(size.scanFrameH)
+scanFrame:SetWidth(size.scanFrameW-50)
 scanFrame:SetLayout("NIL")
+
+scanFrame.update = function()
+	local last = scanFrame
+	local topAlign = DB.global.scanFrameChilds.title and -25 or -10
+	
+	if DB.global.scanFrameChilds.title then
+		scanFrame.title:Show()
+		scanFrame.titlebg:Show()
+		scanFrame.closeButton.frame:Show()
+	else
+		scanFrame.title:Hide()
+		scanFrame.titlebg:Hide()
+		scanFrame.closeButton.frame:Hide()
+	end
+	if DB.global.scanFrameChilds.player then
+		scanFrame.player:SetPoint("TOP", last.frame, "TOP", 0, topAlign)
+		scanFrame.player.frame:Show()
+		-- last = scanFrame.player
+		topAlign = topAlign - 32
+	else
+		scanFrame.player.frame:Hide()
+	end
+	if DB.global.scanFrameChilds.progress then
+	-- scanFrame.progressBar:ClearAllPoints()
+		scanFrame.progressBar:SetPoint("TOP", last.frame, last == scanFrame and "TOP" or "BOTTOM", 0, last == scanFrame and topAlign or 0)
+		scanFrame.progressBar:Show()
+		last = scanFrame.progressBar
+		topAlign = 0
+	else
+		scanFrame.progressBar:Hide()
+	end
+	if DB.global.scanFrameChilds.buttons then
+	-- scanFrame.pausePlay:ClearAllPoints()
+		scanFrame.pausePlay:SetPoint("TOP", last.frame, last == scanFrame and "TOP" or "BOTTOM", (scanFrame.invite.frame:GetWidth()-scanFrame.decline.frame:GetWidth())/2, last == scanFrame and topAlign or 0)
+		scanFrame.invite.frame:Show()
+		scanFrame.pausePlay.frame:Show()
+		scanFrame.decline.frame:Show()
+		last = scanFrame.pausePlay
+	else
+		scanFrame.invite.frame:Hide()
+		scanFrame.pausePlay.frame:Hide()
+		scanFrame.decline.frame:Hide()
+	end
+	
+	local height = 25 + (DB.global.scanFrameChilds.title and 15 or 0) + (DB.global.scanFrameChilds.player and 32 or 0) + (DB.global.scanFrameChilds.progress and scanFrame.progressBar.frame:GetHeight() or 0) + (DB.global.scanFrameChilds.buttons and scanFrame.pausePlay.frame:GetHeight() or 0)
+	scanFrame:SetHeight(height)
+end
 
 scanFrame.title:SetScript('OnMouseUp', function(mover)
 	local frame = mover:GetParent()
@@ -104,6 +150,13 @@ scanFrame.title:SetScript('OnMouseUp', function(mover)
 	DB.global.scanFrame.yOfs=yOfs
 end)
 
+local function Title_OnMouseDown(frame)
+	frame:StartMoving()
+	GUI:ClearFocus()
+end
+
+
+
 scanFrame.closeButton = GUI:Create('Button')
 local frame = scanFrame.closeButton
 frame:SetText('X')
@@ -112,6 +165,16 @@ fn:closeBtn(frame)
 frame:SetCallback('OnClick', function()
 	interface.scanFrame:Hide()
 end)
+frame:SetPoint("CENTER", scanFrame.frame, "TOPRIGHT", -8, -8)
+scanFrame:AddChild(frame)
+
+
+scanFrame.player = GUI:Create("Label")
+local frame = scanFrame.player
+frame:SetText("PlayerName \nPlayerClass PlayerLevel\n")
+fontSize(frame.label)
+frame:SetWidth(scanFrame.frame:GetWidth()-20)
+frame.label:SetJustifyH("CENTER")
 scanFrame:AddChild(frame)
 
 
@@ -140,22 +203,19 @@ local frame = scanFrame.progressBar
 frame.SetProgress = SetProgress
 frame:SetPlaceholder("%s%% %s/%s")
 fontSize(frame.statustext)
-frame:SetWidth(scanFrame.frame:GetWidth()-20)
 frame:SetHeight(30)
---frame:SetMinMax(GetTime(),GetTime()+200)
+frame:SetWidth(scanFrame.frame:GetWidth()-20)
 scanFrame:AddChild(frame)
---frame:SetProgress(GetTime()+180)
 
 
 
 
 scanFrame.invite = GUI:Create("Button")
 local frame = scanFrame.invite
-frame:SetText(format(L["Пригласить: %d"],0))
--- fontSize(frame.text)
-btnText(frame)
-frame:SetWidth(size.inviteBTN)
 frame:SetHeight(40)
+frame:SetWidth(60)
+frame:SetText("+(0)")
+btnText(frame)
 frame:SetCallback("OnClick", function(self)
 	fn:invitePlayer()
 end)
@@ -260,12 +320,14 @@ frame.frame:SetScript("PreClick", function()
 end)
 frame.frame:SetScript("OnClick", Button_OnClick_NoSound)
 scanFrame:AddChild(frame)
+		scanFrame.pausePlayLabel:SetPoint("CENTER", scanFrame.pausePlay.frame, "CENTER", 0, 0)
+		scanFrame.invite:SetPoint("RIGHT", scanFrame.pausePlay.frame, "LEFT", -2, 0)
 
 
 
 
 local function clearSearch()
-	scanFrame.invite:SetText(format(L["Пригласить: %d"],0))
+	scanFrame.invite:SetText(format("+(%d)",0))
 	local resume = addon.search.state == "start"
 	if resume then
 		scanFrame.pausePlay.frame:Click()
@@ -292,7 +354,6 @@ end
 scanFrame.clear = GUI:Create("Button")
 local frame = scanFrame.clear
 frame:SetText(L["Сбросить"])
--- fontSize(frame.text)
 btnText(frame)
 frame:SetWidth(size.clearBTN)
 frame:SetHeight(40)
@@ -303,6 +364,21 @@ frame:SetCallback("OnClick", function()
 		clearSearch()
 	end
 end)
+scanFrame:AddChild(frame)
+
+
+
+scanFrame.decline = GUI:Create("Button")
+local frame = scanFrame.decline
+frame:SetText("-")
+btnText(frame)
+frame:SetWidth(40)
+frame:SetHeight(40)
+frame:SetCallback("OnClick", function(self)
+	--fn:declineInvite()
+end)
+frame.frame:SetScript("OnClick", Button_OnClick_NoSound)
+frame:SetPoint("LEFT", scanFrame.pausePlay.frame, "RIGHT", 2, 0)
 scanFrame:AddChild(frame)
 
 interface.confirmClearFrame = GUI:Create("ClearFrame")
@@ -342,6 +418,7 @@ frame:SetCallback("OnClick", function()
 	clearSearch()
 	interface.confirmClearFrame:Hide()
 end)
+frame:SetPoint("TOPLEFT", interface.confirmClearFrame.frame, "TOPLEFT", 20, -25)
 confirmClearFrame:AddChild(frame)
 
 confirmClearFrame.no = GUI:Create("Button")
@@ -354,6 +431,7 @@ frame:SetHeight(40)
 frame:SetCallback("OnClick", function()
 	interface.confirmClearFrame:Hide()
 end)
+frame:SetPoint("LEFT", confirmClearFrame.yes.frame, "RIGHT", 2, 0)
 confirmClearFrame:AddChild(frame)
 
 
@@ -361,7 +439,42 @@ confirmClearFrame:AddChild(frame)
 
 
 
-
+local function changeFrameDesign()
+	scanFrame.frame.timer = 0
+	scanFrame.frame:SetScript("OnMouseDown", Title_OnMouseDown)
+	scanFrame.frame:SetScript('OnMouseUp', function(frame)
+		frame:StopMovingOrSizing()
+		local self = frame.obj
+		local status = self.status or self.localstatus
+		status.width = frame:GetWidth()
+		status.height = frame:GetHeight()
+		status.top = frame:GetTop()
+		status.left = frame:GetLeft()
+		
+		local point, relativeTo,relativePoint, xOfs, yOfs = scanFrame.frame:GetPoint(1)
+		DB.global.scanFrame = {}
+		DB.global.scanFrame.point=point
+		DB.global.scanFrame.relativeTo=relativeTo
+		DB.global.scanFrame.relativePoint=relativePoint
+		DB.global.scanFrame.xOfs=xOfs
+		DB.global.scanFrame.yOfs=yOfs
+		
+		if frame.timer < time() then
+			frame.startTimer = false
+		end
+		if frame.timer == time() and frame.startTimer then
+			frame.startTimer = false
+			
+			frame:Hide()
+		else
+			frame.startTimer = true
+			frame.timer = time()
+		end
+	end)
+	
+	scanFrame.update()
+	
+end
 
 
 local frame = CreateFrame('Frame')
@@ -380,34 +493,10 @@ frame:SetScript('OnEvent', function()
 	else
 		interface.confirmClearFrame:SetPoint("CENTER", UIParent)
 	end
-	C_Timer.After(0.1, function()
-	scanFrame.closeButton:ClearAllPoints()
-	scanFrame.closeButton:SetPoint("CENTER", scanFrame.frame, "TOPRIGHT", -8, -8)
 	
-	scanFrame.progressBar:ClearAllPoints()
-	scanFrame.progressBar:SetPoint("TOP", scanFrame.frame, "TOP", 0, -25)
+	-- select frame design
+	changeFrameDesign()
 	
-	scanFrame.invite:ClearAllPoints()
-	scanFrame.invite:SetPoint("TOPLEFT", scanFrame.progressBar.frame, "BOTTOMLEFT", 4, 0)
-	
-	scanFrame.pausePlay:ClearAllPoints()
-	scanFrame.pausePlay:SetPoint("LEFT", scanFrame.invite.frame, "RIGHT", 2, 0)
-	
-	scanFrame.pausePlayLabel:ClearAllPoints()
-	scanFrame.pausePlayLabel:SetPoint("CENTER", scanFrame.pausePlay.frame, "CENTER", 0, 0)
-	
-	scanFrame.clear:ClearAllPoints()
-	scanFrame.clear:SetPoint("LEFT", scanFrame.pausePlay.frame, "RIGHT", 2, 0)
-	
-	
-	confirmClearFrame.yes:ClearAllPoints()
-	confirmClearFrame.yes:SetPoint("TOPLEFT", interface.confirmClearFrame.frame, "TOPLEFT", 20, -25)
-	
-	confirmClearFrame.no:ClearAllPoints()
-	confirmClearFrame.no:SetPoint("LEFT", confirmClearFrame.yes.frame, "RIGHT", 2, 0)
-	
-	
-	scanFrame:Hide()
+	-- scanFrame:Hide()
 	confirmClearFrame:Hide()
-	end)
 end)
