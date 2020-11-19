@@ -98,17 +98,6 @@ mainCheckBoxGRP:SetHeight(120)
 mainCheckBoxGRP:SetWidth(size.mainCheckBoxGRP)
 mainFrame:AddChild(mainCheckBoxGRP)
 
---[[mainCheckBoxGRP.backgroundRun = GUI:Create("TCheckBox")
-local frame = mainCheckBoxGRP.backgroundRun
-frame:SetWidth(size.backgroundRun)
-frame:SetLabel(L["Запускать в фоновом режиме"])
-frame:SetTooltip(L["Запускать поиск в фоновом режиме"])
--- fontSize(frame.text)
-frame.frame:HookScript("OnClick", function()
-	DB.backgroundRun = mainCheckBoxGRP.backgroundRun:GetValue()
-end)
-mainCheckBoxGRP:AddChild(frame)]]
-
 mainCheckBoxGRP.enableFilters = GUI:Create("TCheckBox")
 local frame = mainCheckBoxGRP.enableFilters
 frame:SetWidth(size.enableFilters)
@@ -145,25 +134,111 @@ frame:SetCallback("OnClick", function()
 end)
 mainButtonsGRP:AddChild(frame)
 
-mainButtonsGRP.chooseInvites = GUI:Create("Button")
-local frame = mainButtonsGRP.chooseInvites
-frame:SetText(L["Выбрать приглашения"])
+local function clearSearch()
+	interface.scanFrame.invite:SetText(format("+(%d)",0))
+	local resume = addon.search.state == "start"
+	if resume then
+		scanFrame.pausePlay.frame:Click()
+	end
+	addon.search.inviteList = {}
+	addon.search.state = "stop"
+	addon.search.progress = 1
+	addon.search.timeShift = 0
+	addon.search.tempSendedInvites = {}
+	addon.search.whoQueryList = {}
+	
+	interface.scanFrame.player:SetText("")
+	interface.scanFrame.progressBar:SetMinMax(0, 1)
+	interface.scanFrame.progressBar:SetProgress(0)
+	
+	
+	if resume then
+		C_Timer.After(FGI_SCANINTERVALTIME+1, function() scanFrame.pausePlay.frame:Click() end)
+	else
+		addon.search.state = "stop"
+	end
+
+end
+
+interface.confirmClearFrame = GUI:Create("ClearFrame")
+local confirmClearFrame = interface.confirmClearFrame
+confirmClearFrame:SetTitle(L["Вы уверены?"])
+confirmClearFrame:SetWidth(size.confirmClearFrameW)
+confirmClearFrame:SetHeight(size.confirmClearFrameH)
+confirmClearFrame:SetLayout("NIL")
+
+confirmClearFrame.title:SetScript('OnMouseUp', function(mover)
+	local frame = mover:GetParent()
+	frame:StopMovingOrSizing()
+	local self = frame.obj
+	local status = self.status or self.localstatus
+	status.width = frame:GetWidth()
+	status.height = frame:GetHeight()
+	status.top = frame:GetTop()
+	status.left = frame:GetLeft()
+	
+	local point, relativeTo,relativePoint, xOfs, yOfs = confirmClearFrame.frame:GetPoint(1)
+	DB.global.confirmClearFrame = {}
+	DB.global.confirmClearFrame.point=point
+	DB.global.confirmClearFrame.relativeTo=relativeTo
+	DB.global.confirmClearFrame.relativePoint=relativePoint
+	DB.global.confirmClearFrame.xOfs=xOfs
+	DB.global.confirmClearFrame.yOfs=yOfs
+end)
+
+confirmClearFrame.yes = GUI:Create("Button")
+local frame = confirmClearFrame.yes
+frame:SetText(L["Да"])
 -- fontSize(frame.text)
 btnText(frame)
-frame:SetWidth(size.chooseInvites)
-frame:SetHeight(mainButtonsGRP.startScan.frame:GetHeight())
-frame:SetCallback("OnClick", function() interface.chooseInvites:Show() end)
+frame:SetWidth(size.yes)
+frame:SetHeight(40)
+frame:SetCallback("OnClick", function()
+	clearSearch()
+	interface.confirmClearFrame:Hide()
+end)
+frame:SetPoint("TOPLEFT", interface.confirmClearFrame.frame, "TOPLEFT", 20, -25)
+confirmClearFrame:AddChild(frame)
+
+confirmClearFrame.no = GUI:Create("Button")
+local frame = confirmClearFrame.no
+frame:SetText(L["Нет"])
+-- fontSize(frame.text)
+btnText(frame)
+frame:SetWidth(size.no)
+frame:SetHeight(40)
+frame:SetCallback("OnClick", function()
+	interface.confirmClearFrame:Hide()
+end)
+frame:SetPoint("LEFT", confirmClearFrame.yes.frame, "RIGHT", 2, 0)
+confirmClearFrame:AddChild(frame)
+
+mainButtonsGRP.clear = GUI:Create("TButton")
+local frame = mainButtonsGRP.clear
+frame:SetText(L["Сбросить"])
+frame:SetTooltip(L[ [=[Сбросить текущие поисковые запросы и результаты поиска.
+Не забывайте сбрасывать поиск если вы изменили диапазон уровней или список поисковых запросов.]=] ])
+fontSize(frame.text)
+frame:SetWidth(size.clearBTN+20)
+frame:SetHeight(40)
+frame:SetCallback("OnClick", function()
+	if DB.global.confirmSearchClear then
+		interface.confirmClearFrame:Show()
+	else
+		clearSearch()
+	end
+end)
 mainButtonsGRP:AddChild(frame)
 
 mainButtonsGRP.settingsBtn = GUI:Create("Button")
 local frame = mainButtonsGRP.settingsBtn
 frame:SetText(L["Настройки"])
--- fontSize(frame.text)
+fontSize(frame.text)
 btnText(frame)
 frame:SetWidth(size.settingsBtn)
 frame:SetHeight(mainButtonsGRP.startScan.frame:GetHeight())
 frame.frame:SetScript("OnClick", function()
-	--interface.settingsFrame:Show()
+	interface.settingsFrame:Show()
 	InterfaceOptionsFrame_OpenToCategory(interface.settings)
 	InterfaceOptionsFrame_OpenToCategory(interface.settings.Blacklist)
 	InterfaceOptionsFrame_OpenToCategory(interface.settings)
@@ -276,7 +351,6 @@ frame:SetScript('OnEvent', function()
 	C_Timer.After(0.1, function()
 	inviteTypeGRP.drop:SetValue(DB.global.inviteType)
 	
-	-- mainCheckBoxGRP.backgroundRun:SetValue(DB.backgroundRun or false)
 	mainCheckBoxGRP.enableFilters:SetValue(DB.realm.enableFilters or false)
 	
 	searchRangeGRP.lvlRangeMin:SetText(DB.global.lowLimit)
@@ -331,14 +405,14 @@ frame:SetScript('OnEvent', function()
 	mainButtonsGRP.startScan:ClearAllPoints()
 	mainButtonsGRP.startScan:SetPoint("TOPLEFT", mainButtonsGRP.frame, "TOPLEFT", 0, 0)
 	
-	mainButtonsGRP.chooseInvites:ClearAllPoints()
-	mainButtonsGRP.chooseInvites:SetPoint("LEFT", mainButtonsGRP.startScan.frame, "RIGHT", 2, 0)
+	mainButtonsGRP.clear:ClearAllPoints()
+	mainButtonsGRP.clear:SetPoint("LEFT", mainButtonsGRP.startScan.frame, "RIGHT", 2, 0)
 	
 	mainButtonsGRP.settingsBtn:ClearAllPoints()
-	mainButtonsGRP.settingsBtn:SetPoint("LEFT", mainButtonsGRP.chooseInvites.frame, "RIGHT", 2, 0)
+	mainButtonsGRP.settingsBtn:SetPoint("LEFT", mainButtonsGRP.clear.frame, "RIGHT", 2, 0)
 	
 	
-	
+	interface.confirmClearFrame:Hide()
 	mainFrame:Hide()
 	end)
 end)
