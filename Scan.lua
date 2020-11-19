@@ -325,49 +325,6 @@ scanFrame:AddChild(frame)
 
 
 
-
-local function clearSearch()
-	scanFrame.invite:SetText(format("+(%d)",0))
-	local resume = addon.search.state == "start"
-	if resume then
-		scanFrame.pausePlay.frame:Click()
-	end
-	addon.search.inviteList = {}
-	addon.search.state = "stop"
-	addon.search.progress = 1
-	addon.search.timeShift = 0
-	addon.search.tempSendedInvites = {}
-	addon.search.whoQueryList = {}
-	
-	scanFrame.progressBar:SetMinMax(0, 1)
-	scanFrame.progressBar:SetProgress(0)
-	
-	
-	if resume then
-		C_Timer.After(FGI_SCANINTERVALTIME+1, function() scanFrame.pausePlay.frame:Click() end)
-	else
-		addon.search.state = "stop"
-	end
-
-end
-
-scanFrame.clear = GUI:Create("Button")
-local frame = scanFrame.clear
-frame:SetText(L["Сбросить"])
-btnText(frame)
-frame:SetWidth(size.clearBTN)
-frame:SetHeight(40)
-frame:SetCallback("OnClick", function()
-	if DB.global.confirmSearchClear then
-		interface.confirmClearFrame:Show()
-	else
-		clearSearch()
-	end
-end)
-scanFrame:AddChild(frame)
-
-
-
 scanFrame.decline = GUI:Create("Button")
 local frame = scanFrame.decline
 frame:SetText("-")
@@ -375,67 +332,11 @@ btnText(frame)
 frame:SetWidth(40)
 frame:SetHeight(40)
 frame:SetCallback("OnClick", function(self)
-	--fn:declineInvite()
+	fn:invitePlayer(true)
 end)
 frame.frame:SetScript("OnClick", Button_OnClick_NoSound)
 frame:SetPoint("LEFT", scanFrame.pausePlay.frame, "RIGHT", 2, 0)
 scanFrame:AddChild(frame)
-
-interface.confirmClearFrame = GUI:Create("ClearFrame")
-local confirmClearFrame = interface.confirmClearFrame
-confirmClearFrame:SetTitle(L["Вы уверены?"])
-confirmClearFrame:SetWidth(size.confirmClearFrameW)
-confirmClearFrame:SetHeight(size.confirmClearFrameH)
-confirmClearFrame:SetLayout("NIL")
-
-confirmClearFrame.title:SetScript('OnMouseUp', function(mover)
-	local frame = mover:GetParent()
-	frame:StopMovingOrSizing()
-	local self = frame.obj
-	local status = self.status or self.localstatus
-	status.width = frame:GetWidth()
-	status.height = frame:GetHeight()
-	status.top = frame:GetTop()
-	status.left = frame:GetLeft()
-	
-	local point, relativeTo,relativePoint, xOfs, yOfs = confirmClearFrame.frame:GetPoint(1)
-	DB.global.confirmClearFrame = {}
-	DB.global.confirmClearFrame.point=point
-	DB.global.confirmClearFrame.relativeTo=relativeTo
-	DB.global.confirmClearFrame.relativePoint=relativePoint
-	DB.global.confirmClearFrame.xOfs=xOfs
-	DB.global.confirmClearFrame.yOfs=yOfs
-end)
-
-confirmClearFrame.yes = GUI:Create("Button")
-local frame = confirmClearFrame.yes
-frame:SetText(L["Да"])
--- fontSize(frame.text)
-btnText(frame)
-frame:SetWidth(size.yes)
-frame:SetHeight(40)
-frame:SetCallback("OnClick", function()
-	clearSearch()
-	interface.confirmClearFrame:Hide()
-end)
-frame:SetPoint("TOPLEFT", interface.confirmClearFrame.frame, "TOPLEFT", 20, -25)
-confirmClearFrame:AddChild(frame)
-
-confirmClearFrame.no = GUI:Create("Button")
-local frame = confirmClearFrame.no
-frame:SetText(L["Нет"])
--- fontSize(frame.text)
-btnText(frame)
-frame:SetWidth(size.no)
-frame:SetHeight(40)
-frame:SetCallback("OnClick", function()
-	interface.confirmClearFrame:Hide()
-end)
-frame:SetPoint("LEFT", confirmClearFrame.yes.frame, "RIGHT", 2, 0)
-confirmClearFrame:AddChild(frame)
-
-
-
 
 
 
@@ -497,6 +398,5 @@ frame:SetScript('OnEvent', function()
 	-- select frame design
 	changeFrameDesign()
 	
-	-- scanFrame:Hide()
-	confirmClearFrame:Hide()
+	scanFrame:Hide()
 end)
