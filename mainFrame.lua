@@ -218,7 +218,7 @@ local frame = mainButtonsGRP.clear
 frame:SetText(L["Сбросить"])
 frame:SetTooltip(L[ [=[Сбросить текущие поисковые запросы и результаты поиска.
 Не забывайте сбрасывать поиск если вы изменили диапазон уровней или список поисковых запросов.]=] ])
-fontSize(frame.text)
+-- fontSize(frame.text)
 frame:SetWidth(size.clearBTN+20)
 frame:SetHeight(40)
 frame:SetCallback("OnClick", function()
@@ -233,7 +233,7 @@ mainButtonsGRP:AddChild(frame)
 mainButtonsGRP.settingsBtn = GUI:Create("Button")
 local frame = mainButtonsGRP.settingsBtn
 frame:SetText(L["Настройки"])
-fontSize(frame.text)
+-- fontSize(frame.text)
 btnText(frame)
 frame:SetWidth(size.settingsBtn)
 frame:SetHeight(mainButtonsGRP.startScan.frame:GetHeight())
