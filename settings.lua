@@ -128,10 +128,10 @@ settings.db.name = "DB"
 settings.db.parent = settings.name
 InterfaceOptions_AddCategory(settings.db)]]
 
-InterfaceOptionsFrame_OpenToCategory(settings)
-InterfaceOptionsFrame_OpenToCategory(settings)
-InterfaceOptionsFrame_OpenToCategory(settings.CustomInterface)
-InterfaceOptionsFrame_OpenToCategory(settings.CustomInterface)
+-- InterfaceOptionsFrame_OpenToCategory(settings)
+-- InterfaceOptionsFrame_OpenToCategory(settings)
+-- InterfaceOptionsFrame_OpenToCategory(settings.CustomInterface)
+-- InterfaceOptionsFrame_OpenToCategory(settings.CustomInterface)
 
 
 local w,h = 623, 568
