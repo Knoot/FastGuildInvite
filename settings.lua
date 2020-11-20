@@ -104,7 +104,7 @@ settings.Synchronization.parent = settings.name
 InterfaceOptions_AddCategory(settings.Synchronization)
 
 settings.CustomInterface = CreateFrame("Frame", settings)
-settings.CustomInterface.name = "Настроить интерфейс"
+settings.CustomInterface.name = L["Настроить интерфейс"]
 settings.CustomInterface.parent = settings.name
 InterfaceOptions_AddCategory(settings.CustomInterface)
 
