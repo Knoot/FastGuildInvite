@@ -217,6 +217,14 @@ local function onListUpdate()
 	
 	interface.chooseInvites.player:SetText(#list > 0 and format("%s%s %d %s %s|r", color[list[1].NoLocaleClass:upper()], list[1].name, list[1].lvl, list[1].class, list[1].race) or "")
 	interface.scanFrame.player:SetText(#list > 0 and format("%s%s %d %s|r", color[list[1].NoLocaleClass:upper()], list[1].name, list[1].lvl, list[1].class) or "")
+	if #list > 0 then
+		interface.scanFrame.player.data = {
+			name = list[1].name:find("%-") and list[1].name:match("(.*)%-") or list[1].name,
+			realm = list[1].name:find("%-") and list[1].name:match("%-(.*)") or GetNormalizedRealmName()
+		}
+	else
+		interface.scanFrame.player.data = {}
+	end
 	inviteBtnText(format("+(%d)", #list))
 end
 

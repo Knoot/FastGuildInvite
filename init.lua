@@ -11,6 +11,9 @@ addon.functions = {}
 addon.autoCompleteRealms = GetAutoCompleteRealms()
 table.insert(addon.autoCompleteRealms, (GetRealmName():gsub(" ", '')))
 addon.interface = {}
+addon.playerInfo = {
+	faction = UnitFactionGroup('player') == "Horde" and 2 or 1
+}
 addon.version = GetAddOnMetadata('FastGuildInvite', 'Version')
 addon.versionN = tonumber(GetAddOnMetadata('FastGuildInvite', 'Version')) or 0
 addon.whoQueryList = {}

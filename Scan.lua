@@ -101,7 +101,7 @@ scanFrame.update = function()
 		scanFrame.player:SetPoint("TOP", last.frame, "TOP", 0, topAlign)
 		scanFrame.player.frame:Show()
 		-- last = scanFrame.player
-		topAlign = topAlign - 32
+		topAlign = topAlign - 48
 	else
 		scanFrame.player.frame:Hide()
 	end
@@ -127,7 +127,7 @@ scanFrame.update = function()
 		scanFrame.decline.frame:Hide()
 	end
 	
-	local height = 25 + (DB.global.scanFrameChilds.title and 15 or 0) + (DB.global.scanFrameChilds.player and 32 or 0) + (DB.global.scanFrameChilds.progress and scanFrame.progressBar.frame:GetHeight() or 0) + (DB.global.scanFrameChilds.buttons and scanFrame.pausePlay.frame:GetHeight() or 0)
+	local height = 25 + (DB.global.scanFrameChilds.title and 15 or 0) + (DB.global.scanFrameChilds.player and 48 or 0) + (DB.global.scanFrameChilds.progress and scanFrame.progressBar.frame:GetHeight() or 0) + (DB.global.scanFrameChilds.buttons and scanFrame.pausePlay.frame:GetHeight() or 0)
 	scanFrame:SetHeight(height)
 end
 
@@ -169,12 +169,22 @@ frame:SetPoint("CENTER", scanFrame.frame, "TOPRIGHT", -8, -8)
 scanFrame:AddChild(frame)
 
 
-scanFrame.player = GUI:Create("Label")
+scanFrame.player = GUI:Create("TLabel")
 local frame = scanFrame.player
+frame.data = {}
 frame:SetText("PlayerName \nPlayerClass PlayerLevel\n")
 fontSize(frame.label)
+frame:SetTooltip("Raider.IO")
 frame:SetWidth(scanFrame.frame:GetWidth()-20)
 frame.label:SetJustifyH("CENTER")
+frame.frame:HookScript("OnEnter", function(self)
+	if not RaiderIO then return end
+	if not frame.data.name or not frame.data.realm or not addon.playerInfo.faction then return end
+	if not RaiderIO.ShowProfile(GameTooltip, frame.data.name, frame.data.realm, addon.playerInfo.faction) then
+		GameTooltip:AddLine("\nNo data")
+		GameTooltip:Show()
+	end
+end)
 scanFrame:AddChild(frame)
 
 
@@ -338,6 +348,14 @@ frame.frame:SetScript("OnClick", Button_OnClick_NoSound)
 frame:SetPoint("LEFT", scanFrame.pausePlay.frame, "RIGHT", 2, 0)
 scanFrame:AddChild(frame)
 
+scanFrame.reset = GUI:Create("Button")
+local frame = scanFrame.reset
+frame:SetWidth(16)
+frame:SetHeight(16)
+frame:SetText("R")
+frame:SetPoint("CENTER", scanFrame.frame, "BOTTOMRIGHT", -8, 8)
+frame:SetCallback("OnClick", function() interface.confirmClearFrame:Show() end)
+scanFrame:AddChild(frame)
 
 
 local function changeFrameDesign()
@@ -374,7 +392,6 @@ local function changeFrameDesign()
 	end)
 	
 	scanFrame.update()
-	
 end
 
 
