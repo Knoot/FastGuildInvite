@@ -131,7 +131,18 @@ function fn:FilterChange(id)
 	addfilterFrame.filterNameEdit:SetDisabled(true)
 	addfilterFrame.excludeNameEditBox:SetText(filter.filterByName or "")
 	addfilterFrame.lvlRangeEditBox:SetText(filter.lvlRange or "")
-	addfilterFrame.excludeRepeatEditBox:SetText(filter.letterFilter or "")
+	addfilterFrame.rioMPlusEditBox:SetText(filter.rioMPlus or '')
+	if filter.rioRaid then
+		addfilterFrame.rioRaidProgressName_EditBox:SetText(filter.rioRaid.name)
+		addfilterFrame.rioRaidProgressN_EditBox:SetText(filter.rioRaid[1])
+		addfilterFrame.rioRaidProgressH_EditBox:SetText(filter.rioRaid[2])
+		addfilterFrame.rioRaidProgressM_EditBox:SetText(filter.rioRaid[3])
+	else
+		addfilterFrame.rioRaidProgressName_EditBox:SetText('')
+		addfilterFrame.rioRaidProgressN_EditBox:SetText('')
+		addfilterFrame.rioRaidProgressH_EditBox:SetText('')
+		addfilterFrame.rioRaidProgressM_EditBox:SetText('')
+	end
 	
 	fn:classIgnoredToggle()
 	fn:racesIgnoredToggle()
@@ -253,8 +264,8 @@ function fn:pairsByKeys(t, f)
 	local a = {}
 	for n in pairs(t) do table.insert(a, n) end
 	table.sort(a, f)
-	local i = 0      -- iterator variable
-	local iter = function ()   -- iterator function
+	local i = 0	 -- iterator variable
+	local iter = function () -- iterator function
 		i = i + 1
 		if a[i] == nil then return nil
 			else return a[i], t[a[i]]
@@ -525,7 +536,7 @@ end
 function fn:sendWhisper(name)
 	local msg = fn:getRndMsg()
 	if not msg then return print("<FGI> - "..L["Выберите сообщение"]) end
-	if not name then return debug("send message - nil name")  end
+	if not name then return debug("send message - nil name") end
 	
 	debug(format("Send whisper: %s %s",name, msg))
 	msg = fn:msgMod(msg, name)
@@ -753,7 +764,7 @@ end
 
 local function findClass(className)
 	for k,v in pairs(L.femaleClass) do
-		if v==className then return L.class[k]  end
+		if v==className then return L.class[k] end
 	end
 	return false
 end
@@ -763,6 +774,23 @@ local function findRace(raceName)
 		if v==raceName then return L.race[k] end
 	end
 	return false
+end
+
+local function getCharacterRaidProgress(name, realm)
+	if not RaiderIO or not name then return {} end
+	local result = {}
+	local rio = RaiderIO.GetProfile(name, realm or GetNormalizedRealmName(), addon.playerInfo.faction)
+	if not rio or not rio.raidProfile then return {} end
+	for _,v in pairs(rio.raidProfile.sortedProgress or {}) do
+		--local dif = RAID_DIFFICULTY[v.progress.difficulty].name
+		result[#result+1] = {
+			raidShortName	= v.progress.raid.shortName,
+			difficultyID	= v.progress.difficulty,
+			progress 		= v.progress.progressCount,
+			bossCount		= v.progress.raid.bossCount,
+		}
+	end
+	return result -- result = {[i] = { raidShortName, difficultyID--[[1-Normal, 2-Heroic, 3-Mythic]], progress, bossCount }, [i+1] = { ... }}
 end
 
 function fn:filtered(player)
@@ -785,9 +813,6 @@ function fn:filtered(player)
 					end
 				end
 			end
-			--[[if v.letterFilter then
-				
-			end]]
 			if v.classFilter then
 				if v.classFilter[player.Class] or v.classFilter[findClass(player.Class)] then
 					v.filteredCount = v.filteredCount + 1
@@ -802,7 +827,47 @@ function fn:filtered(player)
 					return true--,"race"
 				end
 			end
-			
+			if v.rioMPlus and v.rioMPlus > 0 and RaiderIO then
+				local score = RaiderIO.GetProfile(player.Name, player.Realm or GetNormalizedRealmName(), addon.playerInfo.faction)
+				if not score or not score.mythicKeystoneProfile then
+					v.filteredCount = v.filteredCount + 1
+					fn:FiltersUpdate()
+					return true -- no score data
+				else
+					score = {
+						current = score.mythicKeystoneProfile.currentScore or 0,
+						main = score.mythicKeystoneProfile.mainCurrentScore or 0,
+						curPrev = score.mythicKeystoneProfile.previousScore or 0,
+						mainPrev = score.mythicKeystoneProfile.mainPreviousScore or 0
+					}
+					if 
+						not(
+						(score.current >= v.rioMPlus)							-- check current score
+						or
+						(v.rioCheckMain and score.main >= v.rioMPlus)			-- check main score
+						or
+						(v.rioCheckCurPrev and score.curPrev >= v.rioMPlus)		-- check previous score
+						or
+						(v.rioCheckMainPrev and score.mainPrev >= v.rioMPlus)	-- check previous main score
+						)
+					then
+						v.filteredCount = v.filteredCount + 1
+						fn:FiltersUpdate()
+						return true--,"mPlus"
+					end
+				end
+			end
+			if v.rioRaid and RaiderIO then
+				local filtered = {[1] = 0, [2] = 0,	[3] = 0}
+				for _,raid in pairs(getCharacterRaidProgress(player.Name, player.Realm or GetNormalizedRealmName())) do
+					if v.rioRaid.name == raid.raidShortName then
+						filtered[raid.difficultyID] = v.rioRaid[raid.difficultyID]
+					end
+				end
+				if filtered[1] < v.rioRaid[1] or filtered[2] < v.rioRaid[2] or filtered[2] < v.rioRaid[2] then
+					return true--,"raidProgress"
+				end
+			end
 		end
 	end
 	return false
@@ -817,7 +882,7 @@ function fn:addNewPlayer(p)
 				if not IsInTempList(addon.search, p.Name) then
 					if not IsInAlreadySendedList(p.Name) then
 						if not IsCustomFiltered(p) then
-							table.insert(list, {name = p.Name, lvl = p.Level, race = p.Race, class = p.Class,  NoLocaleClass = p.NoLocaleClass})
+							table.insert(list, {name = p.Name, lvl = p.Level, race = p.Race, class = p.Class, NoLocaleClass = p.NoLocaleClass})
 							addon.search.tempSendedInvites[p.Name] = true
 							debug(format("Add player %s", playerInfoStr), color.green)
 						else
@@ -907,7 +972,7 @@ libWho:SetTimeCallbackEnd(timeCallbackEnd)
 	
 function fn:nextSearch()
 	if #addon.search.whoQueryList == 0 then
-		if  DB.realm.customWho then
+		if DB.realm.customWho then
 			for i=1, #DB.faction.customWhoList do
 				table.insert(addon.search.whoQueryList, DB.faction.customWhoList[i])
 			end
@@ -926,44 +991,44 @@ function fn:nextSearch()
 end
 
 function dump(t,l)
-  local str = '{'
-  l = l or 1
-  if l>100 then return 'overstack' end
-  for k,v in pairs(t) do
-    str = str.."\n"..string.rep('   ', l)..'['..(type(k)=='string' and "'"..k.."'" or k).."] = "
-    if type(v) == 'table' then
-        str = str..dump(v,l+1)
-    elseif type(v) == 'function' then
-        str = str..'function'
-    elseif type(v) == 'string' then
-        str = str.."'"..v.."'"
-    else
-        str = str..tostring(v)
-    end
-  end
-  str = str..'\n'..string.rep('   ', l-1)..'},'
-  if l==1 then
-    print(str)
-  else
-    return str
-  end
+	local str = '{'
+	l = l or 1
+	if l>100 then return 'overstack' end
+	for k,v in pairs(t) do
+	str = str.."\n"..string.rep('   ', l)..'['..(type(k)=='string' and "'"..k.."'" or k).."] = "
+	if type(v) == 'table' then
+		str = str..dump(v,l+1)
+	elseif type(v) == 'function' then
+		str = str..'function'
+	elseif type(v) == 'string' then
+		str = str.."'"..v.."'"
+	else
+		str = str..tostring(v)
+	end
+	end
+	str = str..'\n'..string.rep('   ', l-1)..'},'
+	if l==1 then
+	print(str)
+	else
+	return str
+	end
 end
 
 math.progress = function(End, cur)
-  local percentageDone = cur*100/End
-  return percentageDone>100 and 100 or percentageDone
+	local percentageDone = cur*100/End
+	return percentageDone>100 and 100 or percentageDone
 end
 
 math.round = function (val, decimal)
-  if (decimal) then
-    return math.floor( (val * 10^decimal) + 0.5) / (10^decimal)
-  else
-    return math.floor(val+0.5)
-  end
+	if (decimal) then
+		return math.floor( (val * 10^decimal) + 0.5) / (10^decimal)
+	else
+		return math.floor(val+0.5)
+	end
 end
 
 table.pack = function(...)
-    return { ... }
+	return { ... }
 end
 
 function fn:split(inputstr, sep, isNumber)

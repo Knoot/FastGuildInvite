@@ -13,6 +13,24 @@ local fontSize = fn.fontSize
 local filters, filtersFrame, addfilterFrame
 
 
+local RAID_DIFFICULTY = {
+	[1] = {
+		suffix = L.RAID_DIFFICULTY_SUFFIX_NORMAL,
+		name = L.RAID_DIFFICULTY_NAME_NORMAL,
+		color = { 0.12, 1.00, 0.00, hex = "1eff00" }
+	},
+	[2] = {
+		suffix = L.RAID_DIFFICULTY_SUFFIX_HEROIC,
+		name = L.RAID_DIFFICULTY_NAME_HEROIC,
+		color = { 0.00, 0.44, 0.87, hex = "0070dd" }
+	},
+	[3] = {
+		suffix = L.RAID_DIFFICULTY_SUFFIX_MYTHIC,
+		name = L.RAID_DIFFICULTY_NAME_MYTHIC,
+		color = { 0.64, 0.21, 0.93, hex = "a335ee" }
+	}
+}
+
 local function defaultValues()
 	addfilterFrame.classesCheckBoxDruid:SetValue(false)
 	addfilterFrame.classesCheckBoxHunter:SetValue(false)
@@ -50,7 +68,11 @@ local function defaultValues()
 	addfilterFrame.filterNameEdit:SetDisabled(false)
 	addfilterFrame.excludeNameEditBox:SetText('')
 	addfilterFrame.lvlRangeEditBox:SetText('')
-	addfilterFrame.excludeRepeatEditBox:SetText('')
+	addfilterFrame.rioMPlusEditBox:SetText('')
+	addfilterFrame.rioRaidProgressName_EditBox:SetText('')
+	addfilterFrame.rioRaidProgressN_EditBox:SetText('')
+	addfilterFrame.rioRaidProgressH_EditBox:SetText('')
+	addfilterFrame.rioRaidProgressM_EditBox:SetText('')
 	
 	addfilterFrame.change = false
 end
@@ -234,7 +256,11 @@ local function defaultValues()
 	addfilterFrame.filterNameEdit:SetDisabled(false)
 	addfilterFrame.excludeNameEditBox:SetText('')
 	addfilterFrame.lvlRangeEditBox:SetText('')
-	addfilterFrame.excludeRepeatEditBox:SetText('')
+	addfilterFrame.rioMPlusEditBox:SetText('')
+	addfilterFrame.rioRaidProgressName_EditBox:SetText('')
+	addfilterFrame.rioRaidProgressN_EditBox:SetText('')
+	addfilterFrame.rioRaidProgressH_EditBox:SetText('')
+	addfilterFrame.rioRaidProgressM_EditBox:SetText('')
 	
 	addfilterFrame.change = false
 end
@@ -512,7 +538,7 @@ frame:SetText(L["Имя фильтра"])
 fontSize(frame.label)
 frame:SetWidth(size.filterNameLabel)
 frame.label:SetJustifyH("CENTER")
-frame:SetPoint("TOPRIGHT", addfilterFrame.topHint.frame, "BOTTOMRIGHT", 0, -30)
+frame:SetPoint("TOPRIGHT", addfilterFrame.topHint.frame, "BOTTOMRIGHT", 0, -15)
 addfilterFrame:AddChild(frame)
 
 addfilterFrame.filterNameEdit = GUI:Create("EditBox")
@@ -530,7 +556,7 @@ frame:SetTooltip(L[ [=[Если имя игрока содержит введе�
 fontSize(frame.label)
 frame:SetWidth(size.excludeNameLabel)
 frame.label:SetJustifyH("CENTER")
-frame:SetPoint("TOP", addfilterFrame.filterNameEdit.frame, "BOTTOM", 0, -30)
+frame:SetPoint("TOP", addfilterFrame.filterNameEdit.frame, "BOTTOM", 0, -15)
 addfilterFrame:AddChild(frame)
 
 addfilterFrame.excludeNameEditBox = GUI:Create("EditBox")
@@ -550,7 +576,7 @@ frame:SetTooltip(format(L[ [=[Введите диапазон уровней д�
 fontSize(frame.label)
 frame:SetWidth(size.lvlRangeLabel)
 frame.label:SetJustifyH("CENTER")
-frame:SetPoint("TOP", addfilterFrame.excludeNameEditBox.frame, "BOTTOM", 0, -30)
+frame:SetPoint("TOP", addfilterFrame.excludeNameEditBox.frame, "BOTTOM", 0, -15)
 addfilterFrame:AddChild(frame)
 
 addfilterFrame.lvlRangeEditBox = GUI:Create("EditBox")
@@ -560,48 +586,120 @@ EditBoxChange(frame)
 frame:SetPoint("TOP", addfilterFrame.lvlRangeLabel.frame, "BOTTOM", 0, 0)
 addfilterFrame:AddChild(frame)
 
-addfilterFrame.excludeRepeatLabel = GUI:Create("TLabel")
-local frame = addfilterFrame.excludeRepeatLabel
-frame:SetText(L["Фильтр повторений в имени"])
-frame:SetTooltip(format(L[ [=[Введите максимальное количество последовательных
-гласных и согласных, которое может содержать имя игрока.
-Например: %s3%s:%s5%s
-Будет означать, что игроки с более чем %s3%s гласными подряд
-или более %s5%s согласными подряд не будут добавлены в очередь.]=] ], "|cff00ff00", "|r", "|cff00A2FF", "|r", "|cff00ff00", "|r", "|cff00A2FF", "|r"))
+addfilterFrame.rioMPlus = GUI:Create("TLabel")
+local frame = addfilterFrame.rioMPlus
+frame:SetText(L["Фильтр по RIO M+"])
 fontSize(frame.label)
-frame:SetWidth(size.excludeRepeatLabel)
+frame:SetWidth(size.filtersEdit)
 frame.label:SetJustifyH("CENTER")
-frame:SetPoint("TOP", addfilterFrame.lvlRangeEditBox.frame, "BOTTOM", 0, -30)
+frame:SetPoint("TOP", addfilterFrame.lvlRangeEditBox.frame, "BOTTOM", 0, -15)
 addfilterFrame:AddChild(frame)
 
-addfilterFrame.excludeRepeatEditBox = GUI:Create("EditBox")
-local frame = addfilterFrame.excludeRepeatEditBox
+addfilterFrame.rioMPlusEditBox = GUI:Create("EditBox")
+local frame = addfilterFrame.rioMPlusEditBox
 frame:SetWidth(size.filtersEdit)
 EditBoxChange(frame)
-frame:SetPoint("TOP", addfilterFrame.excludeRepeatLabel.frame, "BOTTOM", 0, 0)
+frame:SetPoint("TOP", addfilterFrame.rioMPlus.frame, "BOTTOM", 0, 0)
+addfilterFrame:AddChild(frame)
+
+addfilterFrame.rioRaidProgress = GUI:Create("TLabel")
+local frame = addfilterFrame.rioRaidProgress
+frame:SetText(L["Фильтр по RaidProgress"])
+fontSize(frame.label)
+frame:SetWidth(size.rioRaidProgress)
+frame.label:SetJustifyH("CENTER")
+frame:SetPoint("TOP", addfilterFrame.rioMPlusEditBox.frame, "BOTTOM", 0, -15)
+addfilterFrame:AddChild(frame)
+
+addfilterFrame.rioRaidProgressName = GUI:Create("TLabel")
+local frame = addfilterFrame.rioRaidProgressName
+frame:SetText(L["Суффикс рейда"])
+frame:SetTooltip(L["Короткое название рейда, как в подсказке Raider IO"])
+fontSize(frame.label)
+frame:SetWidth(size.rioRaidProgress)
+frame.label:SetJustifyH("CENTER")
+frame:SetPoint("TOP", addfilterFrame.rioRaidProgress.frame, "BOTTOM", 0, 0)
+addfilterFrame:AddChild(frame)
+
+addfilterFrame.rioRaidProgressName_EditBox = GUI:Create("EditBox")
+local frame = addfilterFrame.rioRaidProgressName_EditBox
+frame:SetWidth(size.filtersEdit)
+EditBoxChange(frame)
+frame:SetPoint("TOP", addfilterFrame.rioRaidProgressName.frame, "BOTTOM", 0, 0)
+addfilterFrame:AddChild(frame)
+
+addfilterFrame.rioRaidProgressN = GUI:Create("TLabel")
+local frame = addfilterFrame.rioRaidProgressN
+frame:SetText(RAID_DIFFICULTY[1].name)
+fontSize(frame.label)
+frame:SetWidth(size.filtersEdit/2)
+frame.label:SetJustifyH("CENTER")
+frame:SetPoint("TOPLEFT", addfilterFrame.rioRaidProgressName_EditBox.frame, "BOTTOMLEFT", 0, -5)
+addfilterFrame:AddChild(frame)
+
+addfilterFrame.rioRaidProgressN_EditBox = GUI:Create("EditBox")
+local frame = addfilterFrame.rioRaidProgressN_EditBox
+frame:SetWidth(size.filtersEdit/2)
+EditBoxChange(frame)
+frame:SetPoint("LEFT", addfilterFrame.rioRaidProgressN.frame, "RIGHT", 0, 0)
+addfilterFrame:AddChild(frame)
+
+addfilterFrame.rioRaidProgressH = GUI:Create("TLabel")
+local frame = addfilterFrame.rioRaidProgressH
+frame:SetText(RAID_DIFFICULTY[2].name)
+fontSize(frame.label)
+frame:SetWidth(size.filtersEdit/2)
+frame.label:SetJustifyH("CENTER")
+frame:SetPoint("TOPLEFT", addfilterFrame.rioRaidProgressN.frame, "BOTTOMLEFT", 0, -7)
+addfilterFrame:AddChild(frame)
+
+addfilterFrame.rioRaidProgressH_EditBox = GUI:Create("EditBox")
+local frame = addfilterFrame.rioRaidProgressH_EditBox
+frame:SetWidth(size.filtersEdit/2)
+EditBoxChange(frame)
+frame:SetPoint("LEFT", addfilterFrame.rioRaidProgressH.frame, "RIGHT", 0, 0)
+addfilterFrame:AddChild(frame)
+
+addfilterFrame.rioRaidProgressM = GUI:Create("TLabel")
+local frame = addfilterFrame.rioRaidProgressM
+frame:SetText(RAID_DIFFICULTY[3].name)
+fontSize(frame.label)
+frame:SetWidth(size.filtersEdit/2)
+frame.label:SetJustifyH("CENTER")
+frame:SetPoint("TOPLEFT", addfilterFrame.rioRaidProgressH.frame, "BOTTOMLEFT", 0, -7)
+addfilterFrame:AddChild(frame)
+
+addfilterFrame.rioRaidProgressM_EditBox = GUI:Create("EditBox")
+local frame = addfilterFrame.rioRaidProgressM_EditBox
+frame:SetWidth(size.filtersEdit/2)
+EditBoxChange(frame)
+frame:SetPoint("LEFT", addfilterFrame.rioRaidProgressM.frame, "RIGHT", 0, 0)
 addfilterFrame:AddChild(frame)
 
 local function saveFilter()
 	local errors = {}
 	local min, max
 	
-	local classIgnore, raceIgnore, filterName, filterByName, lvlRange, letterFilter =
+	local classIgnore, raceIgnore, filterName, filterByName, lvlRange, rioMPlus, rioRaidProgress =
 	not addfilterFrame.classesCheckBoxIgnore:GetValue() and {} or false,
 	not addfilterFrame.rasesCheckBoxIgnore:GetValue() and {} or false,
 	addfilterFrame.filterNameEdit:GetText() ~= "" and addfilterFrame.filterNameEdit:GetText() or false,
 	addfilterFrame.excludeNameEditBox:GetText() ~= "" and addfilterFrame.excludeNameEditBox:GetText() or false,
 	addfilterFrame.lvlRangeEditBox:GetText() ~= "" and addfilterFrame.lvlRangeEditBox:GetText() or false,
-	addfilterFrame.excludeRepeatEditBox:GetText() ~= "" and addfilterFrame.excludeRepeatEditBox:GetText() or false
+	addfilterFrame.rioMPlusEditBox:GetText() ~= "" and addfilterFrame.rioMPlusEditBox:GetText() or false,
+	{
+		name = addfilterFrame.rioRaidProgressName_EditBox:GetText() ~= "" and addfilterFrame.rioRaidProgressName_EditBox:GetText() or false,
+		[1] = addfilterFrame.rioRaidProgressN_EditBox:GetText() == "" and 0 or addfilterFrame.rioRaidProgressN_EditBox:GetText(),
+		[2] = addfilterFrame.rioRaidProgressH_EditBox:GetText() == "" and 0 or addfilterFrame.rioRaidProgressH_EditBox:GetText(),
+		[3] = addfilterFrame.rioRaidProgressM_EditBox:GetText() == "" and 0 or addfilterFrame.rioRaidProgressM_EditBox:GetText()
+	}
 	
 	if not filterName then
 		table.insert(errors, format("%s \n %s", L["Имя фильтра"], L["Имя фильтра не может быть пустым"]))
 	elseif DB.realm.filtersList[filterName] ~= nil and not addfilterFrame.change then
 		table.insert(errors, format("%s \n %s", L["Имя фильтра"], L["Имя фильтра занято"]))
 	end
-	
-	-- if filterByName and not filterByName:find("^"..addon.ruReg.."+$") then
-		-- table.insert(errors, format("%s \n %s", L["Фильтр по имени"], L["Поле может содержать только буквы"]))
-	-- end
+
 	if lvlRange then
 		if lvlRange:find(("[\-]?%d+:[\-]?%d+")) then
 			min, max = fn:split(lvlRange, ":", -1)
@@ -612,15 +710,38 @@ local function saveFilter()
 			table.insert(errors, format("%s \n %s", L["Диапазон уровней (Мин:Макс)"], L["Неправильный шаблон"]))
 		end
 	end
-	if letterFilter then
-		if letterFilter:find("[\-]?%d+:[\-]?%d+") then
-			min, max = fn:split(letterFilter, ":")
-			if min < 0 or max < 0 then
-				table.insert(errors, format("%s \n %s", L["Фильтр повторений в имени"], L["Числа должны быть больше 0"]))
-			end
+	if rioMPlus then
+		if tonumber(rioMPlus) ~= nil then
+			rioMPlus = tonumber(rioMPlus)
 		else
-			table.insert(errors, format("%s \n %s", L["Фильтр повторений в имени"], L["Неправильный шаблон"]))
+			table.insert(errors, format("%s \n %s", "RIO M+", L["Значение может быть только числом"]))
 		end
+	end
+	--		rioRaidProgress
+	if rioRaidProgress.name then
+		if rioRaidProgress[1] == "" then
+			rioRaidProgress[1] = 0
+		elseif tonumber(rioRaidProgress[1]) ~= nil then
+			rioRaidProgress[1] = tonumber(rioRaidProgress[1])
+		else
+			table.insert(errors, format("%s \n %s", "RaidProgress", L["Значение может быть только числом"]))
+		end
+		if rioRaidProgress[2] == "" then
+			rioRaidProgress[2] = 0
+		elseif tonumber(rioRaidProgress[2]) ~= nil then
+			rioRaidProgress[2] = tonumber(rioRaidProgress[2])
+		else
+			table.insert(errors, format("%s \n %s", "RaidProgress", L["Значение может быть только числом"]))
+		end
+		if rioRaidProgress[3] == "" then
+			rioRaidProgress[3] = 0
+		elseif tonumber(rioRaidProgress[3]) ~= nil then
+			rioRaidProgress[3] = tonumber(rioRaidProgress[3])
+		else
+			table.insert(errors, format("%s \n %s", "RaidProgress", L["Значение может быть только числом"]))
+		end
+	else
+		rioRaidProgress = false
 	end
 	
 	local classFilter = classIgnore
@@ -628,7 +749,6 @@ local function saveFilter()
 		classFilter = getClassFilter()
 		classFilter = next(classFilter) ~= nil and classFilter or false
 	end
-	
 	
 	local raceFilter = raceIgnore
 	if raceFilter then
@@ -640,14 +760,14 @@ local function saveFilter()
 		raceFilter = next(raceFilter) ~= nil and raceFilter or false
 	end
 		
-	
 	if #errors == 0 then
 		filters.filtersFrame.frame:Show()
 		filters.addfilterFrame.frame:Hide()
 		DB.realm.filtersList[filterName] = {
 			filterByName = filterByName,
 			lvlRange = lvlRange,
-			letterFilter = letterFilter,
+			rioMPlus = rioMPlus,
+			rioRaid = rioRaidProgress,
 			classFilter = classFilter,
 			raceFilter = raceFilter,
 			filterOn = false,

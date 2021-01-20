@@ -121,6 +121,7 @@ L.settings = {
 		filterNameLabel = 200,
 		excludeNameLabel = 200,
 		lvlRangeLabel = 200,
+		rioRaidProgress = 200,
 		excludeRepeatLabel = 200,
 		saveButton = 100,
 		
