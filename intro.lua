@@ -14,9 +14,7 @@ local L = {
 		
 		
 		updates = {
-			"В окно сканирования возвращена кнопка сброс. Она находится в правом нижнем углу, обозначена значком \"R\".",
-			"Добавлена дополнительная линия информации об игроке, длинные имя и реалм отображались не полностью.",
-			"Добавлена поддержка Raider.IO. При наведении мыши на информацию об игроке в подсказке отображается информация Raider.IO, если это возможно.",
+			"Добавлен фильтр по RIO score и фильтр по прогрессу рейда (необходим аддон RaiderIO)",
 		},
 		
 		
@@ -29,9 +27,7 @@ local L = {
 		
 		
 		updates = {
-			"Reset button returned to scan window. It is located in the lower right corner, indicated by an \"R\".",
-			"Added additional line of information about the player, long name and realm were not fully displayed.",
-			"Added support for Raider.IO. When you hover the mouse over the player information, the tooltip displays the Raider.IO information, if possible.",
+			"Added filter by RIO score and filter by raid progress (RaiderIO addon required)",
 		},
 	}
 }
