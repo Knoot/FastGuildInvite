@@ -224,6 +224,7 @@ scanFrame.invite = GUI:Create("Button")
 local frame = scanFrame.invite
 frame:SetHeight(40)
 frame:SetWidth(60)
+frame:SetTooltip(L["Пригласить"])
 frame:SetText("+(0)")
 btnText(frame)
 frame:SetCallback("OnClick", function(self)
@@ -337,6 +338,7 @@ scanFrame:AddChild(frame)
 
 scanFrame.decline = GUI:Create("Button")
 local frame = scanFrame.decline
+frame:SetTooltip(L["Не отправлять приглашение"])
 frame:SetText("-")
 btnText(frame)
 frame:SetWidth(40)
@@ -352,6 +354,7 @@ scanFrame.reset = GUI:Create("Button")
 local frame = scanFrame.reset
 frame:SetWidth(16)
 frame:SetHeight(16)
+frame:SetTooltip(L["Сбросить поиск"])
 frame:SetText("R")
 frame:SetPoint("CENTER", scanFrame.frame, "BOTTOMRIGHT", -8, 8)
 frame:SetCallback("OnClick", function() interface.confirmClearFrame:Show() end)
