@@ -220,7 +220,7 @@ scanFrame:AddChild(frame)
 
 
 
-scanFrame.invite = GUI:Create("Button")
+scanFrame.invite = GUI:Create("TButton")
 local frame = scanFrame.invite
 frame:SetHeight(40)
 frame:SetWidth(60)
@@ -336,7 +336,7 @@ scanFrame:AddChild(frame)
 
 
 
-scanFrame.decline = GUI:Create("Button")
+scanFrame.decline = GUI:Create("TButton")
 local frame = scanFrame.decline
 frame:SetTooltip(L["Не отправлять приглашение"])
 frame:SetText("-")
@@ -350,7 +350,7 @@ frame.frame:SetScript("OnClick", Button_OnClick_NoSound)
 frame:SetPoint("LEFT", scanFrame.pausePlay.frame, "RIGHT", 2, 0)
 scanFrame:AddChild(frame)
 
-scanFrame.reset = GUI:Create("Button")
+scanFrame.reset = GUI:Create("TButton")
 local frame = scanFrame.reset
 frame:SetWidth(16)
 frame:SetHeight(16)
