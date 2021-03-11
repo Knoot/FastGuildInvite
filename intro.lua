@@ -14,7 +14,8 @@ local L = {
 		
 		
 		updates = {
-			"Добавлен фильтр по RIO score и фильтр по прогрессу рейда (необходим аддон RaiderIO)",
+			"Добавлены подсказки для кнопок окна сканирования: \"+\", \"-\", \"R\"",
+			"Обновлена кнопка с подсказкой. Теперь кнопка \"Сбросить\" в главном окне аддона должна использовать тему ElvUI если этот аддон установлен.",
 		},
 		
 		
@@ -27,7 +28,8 @@ local L = {
 		
 		
 		updates = {
-			"Added filter by RIO score and filter by raid progress (RaiderIO addon required)",
+			"Added hints for scan window buttons: \"+\", \"-\", \"R\"",
+			"Updated the button with tooltip. Now the \"Reset\" button in the main window of the addon should use the ElvUI theme if this addon is installed.",
 		},
 	}
 }
