@@ -1528,7 +1528,6 @@ local function Constructor()
 	button.frame.tooltip = ''
 	
 	button["SetTooltip"] = function(self, tooltip)
-		print(self, tooltip)
 		self.frame.tooltip = tooltip
 	end
 	
