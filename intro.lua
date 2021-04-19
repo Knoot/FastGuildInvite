@@ -14,8 +14,7 @@ local L = {
 		
 		
 		updates = {
-			"Добавлены подсказки для кнопок окна сканирования: \"+\", \"-\", \"R\"",
-			"Обновлена кнопка с подсказкой. Теперь кнопка \"Сбросить\" в главном окне аддона должна использовать тему ElvUI если этот аддон установлен.",
+			"Пользовательский список теперь может быть \"строгим\". Это значит что аддон не будет углублять поиск, если результат поиска вернул 50 игроков, а будет сразу выполнен следующий запрос из вашего списка.",
 		},
 		
 		
@@ -28,8 +27,7 @@ local L = {
 		
 		
 		updates = {
-			"Added hints for scan window buttons: \"+\", \"-\", \"R\"",
-			"Updated the button with tooltip. Now the \"Reset\" button in the main window of the addon should use the ElvUI theme if this addon is installed.",
+			"The custom list can now be \"strict\". This means that the addon will not deepen the search if the search result returned 50 players, but the next request from your list will be immediately executed.",
 		},
 	}
 }

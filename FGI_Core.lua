@@ -330,6 +330,7 @@ local defaultSettings =  {
 	realm = {
 		enableFilters = false,
 		customWho = false,
+		strictCustom = false,
 		addonMSG = false,
 		systemMSG = false,
 		sendMSG = false,
