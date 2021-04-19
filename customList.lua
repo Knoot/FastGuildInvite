@@ -50,6 +50,17 @@ frame.frame:HookScript("OnClick", function()
 end)
 CustomList:AddChild(frame)
 
+CustomList.strict = GUI:Create("TCheckBox")
+local frame = CustomList.strict
+frame:SetWidth(size.customListBtn)
+frame:SetLabel(L["Строго"])
+frame:SetTooltip(L["Не углублять поиск если вернулось 50 игроков"])
+frame:SetPoint("TOPRIGHT", CustomList.list.frame, "BOTTOMRIGHT", 0, 0)
+frame.frame:HookScript("OnClick", function()
+	DB.realm.strictCustom = CustomList.strict:GetValue()
+end)
+CustomList:AddChild(frame)
+
 CustomList.saveButton = GUI:Create("Button")
 local frame = CustomList.saveButton
 frame:SetText(L["Сохранить"])

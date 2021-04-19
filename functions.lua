@@ -918,11 +918,13 @@ local function searchWhoResultCallback(query, results)
 	end
 	addon.search.progress = addon.search.progress + 1
 	debug(format("Query %s", query))
-	if searchLvl == 1 and #results>=FGI_MAXWHORETURN then
-		searchAddWhoList(query,1)
-	elseif searchLvl == 2 and #results>=FGI_MAXWHORETURN then
-		searchAddWhoList(query,2)
-	-- 3lvl can't modified
+	if(not DB.realm.strictCustom or not DB.realm.customWho) then
+		if searchLvl == 1 and #results>=FGI_MAXWHORETURN then
+			searchAddWhoList(query,1)
+		elseif searchLvl == 2 and #results>=FGI_MAXWHORETURN then
+			searchAddWhoList(query,2)
+		-- 3lvl can't modified
+		end
 	end
 	
 	addon.search.oldCount = #addon.search.inviteList
