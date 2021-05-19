@@ -24,12 +24,15 @@ FGISYNCH_PREFIX = "FGI_SYNCH"
 C_ChatInfo.RegisterAddonMessagePrefix(FGISYNCH_PREFIX)
 
 
+--@version-classic@
 FGI_MAXLVL = 60
---[===[@non-retail@
+--@end-version-classic@
+--@version-bcc@
+FGI_MAXLVL = 70
+--@end-version-bcc@
+--@retail@
 FGI_MAXLVL = 60
---@end-non-retail@]===]
-FGI_DEFAULT_RACEFILTERSTART = FGI_MAXLVL +1
-FGI_DEFAULT_CLASSFILTERSTART = FGI_MAXLVL +1
+--@end-retail@
 
 function FGI:GetLocale()
 	return FGI.L[GetLocale()]
