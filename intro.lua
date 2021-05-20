@@ -14,7 +14,7 @@ local L = {
 		
 		
 		updates = {
-			"Пользовательский список теперь может быть \"строгим\". Это значит что аддон не будет углублять поиск, если результат поиска вернул 50 игроков, а будет сразу выполнен следующий запрос из вашего списка.",
+			"Объединенные реалмы и черный список. Начиная с этого обновления игроки с объединенных реалмов будут добавляться с черный список как Имя-Реалм(ранее просто Имя). Это может вызвать проблему с ранее добавленными игроками объединенных реалмов. Игроки, чей реалм совпадает с вашим, по-прежнему будут добавлены просто как Имя. Возможны ошибки с черным списком, просьба сообщать о найденных ошибках.",
 		},
 		
 		
@@ -27,7 +27,7 @@ local L = {
 		
 		
 		updates = {
-			"The custom list can now be \"strict\". This means that the addon will not deepen the search if the search result returned 50 players, but the next request from your list will be immediately executed.",
+			"Connected realms and blacklist. Starting with this update, players from a connected realms will be added to the blacklist as Name-Realm(formerly just Name). This can cause a problem with previously added connected realm players. Players whose realm matches yours will still be added just as a Name. Errors with the blacklist are possible, please report any errors found.",
 		},
 	}
 }

@@ -113,7 +113,7 @@ blacklist:SetWidth(135)
 blacklist:SetHeight(20)
 blacklist.frame.HandlesGlobalMouseEvent = HandlesGlobalMouseEvent
 blacklist:SetCallback('OnClick', function()
-	local name = fn:parseName(f.name)
+	local name = f.name
 	fn:blackList(name)
 	interface.settings.Blacklist.content:update()
 	if not DB.global.fastBlacklist then
@@ -130,8 +130,9 @@ unblacklist:SetWidth(135)
 unblacklist:SetHeight(20)
 unblacklist.frame.HandlesGlobalMouseEvent = HandlesGlobalMouseEvent
 unblacklist:SetCallback('OnClick', function()
-	local name = fn:parseName(f.name)
+	local name = f.name
 	fn:unblacklist(name)
+	interface.settings.Blacklist.content:update()
 	CloseDropDownMenus()
 end)
 unblacklist:SetPoint("TOPLEFT", blacklist.frame, "BOTTOMLEFT", 0, 0)
@@ -213,11 +214,15 @@ frame:SetScript("OnEvent", function(_,_, msg,_,_,_,name,...)
 		msg = msg:gsub("!blacklistAdd ", '')
 		local b,n,r = isCorrect(msg)
 		if r==nil then return end
-		print("add",b,n,r)
+		-- fn:blackList(name)
+		-- interface.settings.Blacklist.content:update()
+		print("test add",b,n,r)
 	elseif msg:find("^!blacklistDelete") then
 		msg = msg:gsub("!blacklistDelete ", '')
 		local b,n,r = isCorrect(msg)
-		print("delete",b,n,r)
+		-- fn:unblacklist(name)
+		-- interface.settings.Blacklist.content:update()
+		print("test delete",b,n,r)
 	elseif msg:find("^!blacklistGetList") then
 		for k,v in pairs(DB.realm.blackList) do
 			SendChatMessage(format("%s - %s", k, v) , "OFFICER",  GetDefaultLanguage("player"))
@@ -474,6 +479,7 @@ function Console:FGIInput(str)
 		local name,reason = fn:parseBL("blacklist", str)
 		if not name then return print('Blacklist: nil name') end
 		fn:blackList(name, reason)
+		interface.settings.Blacklist.content:update()
 		if not reason and not DB.global.fastBlacklist then
 			StaticPopup_Show("FGI_BLACKLIST_CHANGE", _,_,  {name = name})
 		end
@@ -481,7 +487,7 @@ function Console:FGIInput(str)
 		local name = fn:parseBL("unblacklist", str)
 		if not name then return print('Unblacklist: nil name') end
 		fn:unblacklist(name)
-	elseif str == 'debug' then 
+	elseif str == 'debug' then
 		toggleDebug()
 	elseif str == 'resetDB' then DB.realm.alreadySended = {}
 	elseif str == 'resetWindowsPos' then

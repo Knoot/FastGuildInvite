@@ -251,15 +251,19 @@ function fn:parseName(name)
 end
 
 function fn:parseBL(cmd, str)
-	local name, reason
-	str = str:gsub(cmd, '')
-	if str:find('-') then
-		name,reason = str:match("([^%s-]+)[^%s]*[%s-]+([^-]+)")
+	local name, realm, reason
+		str = str:gsub(cmd, '')
+	if str:find('.+%-.+%s%-%s.+') then
+		name,realm,reason = str:match("^(.+)%-(.+)%s%-%s(.+)")
+	elseif str:find('.+%s%-%s.+') then
+		name,reason = str:match("^(.+)%s%-%s(.+)")
+	elseif str:find('.+%-.+') then
+		name,realm,reason = str:match("^(.+)-(.+)")
 	else
-		name = str:match("([^-%s]+)")
+		name = str:match("^([^%s]+)")
 		reason = false
 	end
-	return name, reason
+	return realm and name..'-'..realm or name, reason
 end
 
 function fn:pairsByKeys(t, f)
