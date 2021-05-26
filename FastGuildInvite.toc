@@ -5,7 +5,7 @@
 ## Interface-BCC: 20501
 #@end-version-bcc@
 #@version-classic@
-## Interface-Classic: 11306
+## Interface-Classic: 11307
 #@end-version-classic@
 ## Author: Knoot
 ## Title: |cffffff00<|r|cff16ABB5FGI|r|cffffff00>|r |cff16ABB5FastGuildInvite|r
