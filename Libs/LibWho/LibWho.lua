@@ -1,4 +1,4 @@
-local MAJOR,MINOR = "FGI-WhoLib", 4
+local MAJOR,MINOR = "FGI-WhoLib", 5
 local libWho, oldminor = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not libWho then return end
@@ -110,23 +110,24 @@ whoFrame:SetScript("OnEvent", function()
 	searchIntervalActionStart()
 	libWho.isAddon = false
 	result = {}
-
-	total, num = C_FriendList.GetNumWhoResults()
-	for i=1, num do
-		info = nil
-		info = C_FriendList.GetWhoInfo(i)
-		--backwards compatibility START
-		info.Name=info.fullName
-		info.Guild=info.fullGuildName
-		info.Level=info.level
-		info.Race=info.raceStr
-		info.Class=info.classStr
-		info.Zone=info.area
-		info.NoLocaleClass=info.filename
-		info.Sex=info.gender
-		--backwards compatibility END
-		result[i] = info
-	end
-	C_Timer.After(0.5, function() saveFrandListState:UnregisterEvent("WHO_LIST_UPDATE") end)
-	libWho:returnWho(result)
+	C_Timer.After(0.5, function() 
+		total, num = C_FriendList.GetNumWhoResults()
+		for i=1, num do
+			info = nil
+			info = C_FriendList.GetWhoInfo(i)
+			--backwards compatibility START
+			info.Name=info.fullName
+			info.Guild=info.fullGuildName
+			info.Level=info.level
+			info.Race=info.raceStr
+			info.Class=info.classStr
+			info.Zone=info.area
+			info.NoLocaleClass=info.filename
+			info.Sex=info.gender
+			--backwards compatibility END
+			result[i] = info
+		end
+		saveFrandListState:UnregisterEvent("WHO_LIST_UPDATE")
+		libWho:returnWho(result)
+	end)
 end)
