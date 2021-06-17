@@ -11,6 +11,7 @@
 ## Title: |cffffff00<|r|cff16ABB5FGI|r|cffffff00>|r |cff16ABB5FastGuildInvite|r
 ## Version: @project-version@
 ## X-Curse-Project-ID: 313283
+## X-Wago-ID: kRNLQ46o
 ## SavedVariables: FGI_DB, FGI_DEBUG
 ## DefaultState: enabled
 
