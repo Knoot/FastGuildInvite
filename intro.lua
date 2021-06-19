@@ -137,12 +137,30 @@ frame:SetWidth(intro.frame:GetWidth() - 40)
 frame:SetPoint("BOTTOMLEFT", intro.discordE.frame, "TOPLEFT", 0, 0)
 intro:AddChild(frame)
 
+intro.streamelementsE = GUI:Create("EditBox")
+local frame = intro.streamelementsE
+frame:SetWidth(250)
+frame:DisableButton(true)
+EditBoxChange(frame)
+frame:SetPoint("BOTTOMLEFT", intro.discordE.frame, "TOPLEFT", 0, 20)
+frame:SetText(color.blue.."https://streamelements.com/knoot0279/tip")
+intro:AddChild(frame)
+
+intro.streamelementsL = GUI:Create("TLabel")
+local frame = intro.streamelementsL
+frame:SetText(color.blue.."More options for support")
+fontSize(frame.label)
+frame.label:SetJustifyH("LEFT")
+frame:SetWidth(intro.frame:GetWidth() - 40)
+frame:SetPoint("BOTTOMLEFT", intro.streamelementsE.frame, "TOPLEFT", 0, 0)
+intro:AddChild(frame)
+
 intro.patreonE = GUI:Create("EditBox")
 local frame = intro.patreonE
 frame:SetWidth(250)
 frame:DisableButton(true)
 EditBoxChange(frame)
-frame:SetPoint("BOTTOMLEFT", intro.discordL.frame, "TOPLEFT", 0, 20)
+frame:SetPoint("BOTTOMLEFT", intro.streamelementsE.frame, "TOPLEFT", 0, 20)
 frame:SetText(color.orange.."https://www.patreon.com/FastGuildInvite")
 intro:AddChild(frame)
 
@@ -160,7 +178,7 @@ local frame = intro.paypalE
 frame:SetWidth(250)
 frame:DisableButton(true)
 EditBoxChange(frame)
-frame:SetPoint("BOTTOMLEFT", intro.patreonL.frame, "TOPLEFT", 0, 20)
+frame:SetPoint("BOTTOMLEFT", intro.patreonE.frame, "TOPLEFT", 0, 20)
 frame:SetText(color.blue.."https://www.paypal.me/Knoot")
 intro:AddChild(frame)
 
