@@ -471,6 +471,7 @@ function Console:FGIInput(str)
 	if str == '' or str == 'help' then return Console:FGIHelp()
 	elseif str == 'help2' then return Console:FGIHelp2()
 	elseif str == 'show' then return interface.mainFrame:Show()
+	elseif str == 'dump' then return interface.dumpWindow:Show()
 	elseif str == "invite" then
 		fn:invitePlayer()
 	elseif str == "nextSearch" then
@@ -494,10 +495,12 @@ function Console:FGIInput(str)
 		interface.mainFrame:ClearAllPoints()
 		interface.scanFrame:ClearAllPoints()
 		interface.chooseInvites:ClearAllPoints()
+		interface.dumpWindow:ClearAllPoints()
 		
 		interface.mainFrame:SetPoint("CENTER", UIParent)
 		interface.scanFrame:SetPoint("CENTER", UIParent)
 		interface.chooseInvites:SetPoint("CENTER", UIParent)
+		interface.dumpWindow:SetPoint("CENTER", UIParent)
 		
 		local point, relativeTo,relativePoint, xOfs, yOfs = interface.mainFrame.frame:GetPoint(1)
 		DB.global.mainFrame = {point=point, relativeTo=relativeTo, relativePoint=relativePoint, xOfs=xOfs, yOfs=yOfs,}
@@ -507,6 +510,9 @@ function Console:FGIInput(str)
 		
 		point, relativeTo,relativePoint, xOfs, yOfs = interface.chooseInvites.frame:GetPoint(1)
 		DB.global.chooseInvites = {point=point, relativeTo=relativeTo, relativePoint=relativePoint, xOfs=xOfs, yOfs=yOfs,}
+		
+		point, relativeTo,relativePoint, xOfs, yOfs = interface.dumpWindow.frame:GetPoint(1)
+		DB.global.dumpWindow = {point=point, relativeTo=relativeTo, relativePoint=relativePoint, xOfs=xOfs, yOfs=yOfs,}
 		
 		C_UI.Reload()
 	elseif str == "factorySettings" then
@@ -526,6 +532,7 @@ function Console:FGIHelp()
 	print(L.nextSearch)
 	print(L.blacklist)
 	print(L.unblacklist)
+	print(L.dump)
 	print(L.help2)
 end
 

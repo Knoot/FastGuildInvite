@@ -15,7 +15,7 @@ local L = {
 		
 		updates = {
 			"Добавлен чекбокс отобразить/скрыть обновления аддона.",
-			"Добавлен чекбокс отобразить/скрыть обновления аддона.",
+			"Добавлена команда \"/fgi dump\".",
 		},
 		
 		
@@ -29,7 +29,7 @@ local L = {
 		
 		updates = {
 			"Added checkbox to show / hide addon updates.",
-			"Added checkbox to show / hide addon updates.",
+			"Added \"/fgi dump\" command.",
 		},
 	}
 }

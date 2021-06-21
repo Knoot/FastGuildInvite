@@ -132,6 +132,11 @@ L.settings = {
 		confirmClearFrameH = 80,
 		inviteBTN = 120,
 		clearBTN = 70,
+		
+		dumpWindowW = 600,
+		dumpWindowH = 600,
+		buttonGroupW = 150,
+		buttonGroupH = 600,
 	},
 	Font = 'Interface\\AddOns\\FastGuildInvite\\fonts\\PT_Sans_Narrow.ttf',
 	FontSize = 16,
