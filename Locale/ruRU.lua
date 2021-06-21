@@ -42,6 +42,7 @@ L.settings = {
 		fastBlacklist = 270,
 		setNote = 200,
 		saveSearch = 250,
+		showUpdateInfo = 250,
 		setOfficerNote = 290,
 		filters = 150,
 		keyBindingsW = 440,

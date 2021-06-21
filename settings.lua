@@ -395,6 +395,18 @@ end)
 frame:SetPoint("TOPLEFT", settingsCheckBoxGRP.officerNoteText.frame, "BOTTOMLEFT", 0, 0)
 settingsCheckBoxGRP:AddChild(frame)
 
+settingsCheckBoxGRP.showUpdateInfo = GUI:Create("TCheckBox")
+local frame = settingsCheckBoxGRP.showUpdateInfo
+frame:SetWidth(size.showUpdateInfo)
+frame:SetLabel(L["Обновления"])
+frame:SetTooltip(L["Показывать список обновлений"])
+frame.frame:HookScript("OnClick", function()
+	DB.global.introShow = settingsCheckBoxGRP.showUpdateInfo:GetValue()
+end)
+frame:SetPoint("TOPLEFT", settingsCheckBoxGRP.saveSearch.frame, "BOTTOMLEFT", 0, 0)
+settingsCheckBoxGRP:AddChild(frame)
+
+
 
 
 
@@ -426,6 +438,7 @@ frame:SetScript('OnEvent', function()
 	settingsCheckBoxGRP.setOfficerNote:SetValue(DB.global.setOfficerNote or false)
 	settingsCheckBoxGRP.officerNoteText:SetText(DB.global.officerNoteText or ""); settingsCheckBoxGRP.officerNoteText.temptext = settingsCheckBoxGRP.officerNoteText:GetText()
 	settingsCheckBoxGRP.saveSearch:SetValue(DB.global.saveSearch or false)
+	settingsCheckBoxGRP.showUpdateInfo:SetValue(DB.global.introShow or false)
 	
 	
 	updateMsgFilters()

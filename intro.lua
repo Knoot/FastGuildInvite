@@ -14,7 +14,8 @@ local L = {
 		
 		
 		updates = {
-			"Обнаружен и исправлен баг не полного чтения списка найденных игроков.",
+			"Добавлен чекбокс отобразить/скрыть обновления аддона.",
+			"Добавлен чекбокс отобразить/скрыть обновления аддона.",
 		},
 		
 		
@@ -27,7 +28,8 @@ local L = {
 		
 		
 		updates = {
-			"Found and fixed a bug of incomplete reading of the list of found players.",
+			"Added checkbox to show / hide addon updates.",
+			"Added checkbox to show / hide addon updates.",
 		},
 	}
 }
