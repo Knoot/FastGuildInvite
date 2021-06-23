@@ -1,11 +1,14 @@
 #@version-retail@
 ## Interface-Retail: 90005
+## X-Interface: Retail
 #@end-version-retail@
 #@version-bcc@
 ## Interface-BCC: 20501
+## X-Interface: TBC
 #@end-version-bcc@
 #@version-classic@
 ## Interface-Classic: 11307
+## X-Interface: Classic
 #@end-version-classic@
 ## Author: Knoot
 ## Title: |cffffff00<|r|cff16ABB5FGI|r|cffffff00>|r |cff16ABB5FastGuildInvite|r

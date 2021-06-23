@@ -102,6 +102,7 @@ frame:SetCallback("OnClick", function()
 		end
 	end
 	str = format("%sAddon version: **%s**\n", str, addon.version)							-- Addon version
+	str = format("%sAddon game version: **%s**\n", str, addon.gversion)						-- Addon game version
 	str = format("%sGame version: **%s**\n", str, GetBuildInfo())							-- Game version
 	str = format("%sRealm: **%s**\n", str, GetRealmName())									-- Realm
 	str = format("%sLevel range: %d-%d\n", str, DB.global.lowLimit, DB.global.highLimit)	-- Level range
