@@ -17,6 +17,20 @@ local function btnText(frame)
 	text:SetPoint("BOTTOMRIGHT", -5, 1)
 end
 
+local function EditBoxChange(frame)
+	frame.editbox:SetScript("OnEnterPressed", function(self)
+		self:ClearFocus()
+		self.lasttext = self:GetText()
+	end)
+	frame.editbox:SetScript("OnEnter", function(self)
+		self.lasttext = self:GetText()
+	end)
+	frame.editbox:SetScript("OnEscapePressed", function(self)
+		self:SetText(self.lasttext or "")
+		self:ClearFocus()
+	end)
+end
+
 local blackList, scrollBar
 local w,h = 623, 568
 
@@ -96,6 +110,46 @@ frame:SetCallback("OnClick", function()
 end)
 blackList:AddChild(frame)
 
+
+blackList.blacklistReason = GUI:Create("TLabel")
+local frame = blackList.blacklistReason
+frame:SetText(L["Причина по умолчанию для черного списка"])
+fontSize(frame.label)
+frame.label:SetJustifyH("LEFT")
+frame:SetWidth(size.blacklistReason)
+frame:SetPoint("TOPLEFT", blackList.frame, "BOTTOMLEFT", 0, -30)
+blackList:AddChild(frame)
+
+blackList.blacklistReasonText = GUI:Create("EditBox")
+local frame = blackList.blacklistReasonText
+frame:SetWidth(blackList.frame:GetWidth()-30)
+frame:DisableButton(true)
+EditBoxChange(frame)
+frame:SetCallback("OnTextChanged", function(self,_,msg)
+	DB.global.blacklistReasonText = msg
+	self.temptext = msg
+end)
+frame.editbox:SetScript("OnEscapePressed", function(self)
+	DB.global.blacklistReasonText = self.lasttext
+	self:SetText(self.lasttext or "")
+	self:ClearFocus()
+end)
+frame:SetPoint("TOPLEFT", blackList.blacklistReason.frame, "BOTTOMLEFT", 0, 0)
+blackList:AddChild(frame)
+
+blackList.fastBlacklist = GUI:Create("TCheckBox")
+local frame = blackList.fastBlacklist
+frame:SetWidth(size.fastBlacklist)
+frame:SetLabel(L["Быстрое добавление в черный список"])
+frame:SetTooltip(L["Не отображать окно ввода причины для черного списка"])
+frame.frame:HookScript("OnClick", function()
+	DB.global.fastBlacklist = blackList.fastBlacklist:GetValue()
+end)
+frame:SetPoint("TOPLEFT", blackList.blacklistReasonText.frame, "BOTTOMLEFT", 0, 0)
+blackList:AddChild(frame)
+
+
+
 StaticPopupDialogs["FGI_BLACKLIST_CHANGE"] = {
 	text = L["Причина"],
 	button1 = "Ok",
@@ -164,6 +218,7 @@ for i=1,FGI_BLACKLIST_MAX do
 	frame:SetLayout("NIL")
 	frame.n = GUI:Create("TLabel")
 		frame.n:SetText(i)
+		frame.n.label:SetMaxLines(1)
 		frame.n:SetWidth(120)
 		frame.n:SetHeight(20)
 		frame.n:SetTooltip(help)
@@ -174,7 +229,7 @@ for i=1,FGI_BLACKLIST_MAX do
 	frame.r = GUI:Create("TLabel")
 		frame.r:SetText("reason")
 		frame.r.label:SetMaxLines(1)
-		frame.r:SetWidth(623-frame.n.frame:GetWidth()-50)
+		frame.r:SetWidth(blackList.frame:GetWidth()-frame.n.frame:GetWidth())
 		frame.r:SetHeight(20)
 		frame.r:SetTooltip('data.reason')
 		frame.r:SetPoint("TOPLEFT", frame.n.frame, "TOPRIGHT", 0, 0)
@@ -255,5 +310,9 @@ local frame = CreateFrame('Frame')
 frame:RegisterEvent('PLAYER_LOGIN')
 frame:SetScript('OnEvent', function()
 	DB = addon.DB
+	
+	blackList.blacklistReasonText:SetText(DB.global.blacklistReasonText == nil and L["defaultReason"] or DB.global.blacklistReasonText)
+	blackList.fastBlacklist:SetValue(DB.global.fastBlacklist or false)
+	
 	blackList:update()
 end)
