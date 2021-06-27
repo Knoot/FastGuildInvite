@@ -14,8 +14,7 @@ local L = {
 		
 		
 		updates = {
-			"Добавлен чекбокс отобразить/скрыть обновления аддона.",
-			"Добавлена команда \"/fgi dump\".",
+			"Настройки для черного списка и гильдии перемещены в соответствующие разделы.",
 		},
 		
 		
@@ -28,8 +27,7 @@ local L = {
 		
 		
 		updates = {
-			"Added checkbox to show / hide addon updates.",
-			"Added \"/fgi dump\" command.",
+			"Moved the settings for the blacklist and guild to the appropriate sections.",
 		},
 	}
 }
