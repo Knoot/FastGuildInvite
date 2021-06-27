@@ -37,7 +37,7 @@ local w,h = 623, 568
 interface.settings.Blacklist.content = GUI:Create("SimpleGroup")
 blackList = interface.settings.Blacklist.content
 blackList:SetWidth(w-20)
-blackList:SetHeight(h-20)
+blackList:SetHeight(h-220)
 blackList.frame:SetParent(interface.settings.Blacklist)
 blackList:SetPoint("TOPLEFT", interface.settings.Blacklist, "TOPLEFT", 10, -10)
 blackList:SetLayout("NIL")
