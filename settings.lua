@@ -1,8 +1,7 @@
 local addon = FGI
 local fn = addon.functions
 local L = FGI:GetLocale()
-local settings = L.settings
-local size = settings.size
+local size = L.settings.size
 local color = addon.color
 local interface = addon.interface
 local GUI = LibStub("AceGUI-3.0")
@@ -11,28 +10,6 @@ local DB
 local fontSize = fn.fontSize
 
 local settings
-
-local noteHelp = "\n\n"..
-'%c - date and time (' .. date('%c') .. ")\n"..
-'%Y - year (' .. date('%Y') .. ")\n"..
-'%y - year (' .. date('%y') .. ")\n"..
-'%m - month (' .. date('%m') .. ")\n"..
-'%d - day (' .. date('%d') .. ")\n"..
-'%H - hour, using a 24-hour clock (' .. date('%H') .. ")\n"..
-'%M - minute (' .. date('%M') .. ")\n"..
-'%S - second (' .. date('%S') .. ")\n"..
-'%B - month (' .. date('%B') .. ")\n"..
-'%b - month (' .. date('%b') .. ")\n"..
-'%A - weekday (' .. date('%A') .. ")\n"..
-'%a - weekday ' .. date('%a') .. ")\n"..
-'%w - weekday (' .. date('%w') .. ")\n"..
-'%I - hour, using a 12-hour clock (' .. date('%I') .. ")\n"..
-'%p - "AM" or "PM" (' .. date('%p') .. ")\n"..
-'%x - date (' .. date('%x') .. ")\n"..
-'%X - time (' .. date('%X') .. ")\n"..
-'%% - the character (' .. date('%%') .. ")\n"..
-'NAME - the character name (' .. UnitName('player') .. ")\n"..
-"\n\n Joined: %m/%d/%Y = "..date('Joined: %m/%d/%Y')
 
 local function updateMsgFilters()
 	if DB.realm.systemMSG then
@@ -62,7 +39,7 @@ local function EditBoxChange(frame)
 end
 
 interface.settings = CreateFrame("Frame", UIParent)
-local settings = interface.settings
+settings = interface.settings
 settings.name = "Fast Guild Invite"
 InterfaceOptions_AddCategory(settings)
 
@@ -76,6 +53,11 @@ settings.Security = CreateFrame("Frame", settings)
 settings.Security.name = L["Безопасность"]
 settings.Security.parent = settings.name
 InterfaceOptions_AddCategory(settings.Security)
+
+settings.Guild = CreateFrame("Frame", settings)
+settings.Guild.name = L["Гильдия"]
+settings.Guild.parent = settings.name
+InterfaceOptions_AddCategory(settings.Guild)
 
 settings.filters = CreateFrame("Frame", settings)
 settings.filters.name = L["Фильтры"]
@@ -280,70 +262,6 @@ end)
 frame:SetPoint("TOPLEFT", settings.clearDBtimes.frame, "BOTTOMLEFT", 0, 0)
 settingsCheckBoxGRP:AddChild(frame)
 
-settingsCheckBoxGRP.setNote = GUI:Create("TCheckBox")
-local frame = settingsCheckBoxGRP.setNote
-frame:SetWidth(size.setNote)
-frame:SetLabel(L["Заметка для новых игроков"])
-frame:SetTooltip(L["Установить заметку для новых членов гильдии"]..noteHelp)
-frame.frame:HookScript("OnClick", function()
-	DB.global.setNote = settingsCheckBoxGRP.setNote:GetValue()
-end)
-frame:SetPoint("TOPLEFT", settings.settingsCheckBoxGRP.confirmSearchClear.frame, "BOTTOMLEFT", 0, 0)
-settingsCheckBoxGRP:AddChild(frame)
-
-settingsCheckBoxGRP.noteText = GUI:Create("EditBox")
-local frame = settingsCheckBoxGRP.noteText
-frame:SetWidth(settings.frame:GetWidth()-30)
-frame:DisableButton(true)
-EditBoxChange(frame)
-frame:SetCallback("OnTextChanged", function(self,_,msg)
-	DB.global.noteText = msg
-	if fn:getCharLen(msg) > FGI_NOTEMAXLENGTH then
-		self:SetText(self.temptext or "")
-		return
-	end
-	self.temptext = msg
-end)
-frame.editbox:SetScript("OnEscapePressed", function(self)
-	DB.global.noteText = self.lasttext
-	self:SetText(self.lasttext or "")
-	self:ClearFocus()
-end)
-frame:SetPoint("TOPLEFT", settings.settingsCheckBoxGRP.setNote.frame, "BOTTOMLEFT", 0, 0)
-settingsCheckBoxGRP:AddChild(frame)
-
-settingsCheckBoxGRP.setOfficerNote = GUI:Create("TCheckBox")
-local frame = settingsCheckBoxGRP.setOfficerNote
-frame:SetWidth(size.setOfficerNote)
-frame:SetLabel(L["Заметка для офицеров для новых игроков"])
-frame:SetTooltip(L["Установить заметку для офицеров для новых членов гильдии"]..noteHelp)
-frame.frame:HookScript("OnClick", function()
-	DB.global.setOfficerNote = settingsCheckBoxGRP.setOfficerNote:GetValue()
-end)
-frame:SetPoint("TOPLEFT", settings.settingsCheckBoxGRP.noteText.frame, "BOTTOMLEFT", 0, 0)
-settingsCheckBoxGRP:AddChild(frame)
-
-settingsCheckBoxGRP.officerNoteText = GUI:Create("EditBox")
-local frame = settingsCheckBoxGRP.officerNoteText
-frame:SetWidth(settings.frame:GetWidth()-30)
-frame:DisableButton(true)
-EditBoxChange(frame)
-frame:SetCallback("OnTextChanged", function(self,_,msg)
-	if fn:getCharLen(msg) > FGI_NOTEMAXLENGTH then
-		self:SetText(self.temptext or "")
-		return
-	end
-	self.temptext = msg
-	DB.global.officerNoteText = msg
-end)
-frame.editbox:SetScript("OnEscapePressed", function(self)
-	DB.global.officerNoteText = self.lasttext
-	self:SetText(self.lasttext or "")
-	self:ClearFocus()
-end)
-frame:SetPoint("TOPLEFT", settings.settingsCheckBoxGRP.setOfficerNote.frame, "BOTTOMLEFT", 0, 0)
-settingsCheckBoxGRP:AddChild(frame)
-
 settingsCheckBoxGRP.saveSearch = GUI:Create("TCheckBox")
 local frame = settingsCheckBoxGRP.saveSearch
 frame:SetWidth(size.saveSearch)
@@ -355,7 +273,7 @@ frame.frame:HookScript("OnClick", function()
 		DB.factionrealm.search = nil
 	end
 end)
-frame:SetPoint("TOPLEFT", settingsCheckBoxGRP.officerNoteText.frame, "BOTTOMLEFT", 0, 0)
+frame:SetPoint("TOPLEFT", settingsCheckBoxGRP.confirmSearchClear.frame, "BOTTOMLEFT", 0, 0)
 settingsCheckBoxGRP:AddChild(frame)
 
 settingsCheckBoxGRP.showUpdateInfo = GUI:Create("TCheckBox")
@@ -394,10 +312,6 @@ frame:SetScript('OnEvent', function()
 	settingsCheckBoxGRP.blacklistOfficer:SetValue(DB.global.blacklistOfficer or false)
 	settings.clearDBtimes:SetValue(DB.global.clearDBtimes)
 	settingsCheckBoxGRP.confirmSearchClear:SetValue(DB.global.confirmSearchClear or false)
-	settingsCheckBoxGRP.setNote:SetValue(DB.global.setNote or false)
-	settingsCheckBoxGRP.noteText:SetText(DB.global.noteText or ""); settingsCheckBoxGRP.noteText.temptext = settingsCheckBoxGRP.noteText:GetText()
-	settingsCheckBoxGRP.setOfficerNote:SetValue(DB.global.setOfficerNote or false)
-	settingsCheckBoxGRP.officerNoteText:SetText(DB.global.officerNoteText or ""); settingsCheckBoxGRP.officerNoteText.temptext = settingsCheckBoxGRP.officerNoteText:GetText()
 	settingsCheckBoxGRP.saveSearch:SetValue(DB.global.saveSearch or false)
 	settingsCheckBoxGRP.showUpdateInfo:SetValue(DB.global.introShow or false)
 	

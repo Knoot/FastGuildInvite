@@ -63,3 +63,4 @@ intro.lua
 logs.lua
 customInterface.lua
 dump.lua
+guild.lua
