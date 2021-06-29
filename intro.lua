@@ -14,7 +14,7 @@ local L = {
 		
 		
 		updates = {
-			"Настройки для черного списка и гильдии перемещены в соответствующие разделы.",
+			"Попытка исправить проблему \"Не работает Esc после использования аддона.\"",
 		},
 		
 		
@@ -27,7 +27,7 @@ local L = {
 		
 		
 		updates = {
-			"Moved the settings for the blacklist and guild to the appropriate sections.",
+			"Trying to fix the problem\"Esc does not work after using the addon.\"",
 		},
 	}
 }

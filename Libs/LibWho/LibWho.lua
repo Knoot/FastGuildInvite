@@ -60,7 +60,7 @@ saveFrandListState:SetScript("OnEvent", function()
 	if libWho.saveShown then
 		libWho.saveShown:Click()
 	else
-		FriendsFrame:Hide()
+		FriendsFrameCloseButton:Click()
 		FriendsFrame:SetAlpha(libWho.frameAlpha or 1)
 	end
 	SOUNDKIT.IG_CHARACTER_INFO_TAB = libWho.IG_CHARACTER_INFO_TAB
@@ -75,16 +75,9 @@ function libWho:GetWho(query)
 	libWho.isAddon = true
 	libWho.whoQuery = query
 	libWho.saveShown = false
-	i=1
 	
 	if FriendsFrame:IsShown() then
-		while(_G["FriendsFrameTab"..i]) do
-			if not _G["FriendsFrameTab"..i]:IsEnabled() then
-				libWho.saveShown = _G["FriendsFrameTab"..i]
-				break
-			end
-			i = i+1
-		end
+		libWho.saveShown = _G["FriendsFrameTab"..FriendsFrame.selectedTab]
 	else
 		libWho.frameAlpha = FriendsFrame:GetAlpha()
 		FriendsFrame:SetAlpha(0)
@@ -97,7 +90,6 @@ function libWho:GetWho(query)
 end
 
 function libWho:returnWho(result)
-	-- searchWhoResultCallback(libWho.whoQuery, result)
 	if type(libWho.callback) == "function" then
 		libWho.callback(self.whoQuery, result)
 	end
