@@ -159,6 +159,27 @@ end)
 frame:SetPoint("TOPLEFT", buttonGroup.baseInfo.frame, "BOTTOMLEFT", 0, -10)
 buttonGroup:AddChild(frame)
 
+buttonGroup.includedAddons = GUI:Create("Button")
+local frame = buttonGroup.includedAddons
+frame:SetText(L["Аддоны"])
+btnText(frame)
+frame:SetWidth(size.buttonGroupW)
+frame:SetHeight(40)
+frame:SetCallback("OnClick", function()
+	local str = "Included addons\n";
+	for i=1,GetNumAddOns() do
+		local name, title, notes, loadable, reason, security, newVersion = GetAddOnInfo(i);
+		local version = GetAddOnMetadata(i, 'Version')
+		if reason ~= "DISABLED" then
+			str = format("%s%s (%s) - %s\n", str, name, version or 'unknown', reason or 'ENABLED')	-- addon
+		end
+	end
+	
+	dumpWindow.list:SetText(str)
+end)
+frame:SetPoint("TOPLEFT", buttonGroup.filters.frame, "BOTTOMLEFT", 0, -10)
+buttonGroup:AddChild(frame)
+
 
 
 end
