@@ -14,7 +14,8 @@ local L = {
 		
 		
 		updates = {
-			"Попытка исправить проблему \"Не работает Esc после использования аддона.\"",
+			"Исправлено появление окна \"кто\" во время боя.",
+			"Изменена логика скрытия окна \"кто\", если вы заметили нестандартное поведение этого окна, прошу сообщить об этом.",
 		},
 		
 		
@@ -27,7 +28,8 @@ local L = {
 		
 		
 		updates = {
-			"Trying to fix the problem\"Esc does not work after using the addon.\"",
+			"Fixed the appearance of the \"who\" window during the battle.",
+			"The logic of hiding the \"who\" window has been changed. If you notice any non-standard behavior of this window, please report it.",
 		},
 	}
 }

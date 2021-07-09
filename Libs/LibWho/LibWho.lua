@@ -1,4 +1,4 @@
-local MAJOR,MINOR = "FGI-WhoLib", 5
+local MAJOR,MINOR = "FGI-WhoLib", 6
 local libWho, oldminor = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not libWho then return end
@@ -11,7 +11,7 @@ local _G, type = _G, type
 libWho.whoQuery=''
 libWho.saveShown=false
 libWho.isAddon=false
-libWho.frameAlpha = 1
+libWho.Quiet=false
 libWho.callback = false
 libWho.timeCallbackStart = false
 libWho.timeCallbackEnd = false
@@ -59,9 +59,6 @@ local saveFrandListState = CreateFrame("Frame")
 saveFrandListState:SetScript("OnEvent", function()
 	if libWho.saveShown then
 		libWho.saveShown:Click()
-	else
-		FriendsFrameCloseButton:Click()
-		FriendsFrame:SetAlpha(libWho.frameAlpha or 1)
 	end
 	SOUNDKIT.IG_CHARACTER_INFO_TAB = libWho.IG_CHARACTER_INFO_TAB
 	SOUNDKIT.IG_MAINMENU_CLOSE = libWho.IG_MAINMENU_CLOSE
@@ -78,10 +75,11 @@ function libWho:GetWho(query)
 	
 	if FriendsFrame:IsShown() then
 		libWho.saveShown = _G["FriendsFrameTab"..FriendsFrame.selectedTab]
+		FriendsFrame:RegisterEvent("WHO_LIST_UPDATE");
+		libWho.Quiet = false
 	else
-		libWho.frameAlpha = FriendsFrame:GetAlpha()
-		FriendsFrame:SetAlpha(0)
-		FriendsFrame:Show()
+		FriendsFrame:UnregisterEvent("WHO_LIST_UPDATE");
+		libWho.Quiet = true
 	end
 	
 	C_FriendList.SetWhoToUi(true)
@@ -120,6 +118,9 @@ whoFrame:SetScript("OnEvent", function()
 			result[i] = info
 		end
 		saveFrandListState:UnregisterEvent("WHO_LIST_UPDATE")
+		if libWho.Quiet then
+			FriendsFrame:RegisterEvent("WHO_LIST_UPDATE");
+		end
 		libWho:returnWho(result)
 	end)
 end)
