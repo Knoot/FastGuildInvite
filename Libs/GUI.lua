@@ -617,6 +617,15 @@ local methods = {
 			end
 		end
 	end,
+	
+	["SetColor"] = function(self, color)
+		if not color then
+			self.text.color = nil
+			return
+		end
+		self.text.color = color
+		self.text:SetTextColor(color[1] or 1, color[2] or 1, color[3] or 1)
+	end,
 
 	["SetDisabled"] = function(self, disabled)
 		self.disabled = disabled
@@ -629,7 +638,8 @@ local methods = {
 			end
 		else
 			self.frame:Enable()
-			self.text:SetTextColor(1, 1, 1)
+			local c = self.text.color or {}
+			self.text:SetTextColor(c[1] or 1, c[2] or 1, c[3] or 1)
 			if self.tristate and self.checked == nil then
 				SetDesaturation(self.check, true)
 			else
