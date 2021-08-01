@@ -246,8 +246,10 @@ frame:SetScript("OnEvent", function(_,_,msg)
 	elseif type == "auto_decline" then
 		debug(format(ERR_GUILD_DECLINE_AUTO_S, name), color.yellow)
 		auto_decline[name] = true
+		fn.history:onDeclineAuto();
 	elseif type == "decline" then
 		debug(format(ERR_GUILD_DECLINE_S, name), color.yellow)
+		fn.history:onDecline();
 		if DB.global.inviteType == 4 then
 			-- local msg = fn:getRndMsg()
 			C_Timer.After(1, function() if addon.msgQueue[name] then fn:sendWhisper(name); addon.msgQueue[name] = nil end end)

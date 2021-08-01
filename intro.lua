@@ -14,8 +14,7 @@ local L = {
 		
 		
 		updates = {
-			"Исправлено появление окна \"кто\" во время боя.",
-			"Изменена логика скрытия окна \"кто\", если вы заметили нестандартное поведение этого окна, прошу сообщить об этом.",
+			"Добавлена расширенная статистика.",
 		},
 		
 		
@@ -28,8 +27,7 @@ local L = {
 		
 		
 		updates = {
-			"Fixed the appearance of the \"who\" window during the battle.",
-			"The logic of hiding the \"who\" window has been changed. If you notice any non-standard behavior of this window, please report it.",
+			"Added advanced statistics.",
 		},
 	}
 }

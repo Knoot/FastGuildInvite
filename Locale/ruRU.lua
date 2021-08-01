@@ -20,6 +20,7 @@ L.settings = {
 		startScan = 160,
 		chooseInvites = 180,
 		settingsBtn = 120,
+		statisticBtn = 120,
 		gratitude = 120,
 		lvlRange = 150,
 		searchInterval = 120,

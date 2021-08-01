@@ -188,6 +188,9 @@ function anim.Start(self, text, font, size)
 	self.f.animation:Play()
 end
 
+function fn.getTime()
+	return time({year = date("%Y"), month = date("%m"), day = date("%d"), hour = date("%H")});
+end
 
 local function inviteBtnText(text)
 	interface.scanFrame.invite:SetText(text)
@@ -289,8 +292,10 @@ frame:SetScript("OnEvent", function(_,_,msg)
 		local n = strsub(msg,place)
 		local name = strsub(n,1,(strfind(n,"%s") or 2)-1)
 		if format(ERR_GUILD_JOIN_S,name) == msg then
+			fn.history:joined();
 			if DB.realm.alreadySended[name] then
 				addon.searchInfo.invited()
+				fn.history:onAccept(name);
 			end
 			C_Timer.After(5, function() fn:setNote(name) end)
 		end
@@ -558,7 +563,7 @@ function fn:sendWhisper(name)
 end
 
 function fn:rememberPlayer(name)
-	DB.realm.alreadySended[name] = time({year = date("%Y"), month = date("%m"), day = date("%d")})
+	DB.realm.alreadySended[name] = fn.getTime();
 	addon.search.tempSendedInvites[name] = nil
 	debug(format("Remember: %s",name))
 end
@@ -586,6 +591,7 @@ function fn:invitePlayer(noInv)
 	end
 	if not noInv then
 		addon.searchInfo.sended()
+		fn.history:onSend();
 	end
 	table.remove(list, 1)
 	onListUpdate()
@@ -888,6 +894,7 @@ function fn:addNewPlayer(p)
 				if not IsInTempList(addon.search, p.Name) then
 					if not IsInAlreadySendedList(p.Name) then
 						if not IsCustomFiltered(p) then
+							fn.history:onFound({lvl = p.Level, race = p.Race, class = p.Class});
 							table.insert(list, {name = p.Name, lvl = p.Level, race = p.Race, class = p.Class, NoLocaleClass = p.NoLocaleClass})
 							addon.search.tempSendedInvites[p.Name] = true
 							debug(format("Add player %s", playerInfoStr), color.green)

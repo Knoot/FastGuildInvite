@@ -244,6 +244,19 @@ frame.frame:SetScript("OnClick", function()
 	interface.mainFrame:Hide()
 end)
 mainButtonsGRP:AddChild(frame)
+
+mainButtonsGRP.statisticBtn = GUI:Create("Button")
+local frame = mainButtonsGRP.statisticBtn
+frame:SetText(L["Статистика"])
+-- fontSize(frame.text)
+btnText(frame)
+frame:SetWidth(size.statisticBtn)
+frame:SetHeight(mainButtonsGRP.startScan.frame:GetHeight())
+frame.frame:SetScript("OnClick", function()
+	interface.graphFrame:Show()
+	interface.mainFrame:Hide()
+end)
+mainButtonsGRP:AddChild(frame)
 end
 
 
@@ -409,6 +422,9 @@ frame:SetScript('OnEvent', function()
 	
 	mainButtonsGRP.settingsBtn:ClearAllPoints()
 	mainButtonsGRP.settingsBtn:SetPoint("LEFT", mainButtonsGRP.clear.frame, "RIGHT", 2, 0)
+	
+	mainButtonsGRP.statisticBtn:ClearAllPoints()
+	mainButtonsGRP.statisticBtn:SetPoint("LEFT", mainButtonsGRP.settingsBtn.frame, "RIGHT", 2, 0)
 	
 	
 	interface.confirmClearFrame:Hide()

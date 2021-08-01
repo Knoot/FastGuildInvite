@@ -30,6 +30,7 @@ Libs\AceGUI-3.0\AceGUI-3.0.xml
 Libs\AceSerializer-3.0\AceSerializer-3.0.xml
 Libs\LibCompress\lib.xml
 Libs\LibWho\LibWho.lua
+Libs\LibGraph-2.0\LibGraph-2.0\LibGraph-2.0.lua
 
 
 Locale\Locale.xml
@@ -64,3 +65,4 @@ logs.lua
 customInterface.lua
 dump.lua
 guild.lua
+statistic.lua

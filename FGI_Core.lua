@@ -188,6 +188,7 @@ frame:SetScript("OnEvent", function(...)
 		if format(ERR_GUILD_LEAVE_S ,name) == msg then
 			DB.realm.leave[name] = true
 			debug(format("Player %s left the guild or was expelled.", name), color.yellow)
+			fn.history:onLeave();
 		end
 	end
 end)
@@ -350,6 +351,16 @@ local defaultSettings =  {
 	factionrealm  = {
 		curMessage = 1,
 		messageList = {},
+		history = {
+			search = {},
+			found = {},
+			send = {},
+			accept = {},
+			decline = {},
+			autodecline = {},
+			leave = {},
+			joined = {},
+		},
 	},
 	global = {
 		inviteType = 1,
@@ -383,6 +394,15 @@ local defaultSettings =  {
 			player = true,
 			progress = true,
 			buttons = true,
+		},
+		statistic = {
+			send = true,
+			decline = true,
+			autodecline = false,
+			accept = true,
+			search = false,
+			found = false,
+			leave = true
 		}
 	},
 } 
