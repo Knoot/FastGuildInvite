@@ -84,6 +84,7 @@ function draw(data)
 	local max = 0;
 	
 	local function updateMax(arr)
+		if type(arr) ~= 'table' then return end
 		for i = 1, #arr do
 			if arr[i][2] and arr[i][2] > max then
 				max = arr[i][2];
@@ -100,26 +101,32 @@ function draw(data)
 	end
 	if data.show.decline then
 		decline = prepareGraph(history.decline, getStartDate(history.decline, startDate), data.period);
+		updateMax(decline);
 		graph:AddDataSeries(decline, {1, 0, 0, 0.8}, false);				--red		inv decline
 	end
 	if data.show.autodecline then
 		autodecline = prepareGraph(history.autodecline, getStartDate(history.autodecline, startDate), data.period);
+		updateMax(autodecline);
 		graph:AddDataSeries(autodecline, {1, 0.4, 0.4, 0.8}, false);		--red2		inv autodecline
 	end
 	if data.show.accept then
 		accept = prepareGraph(history.accept, getStartDate(history.accept, startDate), data.period);
+		updateMax(accept);
 		graph:AddDataSeries(accept, {0.2, 1.0, 0.2, 0.8}, false);			--green		inv accept
 	end
 	if data.show.search then
 		search = prepareGraph(history.search, getStartDate(history.search, startDate), data.period);
+		updateMax(search);
 		graph:AddDataSeries(search, {1, 1, 0, 0.8}, false);					--yellow	search
 	end
 	if data.show.found then
 		found = prepareGraph(history.found, getStartDate(history.found, startDate), data.period);
+		updateMax(found);
 		graph:AddDataSeries(found, {0.8, 0, 1, 0.8}, false);				--purple	found
 	end
 	if data.show.leave then
 		leave = prepareGraph(history.leave, getStartDate(history.leave, startDate), data.period);
+		updateMax(leave);
 		graph:AddDataSeries(leave, {0.67, 0.67, 0.67, 0.8}, false);			--gray		leave
 	end
 	graph:SetXAxis(0, math.max(2, data.period[2]+1));
