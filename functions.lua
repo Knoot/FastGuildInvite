@@ -1002,6 +1002,7 @@ function fn:nextSearch()
 	if curQuery == nil then
 		return	print("epmty search query")
 	end
+	fn.history:onSearch()
 	libWho:GetWho(curQuery)
 end
 
