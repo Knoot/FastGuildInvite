@@ -403,7 +403,8 @@ local defaultSettings =  {
 			search = false,
 			found = false,
 			leave = true
-		}
+		},
+		quietZones = true,
 	},
 } 
 

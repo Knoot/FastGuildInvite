@@ -180,6 +180,23 @@ end)
 frame:SetPoint("TOPLEFT", buttonGroup.filters.frame, "BOTTOMLEFT", 0, -10)
 buttonGroup:AddChild(frame)
 
+buttonGroup.areas = GUI:Create("Button")
+local frame = buttonGroup.areas
+frame:SetText(L["Зоны"])
+btnText(frame)
+frame:SetWidth(size.buttonGroupW)
+frame:SetHeight(40)
+frame:SetCallback("OnClick", function()
+	local str = "";
+	for k,_ in pairs(fn.GetAreas()) do
+		str = format("%s\n%s", str, k)	-- areas
+	end
+	
+	dumpWindow.list:SetText(str)
+end)
+frame:SetPoint("TOPLEFT", buttonGroup.includedAddons.frame, "BOTTOMLEFT", 0, -10)
+buttonGroup:AddChild(frame)
+
 
 
 end

@@ -157,6 +157,18 @@ function fn.fontSize(frame, font, size)
 	frame:SetFont(font, size)
 end
 
+function fn.GetAreas()
+	local areas = {};
+	for i=1,#FGI_CONST.areas do
+		local area = C_Map.GetAreaInfo(FGI_CONST.areas[i]);
+		if area then
+			areas[area] = true;
+		end
+	end
+	return areas;
+end
+
+local areas = fn.GetAreas();
 
 FGI.animations.notification = CreateFrame("Frame")
 
@@ -215,17 +227,17 @@ end
 local function IsInLeaveList(name)
 	return DB.realm.leave[name] and true or false
 end
-
 local function IsInTempList(arr, name)
 	return arr.tempSendedInvites[name] and true or false
 end
-
 local function IsInAlreadySendedList(name)
 	return DB.realm.alreadySended[name] and true or false
 end
-
 local function IsCustomFiltered(player)
 	return (DB.realm.enableFilters and fn:filtered(player)) and true or false
+end
+local function IsInQuietZone(area)
+	return (DB.global.quietZones and areas[area]) and true or false
 end
 
 local function onListUpdate()
@@ -887,22 +899,26 @@ end
 
 function fn:addNewPlayer(p)
 	local list = addon.search.inviteList
-	local playerInfoStr = format("%s - lvl:%d; race:%s; class:%s; Guild: \"%s\"", p.Name, p.Level, p.Race, p.Class, p.Guild)
+	local playerInfoStr = format("%s - lvl:%d; race:%s; class:%s; Guild: \"%s\"; Zone: \"%s\"", p.Name, p.Level, p.Race, p.Class, p.Guild, p.Zone)
 	if p.Guild == "" or FGI.ai then
 		if not IsInBlackList(p.Name) then
 			if not IsInLeaveList(p.Name) then
 				if not IsInTempList(addon.search, p.Name) then
 					if not IsInAlreadySendedList(p.Name) then
-						if not IsCustomFiltered(p) then
-							fn.history:onFound({lvl = p.Level, race = p.Race, class = p.Class});
-							table.insert(list, {name = p.Name, lvl = p.Level, race = p.Race, class = p.Class, NoLocaleClass = p.NoLocaleClass})
-							addon.search.tempSendedInvites[p.Name] = true
-							debug(format("Add player %s", playerInfoStr), color.green)
+						if not IsInQuietZone(p.Zone) then
+							if not IsCustomFiltered(p) then
+								fn.history:onFound({lvl = p.Level, race = p.Race, class = p.Class});
+								table.insert(list, {name = p.Name, lvl = p.Level, race = p.Race, class = p.Class, NoLocaleClass = p.NoLocaleClass})
+								addon.search.tempSendedInvites[p.Name] = true
+								debug(format("Add player %s", playerInfoStr), color.green)
+							else
+								addon.searchInfo.filtered()
+								debug(format("Player (%s) has been fitlered", playerInfoStr), color.yellow)
+							end
+							addon.searchInfo.unique()
 						else
-							addon.searchInfo.filtered()
-							debug(format("Player (%s) has been fitlered", playerInfoStr), color.yellow)
+							debug(format("Player (%s) located in a quiet area", playerInfoStr), color.yellow)
 						end
-						addon.searchInfo.unique()
 					else
 						debug(format("Invitation has already been sent to the player %s", playerInfoStr), color.yellow)
 					end

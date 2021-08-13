@@ -14,7 +14,7 @@ local L = {
 		
 		
 		updates = {
-			"Добавлена расширенная статистика.",
+			"Фильтр \"тихих зон\" добавлен.",
 		},
 		
 		
@@ -27,7 +27,7 @@ local L = {
 		
 		
 		updates = {
-			"Added advanced statistics.",
+			"\"Quiet zones\" filter added.",
 		},
 	}
 }

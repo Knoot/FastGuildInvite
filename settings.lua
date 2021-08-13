@@ -287,6 +287,17 @@ end)
 frame:SetPoint("TOPLEFT", settingsCheckBoxGRP.saveSearch.frame, "BOTTOMLEFT", 0, 0)
 settingsCheckBoxGRP:AddChild(frame)
 
+settingsCheckBoxGRP.quietZones = GUI:Create("TCheckBox")
+local frame = settingsCheckBoxGRP.quietZones
+frame:SetWidth(size.quietZones)
+frame:SetLabel(L["Игнорировать тихие зоны"])
+frame:SetTooltip(L["Игнорировать игроков в рейдах, подземельях, аренах, полях боя. (только текущее дополнение)"])
+frame.frame:HookScript("OnClick", function()
+	DB.global.quietZones = settingsCheckBoxGRP.quietZones:GetValue()
+end)
+frame:SetPoint("TOPLEFT", settingsCheckBoxGRP.showUpdateInfo.frame, "BOTTOMLEFT", 0, 0)
+settingsCheckBoxGRP:AddChild(frame)
+
 
 
 
@@ -314,6 +325,7 @@ frame:SetScript('OnEvent', function()
 	settingsCheckBoxGRP.confirmSearchClear:SetValue(DB.global.confirmSearchClear or false)
 	settingsCheckBoxGRP.saveSearch:SetValue(DB.global.saveSearch or false)
 	settingsCheckBoxGRP.showUpdateInfo:SetValue(DB.global.introShow or false)
+	settingsCheckBoxGRP.quietZones:SetValue(DB.global.quietZones or false)
 	
 	
 	updateMsgFilters()
