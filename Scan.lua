@@ -40,16 +40,16 @@ local function playerHaveInvite(msg)
 	
 	place = strfind(ERR_GUILD_PLAYER_NOT_FOUND_S,"%s",1,true)
 	if (place) then
-		n = strsub(msg,place)
-		name = strsub(n,1,(strfind(n,"%s") or 2)-2)
+		local n = strsub(msg,place)
+		local name = strsub(n,1,(strfind(n,"%s") or 2)-2)
 		if format(ERR_GUILD_PLAYER_NOT_FOUND_S,name) == msg then
 			return "not_found", name
 		end
 	else
 		place = strfind(ERR_CHAT_PLAYER_NOT_FOUND_S,"%s",1,true)
 		if (place) then
-			n = strsub(msg,place)
-			name = strsub(n,1,(strfind(n,"%s") or 2)-2)
+			local n = strsub(msg,place)
+			local name = strsub(n,1,(strfind(n,"%s") or 2)-2)
 			if format(ERR_CHAT_PLAYER_NOT_FOUND_S,name) == msg then
 				return "not_found", name
 			end
@@ -58,8 +58,8 @@ local function playerHaveInvite(msg)
 	
 	place = strfind(ERR_GUILD_DECLINE_AUTO_S,"%s",1,true)
 	if (place) then
-		n = strsub(msg,place)
-		name = strsub(n,1,(strfind(n,"%s") or 2)-1)
+		local n = strsub(msg,place)
+		local name = strsub(n,1,(strfind(n,"%s") or 2)-1)
 		if format(ERR_GUILD_DECLINE_AUTO_S,name) == msg then
 			return "auto_decline", name
 		end
@@ -67,14 +67,14 @@ local function playerHaveInvite(msg)
 	
 	place = strfind(ERR_GUILD_DECLINE_S ,"%s",1,true)
 	if (place) then
-		n = strsub(msg,place)
-		name = strsub(n,1,(strfind(n,"%s") or 2)-1)
+		local n = strsub(msg,place)
+		local name = strsub(n,1,(strfind(n,"%s") or 2)-1)
 		if format(ERR_GUILD_DECLINE_S ,name) == msg then
 			return "decline", name
 		end
 	end
 	
-	return "unregistered_event", name
+	return "unregistered_event"
 end
 
 
@@ -189,20 +189,12 @@ scanFrame:AddChild(frame)
 
 
 local function SetProgress(self, cur)
-	local function modTime(time)
-		--[[if time<60 then return time end
-		local min, sec = math.floor(time/60), math.fmod(time, 60)
-		sec = sec<10 and "0"..sec or sec
-		return format("%u:%s", min, sec)]]
-		return SecondsToTime(time)
-	end
 	cur = (cur or 70) - self.progressTexture.min
 	-- local max = self.progressTexture.max - self.progressTexture.min
 	local max = self.progressTexture.max
 	local percent = math.round(math.progress(max, cur))/100
 	self.progressTexture:SetWidth((self.frame:GetWidth()-10)*percent)
 	
-	-- local time = modTime(math.round(max - cur))
 	local time = math.round(max - cur)
 	-- self.statustext:SetText(self.statustext.placeholder:format(math.floor(percent*100), (max - cur)<=0 and "<1" or time))
 	self.statustext:SetText(self.statustext.placeholder:format(math.floor(percent*100), cur, max))

@@ -49,6 +49,7 @@ local function EditBoxChange(frame)
 	end)
 end
 
+local intro
 
 do		--	intro
 interface.intro = GUI:Create("ClearFrame")

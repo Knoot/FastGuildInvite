@@ -149,7 +149,7 @@ local function DropDownOnShow(self)
 	f.frame:SetFrameLevel(self:GetFrameLevel() + 2)
 	f:ClearAllPoints()
 	
-	if dropdown.Button == _G.LFGListFrameDropDownButton then -- LFD
+	if dropdown.Button == LFGListFrameDropDownButton then -- LFD
 		-- ShowCustomDropDown(self, dropdown, dropdown.menuList[2].arg1)
 	elseif dropdown.which and supportedTypes[dropdown.which] then -- UnitPopup
 		local dropdownFullName
@@ -181,10 +181,10 @@ local frame = CreateFrame("Frame")
 frame:RegisterEvent("CHAT_MSG_SYSTEM")
 frame:SetScript("OnEvent", function(...)
 	local _,_, msg = ...
-	place = strfind(ERR_GUILD_LEAVE_S ,"%s",1,true)
+	local place = strfind(ERR_GUILD_LEAVE_S ,"%s",1,true)
 	if (place) then
-		n = strsub(msg,place)
-		name = strsub(n,1,(strfind(n,"%s") or 2)-1)
+		local n = strsub(msg,place)
+		local name = strsub(n,1,(strfind(n,"%s") or 2)-1)
 		if format(ERR_GUILD_LEAVE_S ,name) == msg then
 			DB.realm.leave[name] = true
 			debug(format("Player %s left the guild or was expelled.", name), color.yellow)
@@ -464,7 +464,7 @@ function Console:FGIdebug(str)
 	end
 end
 
-function isCorrect(str)
+local function isCorrect(str)
   local n,r = str:match("([^-%s]+)[%s]*-[%s]*([^-]+)")
   if n==nil or r==nil then return false end
   r = (r:len()>2) and r or false

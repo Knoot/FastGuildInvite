@@ -131,7 +131,7 @@ function frame.Success(self, text)
 	self:SetText(format("%s%s|r",color.green, text))
 end
 
-
+local confirmSending;
 
 interface.confirmSending = GUI:Create("ClearFrame")
 confirmSending = interface.confirmSending

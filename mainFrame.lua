@@ -138,7 +138,7 @@ local function clearSearch()
 	interface.scanFrame.invite:SetText(format("+(%d)",0))
 	local resume = addon.search.state == "start"
 	if resume then
-		scanFrame.pausePlay.frame:Click()
+		interface.scanFrame.pausePlay.frame:Click()
 	end
 	addon.search.inviteList = {}
 	addon.search.state = "stop"
@@ -153,7 +153,7 @@ local function clearSearch()
 	
 	
 	if resume then
-		C_Timer.After(FGI_SCANINTERVALTIME+1, function() scanFrame.pausePlay.frame:Click() end)
+		C_Timer.After(FGI_SCANINTERVALTIME+1, function() interface.scanFrame.pausePlay.frame:Click() end)
 	else
 		addon.search.state = "stop"
 	end

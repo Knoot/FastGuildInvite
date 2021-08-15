@@ -115,7 +115,7 @@ function fn:classIgnoredToggle()
 end
 
 local function getClassFilter()
-	arr = {
+	local arr = {
 		[L.class.Druid] = addfilterFrame.classesCheckBoxDruid:GetValue() or nil,
 		[L.class.Hunter] = addfilterFrame.classesCheckBoxHunter:GetValue() or nil,
 		[L.class.Mage] = addfilterFrame.classesCheckBoxMage:GetValue() or nil,
@@ -555,7 +555,7 @@ local function saveFilter()
 	end
 
 	if lvlRange then
-		if lvlRange:find(("[\-]?%d+:[\-]?%d+")) then
+		if lvlRange:find(("[%-]?%d+:[%-]?%d+")) then
 			min, max = fn:split(lvlRange, ":", -1)
 			if min <= 0 or max <= 0 or min > max then
 				table.insert(errors, format("%s \n %s", L["Диапазон уровней (Мин:Макс)"], L["Числа не могут быть меньше или равны 0. Минимальный уровень не может быть больше максимального"]))

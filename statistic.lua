@@ -71,7 +71,7 @@ local function prepareGraph(arr, start, step)
 	return x
 end
 
-function draw(data)
+local function draw(data)
 	graph:ResetData();
 	
 	local sended = {};

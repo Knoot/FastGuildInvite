@@ -405,7 +405,7 @@ function fn.debug(...)
 	if not addon.debug then return end
 	local msg, colored = ...
 	if msg == nil or type(msg) == "table" then
-		table.insert(debugDB,format("%swrong debug input - msg = %s\n%s",color.red,type(msg),text))
+		table.insert(debugDB,format("%swrong debug input - msg = %s\n%s",color.red,type(msg)))
 		return
 	end
 	if colored then msg = format("%s%s|r", colored, msg) end
@@ -1022,7 +1022,7 @@ function fn:nextSearch()
 	libWho:GetWho(curQuery)
 end
 
-function dump(t,l)
+local function dump(t,l)
 	local str = '{'
 	l = l or 1
 	if l>100 then return 'overstack' end
@@ -1148,9 +1148,9 @@ local function getSynchRequest(requestMSG, sender, allowed)
 	end
 	if not allowed then
 		if DB.global.security.sended and requestType == 'invitations' then
-			confirmSending:NewConfirm(confirm, sender, request)
+			interface.confirmSending:NewConfirm(confirm, sender, request)
 		elseif DB.global.security.blacklist and requestType == 'blacklist' then
-			confirmSending:NewConfirm(confirm, sender, request)
+			interface.confirmSending:NewConfirm(confirm, sender, request)
 		end
 		return
 	end
@@ -1246,7 +1246,7 @@ function fn.SendSynchArray(str, mod, playerName)
 	
 	
 	while pos <= textlen do
-		chunk = string.sub(str, pos, pos+step-1)
+		local chunk = string.sub(str, pos, pos+step-1)
 		table.insert(arr, string.format("(%d/%d;%s)%s", #arr+1, max, mod or '', chunk))
 		pos = pos + step
 	end
