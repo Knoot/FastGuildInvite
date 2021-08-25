@@ -31,6 +31,8 @@ Libs\AceSerializer-3.0\AceSerializer-3.0.xml
 Libs\LibCompress\lib.xml
 Libs\LibWho\LibWho.lua
 Libs\LibGraph-2.0\LibGraph-2.0\LibGraph-2.0.lua
+Libs\LibDeflate\lib.xml
+Libs\ChatThrottleLib\ChatThrottleLib.xml
 
 
 Locale\Locale.xml
