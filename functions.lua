@@ -1099,17 +1099,18 @@ local Sync = {};
 ---
 ---@param t table
 ---@param total boolean is tables of table
+---@param full? boolean is full copy
 ---@return table lastWeek
-local function getLasWeekData(t, total)
+local function getLasWeekData(t, total, full)
 	local result = {};
 	local startDate = time({year = date('%Y'), month = date("%m"), day = date("%d")-7, hour = date("%H")});
 	if total then
 		for k, v in pairs(t) do
-			result[k] = getLasWeekData(v, false);
+			result[k] = getLasWeekData(v, false, full);
 		end
 	else
 		for name, date in pairs(t) do
-			if date >= startDate then
+			if full or date >= startDate then
 				result[name] = date;
 			end
 		end
@@ -1658,11 +1659,13 @@ local frame = CreateFrame('Frame')
 frame:RegisterEvent('PLAYER_LOGIN')
 frame:SetScript('OnEvent', function()
 	DB = DB and DB or addon.DB
-	-- THINK: Synchronization of the blacklist. How to provide a general list, with the possibility of deletion?
+	--[[ THINK: Synchronization of the blacklist. How to provide a general list, with the possibility of deletion?
+				blacklist requires key - value, currently used by ipairs
+	]]
 	Sync.tablesForSync = {
-		['leave'] = getLasWeekData(DB.realm.leave),					-- leave
-		['alreadySended'] = getLasWeekData(DB.realm.alreadySended),	-- invited
-		-- ['blackList'] = getLasWeekData(DB.realm.blackList),			-- blacklist
+		['leave'] = getLasWeekData(DB.realm.leave, false, true),	-- leave
+		['alreadySended'] = getLasWeekData(DB.realm.alreadySended),		-- invited
+		-- ['blackList'] = getLasWeekData(DB.realm.blackList),				-- blacklist
 	};
 	if Sync.target == '' then
 		checkSync(CHANNEL_MOD);
