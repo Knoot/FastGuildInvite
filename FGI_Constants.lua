@@ -118,10 +118,11 @@ FGI_CONST = {
 }
 
 
-FGISYNCH_PREFIX = "FGI_SYNCH"
+FGISYNC_PREFIX = "FGI_SYNC_V1"
+FGISYNC_PREFIX_G = "FGI_SYNC"
 
-
-C_ChatInfo.RegisterAddonMessagePrefix(FGISYNCH_PREFIX)
+C_ChatInfo.RegisterAddonMessagePrefix(FGISYNC_PREFIX)
+C_ChatInfo.RegisterAddonMessagePrefix(FGISYNC_PREFIX_G)
 
 
 --@version-classic@
