@@ -1,4 +1,4 @@
-local addon = FGI
+--[[ local addon = FGI
 local fn = addon.functions
 local L = FGI:GetLocale()
 local settings = L.settings
@@ -197,3 +197,4 @@ frame:RegisterEvent('PLAYER_LOGIN')
 frame:SetScript('OnEvent', function()
 	DB = addon.DB
 end)
+ ]]
