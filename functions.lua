@@ -5,10 +5,9 @@ local CLASS = L.class
 local interface = addon.interface
 local settings = L.settings
 local GUI = LibStub("AceGUI-3.0")
-local libS = LibStub:GetLibrary("AceSerializer-3.0")
-local libC = LibStub:GetLibrary("LibCompress")
+local Serializer = LibStub:GetLibrary("AceSerializer-3.0")
+local LibDeflate = LibStub:GetLibrary("LibDeflate")
 local libWho = LibStub("FGI-WhoLib")
-local libCE = libC:GetAddonEncodeTable()
 local color = addon.color
 local FastGuildInvite = addon.lib
 addon.search = {progress=1, inviteList={}, timeShift=0, tempSendedInvites={}, whoQueryList = {}, oldCount = 0,}
@@ -380,6 +379,7 @@ end
 
 function fn:blackList(name, reason)
 	DB.realm.blackList[name] = reason or (DB.global.blacklistReasonText == nil and L.defaultReason or DB.global.blacklistReasonText)
+	-- fn.updateTableForSync('blackList', {name = name, time = DB.realm.blackList[name]})
 	if not DB.global.addonMSG then
 		print(format("%s%s|r", color.red, format(L["Игрок %s добавлен в черный список."], name)))
 	end
@@ -576,6 +576,7 @@ end
 
 function fn:rememberPlayer(name)
 	DB.realm.alreadySended[name] = fn.getTime();
+	fn.updateTableForSync('alreadySended', {name = name, time = DB.realm.alreadySended[name]})
 	addon.search.tempSendedInvites[name] = nil
 	debug(format("Remember: %s",name))
 end
@@ -599,7 +600,11 @@ function fn:invitePlayer(noInv)
 	end
 	if not noInv or DB.global.rememberAll then
 		fn:rememberPlayer(list[1].name)
-		C_ChatInfo.SendAddonMessage(FGISYNCH_PREFIX, "REMEMBER|"..list[1].name, "GUILD")
+		local data = fn.encodeData({
+			type = "REMEMBER",
+			playerName = list[1].name
+		})
+		ChatThrottleLib:SendAddonMessage("NORMAL", FGISYNC_PREFIX_G, data, "GUILD")
 	end
 	if not noInv then
 		addon.searchInfo.sended()
@@ -616,16 +621,11 @@ end
 local Searchframe = CreateFrame('Frame')
 
 
-local frame = CreateFrame('Frame')
-frame:RegisterEvent('PLAYER_LOGIN')
-frame:SetScript('OnEvent', function()
-	
-end)
 
 local frame = CreateFrame('Frame')
 frame:RegisterEvent('PLAYER_ENTERING_WORLD')
 frame:SetScript('OnEvent', function()
-	C_ChatInfo.SendAddonMessage(FGISYNCH_PREFIX, "LOGIN|GET_FGI_USERS", "GUILD")
+	-- C_ChatInfo.SendAddonMessage(FGISYNC_PREFIX, "LOGIN|GET_FGI_USERS", "GUILD")
 end)
 
 local function getSearchDeepLvl(query)
@@ -1091,196 +1091,580 @@ end
 --[[----------------------------------------------------------------------------------------------
 									Synch
 ]]------------------------------------------------------------------------------------------------
-FGI.ReceiveSynchStr = {[L["Все"]] = {}}
-ReceiveSynchStr = FGI.ReceiveSynchStr
-local writeReceiveData = {
-	blacklist = function(arr)
-		local blackList = interface.settings.Blacklist.content
-		for name, reason in pairs(arr) do
-			DB.realm.blackList[name] = reason
+local CHANNEL_MOD = "GUILD"; -- Defaulf: GUILD. PARTY for test
+FGI_CHANNEL_MOD = CHANNEL_MOD; -- DEBUG global var for tests
+local Sync = {};
+---
+--- get only last week data
+---
+---@param t table
+---@param total boolean is tables of table
+---@return table lastWeek
+local function getLasWeekData(t, total)
+	local result = {};
+	local startDate = time({year = date('%Y'), month = date("%m"), day = date("%d")-7, hour = date("%H")});
+	if total then
+		for k, v in pairs(t) do
+			result[k] = getLasWeekData(v, false);
 		end
-		blackList:update()
-	end,
-	invitations = function(arr)
-		for name,time in pairs(arr) do
-			DB.realm.alreadySended[name] = math.max(time, DB.realm.alreadySended[name] or 0)
+	else
+		for name, date in pairs(t) do
+			if date >= startDate then
+				result[name] = date;
+			end
 		end
-	end,
-}
+	end
+	return result;
+end
+---
+--- checking if the player is in combat
+---
+---@param close boolean close connect if in combat
+local function IsInCombat(close)
+	if UnitAffectingCombat("player") then
+		-- further actions can cause a heavy load on the PC, so we discard this in combat mode.
+		if close then
+			Sync.closeConnect();
+		end
+		return true;
+	end
+	return false;
+end
+---
+--- make table copy. Don't set `copies`
+---
+---@param orig table
+---@return table copy
+local function table_copy(orig, copies)
+    copies = copies or {};
+    local orig_type = type(orig);
+    local copy;
+    if orig_type == 'table' then
+        if copies[orig] then
+            copy = copies[orig];
+        else
+            copy = {};
+            copies[orig] = copy;
+            for orig_key, orig_value in next, orig, nil do
+                copy[table_copy(orig_key, copies)] = table_copy(orig_value, copies);
+            end
+            setmetatable(copy, table_copy(getmetatable(orig), copies));
+        end
+    else -- number, string, boolean, etc
+        copy = orig;
+    end
+    return copy;
+end
+---@param text string
+local function StringHash(text)
+    local counter = 1;
+    local len = string.len(text);
+    for i = 1, len, 3 do 
+        counter = math.fmod(counter*8161, 4294967279) +  -- 2^32 - 17: Prime!
+            (string.byte(text,i)*16776193) +
+            ((string.byte(text,i+1) or (len-i+256))*8372226) +
+            ((string.byte(text,i+2) or (len-i+256))*3932164);
+    end
+    return math.fmod(counter, 4294967291); -- 2^32 - 5: Prime (and different from the prime in the loop)
+end
+---
+--- object Table to array Table
+---
+---@param t table
+---@param order function sort function
+---@return table newSortedTable
+local function spairs(t, order)
+	-- collect the keys
+	local keys = {};
+	for k in pairs(t) do table.insert(keys, k); end
 
-local function readSynchStr(sender, mod)
-	local str = table.concat(ReceiveSynchStr[sender][mod], '')
-	
-	-- Decode the compressed data
-	local one = libCE:Decode(str)
-	
+	-- if order function given, sort by it by passing the table and keys a, b,
+	-- otherwise just sort the keys 
+	if order then
+			table.sort(keys, function(a,b) return order(t, a, b) end);
+	else
+			table.sort(keys, function(a,b) return tostring(a) < tostring(b) end);
+	end
+	return keys;
+end
+---
+--- get hash sum of table
+---
+---@param t table
+---@param global boolean `true` for total hash
+---@return number hash
+local function getTableHash(t, global)
+	if IsInCombat(true) then 
+		return 0;
+	end
+    return StringHash(Serializer:Serialize(global and t or spairs(t)));
+end
+---
+--- hash of all sync tables
+---
+---@return number hash
+local function getTotalHash()
+	if IsInCombat(true) then 
+		return 0;
+	end
+	local result = {};
+	for k in pairs(Sync.tablesForSync) do
+		table.insert(result, spairs(Sync.tablesForSync[k]));
+	end
+	return getTableHash(result, true);
+end
+---
+--- return full table length
+---
+---@param t table
+---@return number table_length
+local function table_len(t)
+	local c = 0;
+	for _ in pairs(t) do
+		c = c + 1;
+	end
+	return c;
+end
+---
+---	add new player to Sync.tablesForSync
+---
+---@param t string subtable name
+---@param player table {name: string, time: any}
+---@return nil
+function fn.updateTableForSync(t, player)
+	if not t or not player.name then return end
+	Sync.tablesForSync[t][player.name] = player.time or fn.getTime();
+end
+
+local MSG_MULTI_FIRST = "\001";
+local MSG_MULTI_NEXT  = "\002";
+local MSG_MULTI_LAST  = "\003";
+local MSG_MULTI_END	  = "\004";
+local syncSettings;
+Sync = {
+	queue = {},
+	cache = {},
+	trusted = {},
+};
+Sync.stateTable = {
+	-- ready for receiving/transmitting
+	'CLOSED',
+	-- incoming/outgoing connection, exchange of settings, data preparation
+	'LISTEN',
+	-- broadcast
+	'ESTABLISHED',
+	-- hash check. final check
+	'CHECK',
+};
+Sync.state = Sync.stateTable[1]; -- default state - CLOSED
+Sync.target = ''; -- player name
+Sync.receivedStr = ''; -- received String
+Sync.sendTable = {}; -- table for send
+Sync.curTable = '';
+---
+--- Sends a message to the specified channel for addons. Only FGI prefix is used
+---
+---@param message string most 255 characters
+---@param chatType chatType
+---@param target? string player name. if `chatType` ~= `WHISPER`
+---@param prio? string priority "BULK" | "NORMAL"(default) | "ALERT"
+local function SendSyncAddonMessage(message, chatType, target, prio)
+	prio = prio or "NORMAL";
+	message = tostring(message);
+	-- print('|cffffff00', FGISYNC_PREFIX, message, chatType, target or '', '|r')
+	if chatType ~= "WHISPER" or (chatType == "WHISPER" and target and target ~= '') then
+    	ChatThrottleLib:SendAddonMessage(prio, FGISYNC_PREFIX, message, chatType, target, nil, Sync.callback, Sync.callbackArg);
+	end
+end
+---
+--- prepare the table for verification and send it
+---
+---@param channel string GUILD | WHISPER
+---@param target string|nil player name if `channel = WHISPER`
+local function checkSync(channel, target)
+    SendSyncAddonMessage(fn.encodeData({h = getTotalHash()}), channel, target);
+end
+---
+--- sends part of the data array to send
+---
+---@param Next boolean resend the last part if `false`
+local function SendSyncAddonStream(Next)
+	if Next then
+		table.remove(Sync.sendTable,1);
+	end
+	local message = Sync.sendTable[1];
+	if message then
+		SendSyncAddonMessage(message, "WHISPER", Sync.target, "BULK");
+	end
+end
+---
+--- Restoring default values.
+---
+local function restoreSyncDefaultValues()
+	Sync.state = Sync.stateTable[1]; -- CLOSED
+	Sync.target = '';
+	Sync.receivedStr = '';
+	Sync.sendTable = {};
+	Sync.curTable = '';
+end
+---
+--- Closing the connection with `Sync.target`. Restoring default values.
+---
+Sync.closeConnect = function()
+	if Sync.target ~= '' then
+		SendSyncAddonMessage("CLOSE_CONNECT", "WHISPER", Sync.target)
+	end
+	restoreSyncDefaultValues();
+end
+Sync.timeout = {
+	timeout = FGI_MAXSYNCHWAIT,
+};
+
+---
+--- initiate new timeout timer
+---
+---@param callback function
+---@return table Timer
+Sync.timeout.new = function(callback)
+	Sync.timeout.timer = C_Timer.NewTimer(Sync.timeout.timeout, callback);
+	return Sync.timeout.timer;
+end;
+---
+--- Cancel timeout timer
+---
+---@return nil
+Sync.timeout.stop = function()
+	Sync.timeout.timer:Cancel();
+end
+---
+--- Checks if the `playerName` is a member of our `CHANNEL_MOD` and returns the result
+---
+---@param playerName string
+---@return boolean isInOurGuild
+local function IsTrustedPlayer(playerName)
+	if Sync.trusted[playerName] then
+		return true;
+	end
+	if CHANNEL_MOD == "PARTY" then
+		if IsInGroup(CHANNEL_MOD) then
+			for i=1, GetNumGroupMembers(CHANNEL_MOD) - 1 do
+				if playerName == UnitName(CHANNEL_MOD..i) then
+					Sync.trusted[playerName] = true;
+					return true;
+				end
+			end
+		end
+	else
+		for i=1, GetNumGuildMembers() do
+			if GetGuildRosterInfo(i) == playerName then
+				Sync.trusted[playerName] = true;
+				return true;
+			end
+		end
+	end
+	return false;
+end
+---
+--- Converts the table to an encrypted and compressed string
+---
+---@param data table
+---@return string encodedStr
+function fn.encodeData(data)
+	local serialized = Serializer:Serialize(data);
+	local compress = LibDeflate:CompressDeflate(serialized);
+	local encoded = LibDeflate:EncodeForWoWAddonChannel(compress);
+	return encoded; -- encoded data
+end
+---
+--- return decoded table or `false` if error
+---
+---@param data string
+---@return table|boolean
+function fn.decodeData(data)
+	local data_decoded_WoW_addon = LibDeflate:DecodeForWoWAddonChannel(data);
 	--Decompress the decoded data
-	local two, message = libC:Decompress(one)
-	if(not two) then
-		print("FGI: error decompressing: " .. message)
-		return
+	local decompress_deflate = LibDeflate:DecompressDeflate(data_decoded_WoW_addon);
+	if decompress_deflate == nil then
+		print("|cffff0000<FGI>|r: error decompressing." .. (Sync.target ~= '' and "Data from " .. Sync.target or '')); -- DEBUG print
+		return false;
 	end
 	
 	-- Deserialize the decompressed data
-	local success, final = libS:Deserialize(two)
+	local success, final = Serializer:Deserialize(decompress_deflate);
 	if (not success) then
-		print("FGI: error deserializing " .. final)
-		return
+		print("|cffff0000<FGI>|r: error deserializing " .. final .. (Sync.target ~= '' and "; Data from " .. Sync.target or '')); -- DEBUG print
+		return false;
 	end
-	
-	if writeReceiveData[mod] then
-		writeReceiveData[mod](final)
+	return final; --decoded msg
+end
+
+local function prepareTableForSend()
+	local t = table_copy(Sync.tablesForSync[Sync.curTable]);
+	if Sync.cache[Sync.target] and Sync.cache[Sync.target][Sync.curTable] then
+		for k,_ in pairs(Sync.cache[Sync.target][Sync.curTable]) do
+			t[k] = nil;
+		end
+	end
+	local text = fn.encodeData(t);
+	local textlen = #text;
+	local maxtextlen = 255;
+	local arr = {};
+
+	local multipart = textlen+1 > maxtextlen and true or false;
+	if multipart then
+		maxtextlen = maxtextlen - 1;
+		-- first part
+		local chunk = strsub(text, 1, maxtextlen);
+		table.insert(arr, MSG_MULTI_FIRST..chunk);
+
+		-- continuation
+		local pos = 1 + maxtextlen;
+
+		while pos + maxtextlen < textlen do
+			chunk = strsub(text, pos, pos + maxtextlen - 1);
+			table.insert(arr, MSG_MULTI_NEXT..chunk);
+			pos = pos + maxtextlen;
+		end
+
+		-- final part
+		chunk = strsub(text, pos);
+		table.insert(arr, MSG_MULTI_LAST..chunk);
 	else
-		print(color.red.."writeReceiveData WRONG MOD|r")
+		table.insert(arr, MSG_MULTI_END..text);
 	end
-	ReceiveSynchStr[sender][mod] = nil
+	return arr;
 end
 
-
-local function getSynchRequest(requestMSG, sender, allowed)
-	local function confirm()
-		getSynchRequest(requestMSG, sender, true)
-	end
-	local request = L.synchType[requestMSG]
-	local requestType = L.synchBaseType[requestMSG]
-	if not requestType then
-		return C_ChatInfo.SendAddonMessage(FGISYNCH_PREFIX, 'ERROR|'..L["Ошибка типа синхронизации"], "WHISPER", sender)
-	end
-	if not allowed then
-		if DB.global.security.sended and requestType == 'invitations' then
-			interface.confirmSending:NewConfirm(confirm, sender, request)
-		elseif DB.global.security.blacklist and requestType == 'blacklist' then
-			interface.confirmSending:NewConfirm(confirm, sender, request)
+local syncFrame = CreateFrame("Frame");
+syncFrame:RegisterEvent("CHAT_MSG_ADDON");
+syncFrame:SetScript("OnEvent", function(_, _, prefix, msg, channel, sender)
+	-- FGISYNC_PREFIX_G - permanent prefix
+	if prefix == FGISYNC_PREFIX_G then
+		if channel ~= CHANNEL_MOD then return; end
+		msg = fn.decodeData(msg);
+		if not msg then
+			-- decode error
+			return;
 		end
-		return
-	end
-	C_ChatInfo.SendAddonMessage(FGISYNCH_PREFIX, 'SUCCESS|'..L["Начало синхронизации"], "WHISPER", sender)
-	
-	local SendSynchStr = ''
-	local data
-	if requestType=='blacklist' then
-		data = DB.realm.blackList
-	elseif requestType=='invitations' then
-		data = DB.realm.alreadySended
-	end
-		
-	if not data then return end
-	
-	local one = libS:Serialize(data)
-	local two = libC:Compress(one)
-	local encodedMsg = libCE:Encode(two)
-	fn.SendSynchArray(encodedMsg, requestType, sender)
-	return
-end
-
-local synchFrame = CreateFrame("Frame")
-synchFrame:RegisterEvent("CHAT_MSG_ADDON")
-synchFrame:SetScript("OnEvent", function(self, event, prefix, msg, channel, sender, ...)
-	msg = tostring(msg)
-	if prefix ~= FGISYNCH_PREFIX then return end
-	-- print(prefix, msg, channel, sender)
-	sender = sender:match("([^-]+)")
-	if sender == UnitName('player') then return end
-	local synch = interface.settings.Synchronization.content
-	local requestType, requestMSG = msg:match("([^|]+)[|]*([^|]+)")
-	requestMSG = tonumber(requestMSG) == nil and requestMSG or tonumber(requestMSG)
-	
-	if channel == "WHISPER" then
-		if requestType == "ERROR" then
-			synch.ticker:responseReceived()
-			return synch.infoLabel:Error(requestMSG)
-		elseif requestType == "SUCCESS" then
-			synch.ticker:responseReceived()
-			return synch.infoLabel:Success(requestMSG)
-		elseif requestType == "GET" then
-			return getSynchRequest(requestMSG, sender)
-		elseif requestType == "LOGIN" and requestMSG == "GET_FGI_USERS" then
-			return synch.rightColumn.synchPlayerReadyDrop:AddItem(sender, sender)
-		end
-		
-		if synch.timer then synch.timer:Cancel() end
-		
-		local Start, End = msg:find("^%(.-%)")
-		End = End or 0
-		local s,e,mod = msg:sub(Start, End):match("(%d+)[^%d](%d+);(%w+)")
-		if not mod then return end
-		s, e = tonumber(s), tonumber(e)
-		synch.infoLabel:Success(format(L[ [=[Синхронизация с %s.
-%d/%d]=] ], sender,s,e))
-		if s == 1 then ReceiveSynchStr[sender] = { [mod] = {}} end
-		msg = msg:sub(End+1, -1)
-		ReceiveSynchStr[sender][mod][s] = msg
-		if s == e then
-			readSynchStr(sender, mod)
-			synch.infoLabel:Success(format(L["Данные синхронизированы с игроком %s."], sender))
-		end
-	elseif channel == "GUILD" then
-		if requestType == "GET" then
-			getSynchRequest(requestMSG, sender)
-		elseif requestType == "LOGIN" and requestMSG == "GET_FGI_USERS" then
-			synch.rightColumn.synchPlayerReadyDrop:AddItem(sender, sender)
-			C_ChatInfo.SendAddonMessage(FGISYNCH_PREFIX, "LOGIN|GET_FGI_USERS", "WHISPER", sender)
-		elseif requestType == "REMEMBER" then
-			fn:rememberPlayer(requestMSG)
-			local list = addon.search.inviteList
+		if msg.type == "REMEMBER" then
+			fn:rememberPlayer(msg.playerName);
+			local list = addon.search.inviteList;
 			for i=1,#list do
-				if list[i].name == requestMSG then
-					table.remove(list, i)
-					onListUpdate()
+				if list[i].name == msg.playerName then
+					table.remove(list, i);
+					onListUpdate();
 					break
 				end
 			end
 		end
+		return;
 	end
+
+	if prefix ~= FGISYNC_PREFIX then return; end
+	sender = sender:match("([^-]+)");
+	-- print(GetTime(), '|cff00ff00',prefix, msg, channel, sender, '|r')
+	if channel == CHANNEL_MOD then
+		if sender == UnitName('player') then
+			-- do not reply to our own message
+			return;
+		end
+		msg = fn.decodeData(msg);
+		if not msg then
+			-- decode error
+			return;
+		end
+		if msg.h ~= getTotalHash() then
+			Sync.state = Sync.stateTable[2]; -- LISTEN
+			Sync.target = sender;
+			SendSyncAddonMessage('initSync', 'WHISPER', sender);
+			Sync.timeout.new(Sync.closeConnect);
+		else
+			print('|cff00ff00<FGI>|r The hash was checked with '.. sender .. ', the same hash.') -- DEBUG print
+		end
+	elseif channel == "WHISPER" then
+		if Sync.state == "CLOSED" then
+			if msg == "initSync" then
+				print('|cff00ff00<FGI>|r Init synchronization from '.. sender); -- DEBUG print
+				if not IsTrustedPlayer(sender) then
+					-- we only trust the players of our guild
+					return;
+				end
+				Sync.state = Sync.stateTable[2]; -- LISTEN
+				Sync.target = sender;
+				SendSyncAddonMessage("choose_table", "WHISPER", Sync.target);
+				Sync.timeout.new(Sync.closeConnect);
+				return;
+			end
+		else
+			if sender ~= Sync.target then
+				-- we already have a task, we are not answering other players
+				return;
+			end
+		end
+		if msg == "CLOSE_CONNECT" then
+			Sync.closeConnect();
+			return;
+		end
+		if Sync.state == "LISTEN" then
+			Sync.timeout.stop();
+			if msg == 'choose_table' then
+				local hash, len;
+				for k,v in pairs(Sync.tablesForSync) do
+					if Sync.curTable == '' then
+						Sync.curTable = k;
+						hash = getTableHash(v);
+						len = table_len(v);
+						break;
+					elseif Sync.curTable == k then
+						Sync.curTable = '';
+					end
+				end
+				if hash and len then
+					SendSyncAddonMessage(fn.encodeData({msg = 1, h = hash, l = len, t = Sync.curTable}), "WHISPER", Sync.target);
+				else
+					SendSyncAddonMessage(fn.encodeData({msg = 0, h = getTotalHash()}), "WHISPER", Sync.target);
+				end
+			elseif msg == "approve_connect" then
+				Sync.sendTable = prepareTableForSend();
+				syncSettings = {
+					msg = 2,
+					b = #Sync.sendTable,
+					t = Sync.curTable,
+				};
+				SendSyncAddonMessage(fn.encodeData(syncSettings), "WHISPER", Sync.target);
+			elseif msg == "approve_settings" then
+				print('|cffffff00<FGI>|r Start synchronization with '.. sender); -- DEBUG print
+				Sync.state = Sync.stateTable[3]; -- ESTABLISHED
+				SendSyncAddonStream();
+			else
+				syncSettings = fn.decodeData(msg);
+				if not syncSettings then
+					-- Error decrypting the message. Closing a connection
+					Sync.closeConnect();
+					return;
+				end
+				if syncSettings.msg == 0 then	-- total hash
+					if syncSettings.h == getTotalHash() then
+						-- Total hash is ok. Closing a connection
+						Sync.closeConnect();
+					end
+				elseif syncSettings.msg == 1 then	-- target table hash
+					if syncSettings.h == getTableHash(Sync.tablesForSync[syncSettings.t]) then
+						SendSyncAddonMessage("choose_table", "WHISPER", Sync.target);
+					else
+						local tbllen = table_len(Sync.tablesForSync[syncSettings.t]);
+						if syncSettings.l > tbllen then
+							SendSyncAddonMessage("approve_connect", "WHISPER", Sync.target);
+						else
+							Sync.curTable = syncSettings.t
+							Sync.sendTable = prepareTableForSend();
+							syncSettings = {
+								msg = 2,
+								b = #Sync.sendTable,
+								t = Sync.curTable,
+							};
+							SendSyncAddonMessage(fn.encodeData(syncSettings), "WHISPER", Sync.target);
+						end
+					end
+				elseif syncSettings.msg == 2 then -- change state
+					Sync.state = Sync.stateTable[3]; -- ESTABLISHED
+					Sync.type = syncSettings.t
+					SendSyncAddonMessage("approve_settings", "WHISPER", Sync.target);
+				else
+					-- Sync.state, unregistered syncSettings msg type
+				end
+			end
+			Sync.timeout.new(Sync.closeConnect);
+			return;
+		elseif Sync.state == "ESTABLISHED" then
+			Sync.timeout.stop();
+			if msg == "OK" then -- if we are server
+				-- send next chunk
+				SendSyncAddonStream(true);
+			elseif msg == "CHECK" then -- client received all the data. go to check
+				Sync.state = Sync.stateTable[4]; -- CHECK
+				checkSync("WHISPER", Sync.target);
+			else -- if we are client. read server message
+				local control, data = string.match(msg, "^([\001-\009])(.*)");
+				if control == MSG_MULTI_FIRST then
+					Sync.receivedStr = data;
+				elseif control == MSG_MULTI_NEXT then
+					Sync.receivedStr = Sync.receivedStr .. data;
+				elseif control == MSG_MULTI_LAST or control == MSG_MULTI_END then
+					if control == MSG_MULTI_END then
+						Sync.receivedStr = data;
+					else
+						Sync.receivedStr = Sync.receivedStr .. data;
+					end
+					-- check data
+					local checked = fn.decodeData(Sync.receivedStr)
+					if checked then
+						if not Sync.cache[Sync.target] then
+							Sync.cache[Sync.target] = {
+								[Sync.type] = {}
+							};
+						elseif not Sync.cache[Sync.target][Sync.type] then
+							Sync.cache[Sync.target][Sync.type] = {};
+						end
+						for k,v in pairs(checked) do
+							-- we remember the players(k) so that when synchronizing with this character(Sync.target) we send less data
+							Sync.cache[Sync.target][Sync.type][k] = true;
+							-- remember the player if he is not on our list
+							if not DB.realm[Sync.type][k] then
+								DB.realm[Sync.type][k] = v;
+								-- add to tablesForSync so as not to update it completely
+								Sync.tablesForSync[Sync.type][k] = v;
+							end
+						end
+						Sync.state = Sync.stateTable[4]; -- CHECK
+						SendSyncAddonMessage('CHECK', "WHISPER", Sync.target);
+						Sync.timeout.new(Sync.closeConnect);
+						return;
+					end
+				end
+				SendSyncAddonMessage('OK', "WHISPER", Sync.target, "ALERT");
+			end
+			Sync.timeout.new(Sync.closeConnect);
+		elseif Sync.state == "CHECK" then
+			Sync.timeout.stop();
+			if msg == "initSync" then
+				print('|cffffff00<FGI>|r Start back sync with '.. sender); -- DEBUG print
+				Sync.state = Sync.stateTable[2]; -- LISTEN
+				Sync.curTable = '';
+			else
+				msg = fn.decodeData(msg);
+				if not msg then
+					-- decode error
+					Sync.closeConnect();
+					return;
+				end
+				if msg.h == getTotalHash() then
+					print('|cff00ff00<FGI>|r Successful synchronization with '.. sender); -- DEBUG print
+					Sync.closeConnect();
+					checkSync(CHANNEL_MOD);
+				else
+					Sync.state = Sync.stateTable[2]; -- LISTEN
+					Sync.curTable = '';
+					SendSyncAddonMessage('initSync', 'WHISPER', sender);
+					SendSyncAddonMessage('choose_table', 'WHISPER', sender);
+				end
+			end
+			Sync.timeout.new(Sync.closeConnect);
+		end
+	end
+end);
+
+local frame = CreateFrame('Frame')
+frame:RegisterEvent('PLAYER_LOGIN')
+frame:SetScript('OnEvent', function()
+	DB = DB and DB or addon.DB
+	-- THINK: Synchronization of the blacklist. How to provide a general list, with the possibility of deletion?
+	Sync.tablesForSync = {
+		['leave'] = getLasWeekData(DB.realm.leave),					-- leave
+		['alreadySended'] = getLasWeekData(DB.realm.alreadySended),	-- invited
+		-- ['blackList'] = getLasWeekData(DB.realm.blackList),			-- blacklist
+	};
+	if Sync.target == '' then
+		checkSync(CHANNEL_MOD);
+	end;
 end)
-
-function fn.SendSynchArray(str, mod, playerName)
-	local arr = {}
-	local i = 0
-	local reservedLen = 15+mod:len()+1
-	local step = 250-reservedLen-1
-	local max = (math.ceil(str:len()/step))
-	
-	local pos = 1
-	local textlen = str:len()
-	
-	
-	while pos <= textlen do
-		local chunk = string.sub(str, pos, pos+step-1)
-		table.insert(arr, string.format("(%d/%d;%s)%s", #arr+1, max, mod or '', chunk))
-		pos = pos + step
-	end
-	
-
-	
-	local i = 1
-	C_Timer.NewTicker(0.05, function()
-		C_ChatInfo.SendAddonMessage(FGISYNCH_PREFIX, arr[i], "WHISPER", playerName)
-		i = i + 1
-	end, #arr)
-
-	return arr
-end
-
-function fn:sendSynchRequest(player, sType)
-	local synch = interface.settings.Synchronization.content
-	ReceiveSynchStr[player] = ReceiveSynchStr[player] or {}
-	ReceiveSynchStr[player].start = GetTime()
-	local start = GetTime()
-	synch.ticker = C_Timer.NewTicker(1,function()
-		local time = math.ceil(start+FGI_MAXSYNCHWAIT-GetTime())
-		synch.infoLabel:During(format(L["Запрос синхронизации у: %s. %d"], player or L["Все"], time))
-		if time == 0 then return synch.infoLabel:Error(L["Превышен лимит ожидания ответа"]) end
-	end, FGI_MAXSYNCHWAIT)
-	function synch.ticker:responseReceived()
-		synch.ticker:Cancel()
-		synch.timer = C_Timer.NewTimer(FGI_MAXSYNCHWAIT, function()
-			synch.infoLabel:Error(L["Превышен лимит ожидания ответа"])
-		end)
-	end
-	if player == L["Все"] then
-		C_ChatInfo.SendAddonMessage(FGISYNCH_PREFIX, "GET||"..sType, "GUILD")
-	else
-		C_ChatInfo.SendAddonMessage(FGISYNCH_PREFIX, "GET||"..sType, "WHISPER", player)
-	end
-end

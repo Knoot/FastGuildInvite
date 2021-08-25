@@ -188,6 +188,7 @@ frame:SetScript("OnEvent", function(...)
 		if format(ERR_GUILD_LEAVE_S ,name) == msg then
 			DB.realm.leave[name] = true
 			debug(format("Player %s left the guild or was expelled.", name), color.yellow)
+			fn.updateTableForSync('leave', {name = name, time = true})
 			fn.history:onLeave();
 		end
 	end
