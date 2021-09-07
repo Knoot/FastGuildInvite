@@ -3,11 +3,9 @@ local fn = addon.functions
 local L = FGI:GetLocale()
 local settings = L.settings
 local size = settings.size
-local color = addon.color
 local interface = addon.interface
 local GUI = LibStub("AceGUI-3.0")
 local DB
-local fontSize = fn.fontSize
 
 
 local function btnText(frame)
@@ -15,15 +13,6 @@ local function btnText(frame)
 	text:ClearAllPoints()
 	text:SetPoint("TOPLEFT", 5, -1)
 	text:SetPoint("BOTTOMRIGHT", -5, 1)
-end
-
-local function EditBoxChange(frame)
-	frame.editbox:SetScript("OnEnterPressed", function(self)
-		self:ClearFocus()
-	end)
-	frame.editbox:SetScript("OnEscapePressed", function(self)
-		self:ClearFocus()
-	end)
 end
 
 local dumpWindow, buttonGroup

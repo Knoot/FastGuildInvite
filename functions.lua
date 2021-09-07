@@ -1,3 +1,5 @@
+--TODO remove choose invites
+--TODO create function for decline invite
 local addon=FGI
 local fn=addon.functions
 local L = FGI:GetLocale()
@@ -9,13 +11,10 @@ local Serializer = LibStub:GetLibrary("AceSerializer-3.0")
 local LibDeflate = LibStub:GetLibrary("LibDeflate")
 local libWho = LibStub("FGI-WhoLib")
 local color = addon.color
-local FastGuildInvite = addon.lib
 addon.search = {progress=1, inviteList={}, timeShift=0, tempSendedInvites={}, whoQueryList = {}, oldCount = 0,}
 addon.removeMsgList = {}
 local DB
 local debugDB
-local nextSearch
-
 
 addon.searchInfo = {unique = {0}, sended = {0}, invited = {0}, filtered = {0}}
 local mt = {
@@ -33,6 +32,7 @@ end});
 local time, next = time, next
 
 --@version-classic@
+-- race and class mappings table
 local RaceClassCombo = {
 	Dwarf = {CLASS.Warrior,CLASS.Priest,CLASS.Hunter,CLASS.Paladin,CLASS.Rogue},
 	Gnome = {CLASS.Warrior,CLASS.Mage,CLASS.Rogue,CLASS.Warlock},
@@ -45,6 +45,7 @@ local RaceClassCombo = {
 }
 --@end-version-classic@
 --@version-bbc@
+-- race and class mappings table
 local RaceClassCombo = {
 	Draenei = {CLASS.Hunter,CLASS.Mage,CLASS.Paladin,CLASS.Priest,CLASS.Shaman,CLASS.Warrior},
 	Dwarf = {CLASS.Hunter,CLASS.Paladin,CLASS.Priest,CLASS.Rogue,CLASS.Warrior},
@@ -59,6 +60,7 @@ local RaceClassCombo = {
 }
 --@end-version-bbc@
 --@version-retail@
+-- race and class mappings table
 local RaceClassCombo = {
 	Orc = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Shaman,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.DeathKnight},
 	Undead = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.DeathKnight},
@@ -85,10 +87,15 @@ local RaceClassCombo = {
 	Vulpera = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Shaman,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.DeathKnight},
 }
 --@end-version-retail@
-function fn:FilterChange(id)
+
+---
+--- restore filter settings
+---
+---@param filterName string
+function fn:FilterChange(filterName)
 	local filtersFrame = interface.settings.filters.content.filtersFrame
 	local addfilterFrame = interface.settings.filters.content.addfilterFrame
-	local filter = FGI.DB.realm.filtersList[id]
+	local filter = FGI.DB.realm.filtersList[filterName]
 	local class = filter.classFilter
 	local raceFilter = filter.raceFilter
 	
@@ -128,7 +135,7 @@ function fn:FilterChange(id)
 		end
 	end
 	
-	addfilterFrame.filterNameEdit:SetText(id)
+	addfilterFrame.filterNameEdit:SetText(filterName)
 	addfilterFrame.filterNameEdit:SetDisabled(true)
 	addfilterFrame.excludeNameEditBox:SetText(filter.filterByName or "")
 	addfilterFrame.lvlRangeEditBox:SetText(filter.lvlRange or "")
@@ -149,13 +156,21 @@ function fn:FilterChange(id)
 	fn:racesIgnoredToggle()
 	addfilterFrame.change = true
 end
-
+---
+--- changing the Font and Size for
+---
+---@param frame table mutable frame
+---@param font string text font
+---@param size number text size
 function fn.fontSize(frame, font, size)
 	font = font or settings.Font
 	size = size or settings.FontSize
 	frame:SetFont(font, size)
 end
-
+---
+--- list of areas
+---
+---@return table areas {area1 = true, area2 = true, ...}
 function fn.GetAreas()
 	local areas = {};
 	for i=1,#FGI_CONST.areas do
@@ -167,26 +182,30 @@ function fn.GetAreas()
 	return areas;
 end
 
-local areas = fn.GetAreas();
-
 FGI.animations.notification = CreateFrame("Frame")
-
 local anim = FGI.animations.notification
-anim:SetSize(1,1)
-anim:Hide()
-anim:SetPoint("TOP", UIParent, "TOP", 0, -150)
-anim.f = anim:CreateFontString(nil, "BACKGROUND", "GameFontHighlightSmall")
-anim.f.font = anim.f:GetFont()
-anim.f:SetText("Test TEXT")
-anim.f:SetPoint("CENTER", anim)
-anim.f.animation = anim:CreateAnimationGroup()
+	anim:SetSize(1,1)
+	anim:Hide()
+	anim:SetPoint("TOP", UIParent, "TOP", 0, -150)
+	anim.f = anim:CreateFontString(nil, "BACKGROUND", "GameFontHighlightSmall")
+	anim.f.font = anim.f:GetFont()
+	anim.f:SetText("Test TEXT")
+	anim.f:SetPoint("CENTER", anim)
+	anim.f.animation = anim:CreateAnimationGroup()
 local animation = anim.f.animation:CreateAnimation("Alpha")
-animation:SetDuration(0.5)
-animation:SetFromAlpha(1)
-animation:SetToAlpha(0)
-animation:SetStartDelay(3)
+	animation:SetDuration(0.5)
+	animation:SetFromAlpha(1)
+	animation:SetToAlpha(0)
+	animation:SetStartDelay(3)
 anim.f.animation:SetScript("OnFinished", function()anim:Hide()end)
 
+---
+--- start animation
+---
+---@param self Frame
+---@param text string
+---@param font string
+---@param size number
 function anim.Start(self, text, font, size)
 	if not text then return end
 	font = font or settings.Font
@@ -198,15 +217,26 @@ function anim.Start(self, text, font, size)
 	self:Show()
 	self.f.animation:Play()
 end
-
+---
+--- get the current time accurate to hours
+---
+---@return number
 function fn.getTime()
 	return time({year = date("%Y"), month = date("%m"), day = date("%d"), hour = date("%H")});
 end
-
+---
+--- update invite button text
+---
+---@param text string
 local function inviteBtnText(text)
 	interface.scanFrame.invite:SetText(text)
 end
-
+---
+--- checking if a player is blacklisted
+---
+---@param name string player name
+---@param full boolean is this a deep search
+---@return boolean|string
 local function IsInBlackList(name, full)
 	local n1 = name:lower()
 	local n2 = name:gsub("^%l", string.upper)
@@ -222,26 +252,50 @@ local function IsInBlackList(name, full)
 	end
 	return false
 end
-
+---
+--- checking if a player leaves the guild
+---
+---@param name string player name
+---@return boolean
 local function IsInLeaveList(name)
 	return DB.realm.leave[name] and true or false
 end
-local function IsInTempList(arr, name)
-	return arr.tempSendedInvites[name] and true or false
+---
+--- checking if this player is in our invite queue
+---
+---@param name string player name
+---@return boolean
+local function IsInTempList(name)
+	return addon.search.tempSendedInvites[name] and true or false
 end
+---
+--- checking if we have previously invited this player
+---
+---@param name string player name
+---@return boolean
 local function IsInAlreadySendedList(name)
 	return DB.realm.alreadySended[name] and true or false
 end
+---
+--- checking if the player passes our filters, if any
+---
+---@param player string player name
+---@return boolean
 local function IsCustomFiltered(player)
 	return (DB.realm.enableFilters and fn:filtered(player)) and true or false
 end
+local areas = fn.GetAreas();
+---
+--- checking if the player is in an area we don't want to disturb him. if enabled in settings
+---
+---@param area string area name
+---@return boolean
 local function IsInQuietZone(area)
 	return (DB.global.quietZones and areas[area]) and true or false
 end
-
+--- show the data of the current player in the scan window
 local function onListUpdate()
 	local list = addon.search.inviteList
-	
 	interface.chooseInvites.player:SetText(#list > 0 and format("%s%s %d %s %s|r", color[list[1].NoLocaleClass:upper()], list[1].name, list[1].lvl, list[1].class, list[1].race) or "")
 	interface.scanFrame.player:SetText(#list > 0 and format("%s%s %d %s|r", color[list[1].NoLocaleClass:upper()], list[1].name, list[1].lvl, list[1].class) or "")
 	if #list > 0 then
@@ -254,16 +308,29 @@ local function onListUpdate()
 	end
 	inviteBtnText(format("+(%d)", #list))
 end
-
+---
+--- remove from blacklist
+---
+---@param name string player name
 function fn:blacklistRemove(name)
 	DB.realm.blackList[name:lower()] = nil
 	DB.realm.blackList[name:gsub("^%l", string.upper)] = nil
 end
-
+---
+--- get player name only
+---
+---@param name string player name
+---@return string name
 function fn:parseName(name)
 	return name:match("([^%s-]+)")
 end
-
+---
+--- parse blacklist chat command
+---
+---@param cmd any
+---@param str any
+---@return string fullName player name for same realm or name-realm for crossrealm
+---@return string|boolean reason the reason for adding a player to the blacklist
 function fn:parseBL(cmd, str)
 	local name, realm, reason
 		str = str:gsub(cmd, '')
@@ -279,7 +346,6 @@ function fn:parseBL(cmd, str)
 	end
 	return realm and name..'-'..realm or name, reason
 end
-
 function fn:pairsByKeys(t, f)
 	local a = {}
 	for n in pairs(t) do table.insert(a, n) end
@@ -293,7 +359,6 @@ function fn:pairsByKeys(t, f)
 	end
 	return iter
 end
-
 
 local frame = CreateFrame("Frame")
 frame:RegisterEvent("CHAT_MSG_SYSTEM")
@@ -312,13 +377,16 @@ frame:SetScript("OnEvent", function(_,_,msg)
 		end
 	end
 end)
-
+--- addon database init
 function fn:initDB()
 	DB = addon.DB
 	debugDB = addon.debugDB
 	addon.search = (DB.global.saveSearch and DB.factionrealm.search) and DB.factionrealm.search or addon.search
 end
-
+---
+--- set guild player note
+---
+---@param name string player name
 function fn:setNote(name)
 	if name == nil or name == '' then return end
 	if DB.global.setNote or DB.global.setOfficerNote then
@@ -341,22 +409,33 @@ function fn:setNote(name)
 		end
 	end
 end
-
+---
+--- get real string length
+---
+---@param str string
+---@return number stringLength
 function fn:getCharLen(str)
 	return #(str):gsub('[\128-\191]', '')
 end
-
+---
+--- add player to kick list
+---
+---@param name string player name
 local function guildKick(name)
 	StaticPopupDialogs["FGI_BLACKLIST"].add(name)
 end
-
+--- check players for kick
 function fn:blacklistKick()
 	for i=1, GetNumGuildMembers() do
 		local name = GetGuildRosterInfo(i):match("(.*)-")
 		if IsInBlackList(name) then guildKick(name) end
 	end
 end
-
+---
+--- check players for kick
+---
+--- listening to chat, checking all players joining the guild
+---
 function fn:blackListAutoKick()
 	if not IsInGuild() then return end
 	-- autoKick on entering world
@@ -376,7 +455,11 @@ function fn:blackListAutoKick()
 		end
 	end)
 end
-
+---
+--- add player in blacklist
+---
+---@param name string player name
+---@param reason string|boolean
 function fn:blackList(name, reason)
 	DB.realm.blackList[name] = reason or (DB.global.blacklistReasonText == nil and L.defaultReason or DB.global.blacklistReasonText)
 	-- fn.updateTableForSync('blackList', {name = name, time = DB.realm.blackList[name]})
@@ -385,7 +468,10 @@ function fn:blackList(name, reason)
 	end
 	fn:blacklistKick()
 end
-
+---
+--- remove from blacklist
+---
+---@param name string player name
 function fn:unblacklist(name)
 	local inBlacklist = IsInBlackList(name, true)
 	if inBlacklist then
@@ -395,12 +481,14 @@ function fn:unblacklist(name)
 		print(format(L["Игрок %s не найден в черном списке"], name))
 	end
 end
-
+---
+--- button points change
+---
+---@param obj table button
 function fn:closeBtn(obj)
 	obj.text:SetPoint("TOPLEFT", 2, -1)
 	obj.text:SetPoint("BOTTOMRIGHT", -2, 1)
 end
-
 function fn.debug(...)
 	if not addon.debug then return end
 	local msg, colored = ...
@@ -411,8 +499,9 @@ function fn.debug(...)
 	if colored then msg = format("%s%s|r", colored, msg) end
 	table.insert(debugDB,msg)
 end
-local debug = fn.debug
-
+---
+---@param key string
+---@param keyType string
 function fn:SetKeybind(key, keyType)
 	local DBkey = addon.DB.global.keyBind
 	if key then
@@ -432,7 +521,6 @@ function fn:SetKeybind(key, keyType)
 	interface.settings.KeyBind.content.nextSearch:SetLabel(format(L["Назначить кнопку (%s)"], DBkey.nextSearch or "none"))
 	interface.settings.KeyBind.content.nextSearch:SetKey(DBkey.nextSearch)
 end
-
 function fn:FiltersInit()
 	local parent = interface.settings.filters.content.filtersFrame
 	local list = parent.filterList
@@ -440,13 +528,10 @@ function fn:FiltersInit()
 		local frame = GUI:Create("FilterButton")
 		frame:Hide()
 		parent:AddChild(frame)
-		
 		table.insert(list, frame)
-		
 	end
 end
-
-
+--- update filters state
 function fn:FiltersUpdate()
 	local list = interface.settings.filters.content.filtersFrame.filterList
 	for i=1, FGI_FILTERSLIMIT do
@@ -485,8 +570,9 @@ function fn:FiltersUpdate()
 		
 	end
 end
-
-
+---
+---@param str string
+---@param arr table|nil
 function fn:messageSplit(str, arr)
 	if not str then return {} end
 	arr = arr or {''}
@@ -511,9 +597,13 @@ function fn:messageSplit(str, arr)
 	end
 	return arr
 end
-
-
-
+---
+--- replacement of placeholders
+---
+---@param msg string message template
+---@param name string|nil player name
+---@param noErr boolean show errors
+---@return string|nil modifiedMessage
 function fn:msgMod(msg, name, noErr)
 	if not msg then return end
 	if msg:find("NAME") then
@@ -545,17 +635,15 @@ function fn:msgMod(msg, name, noErr)
 	end
 	return msg
 end
-
 function fn.hideWhisper(...)
 	local name = select(4,...):match("([^-]*)")
 	if addon.removeMsgList[name] then
-		--addon.removeMsgList[name] = nil
 		return true
 	else
 		return false, select(3,...)
 	end
 end
-
+---@param name string player name
 function fn:sendWhisper(name)
 	local msg = fn:getRndMsg()
 	if not msg then return print("<FGI> - "..L["Выберите сообщение"]) end
@@ -573,18 +661,22 @@ function fn:sendWhisper(name)
 		end
 	end
 end
-
+---@param name string player name
 function fn:rememberPlayer(name)
 	DB.realm.alreadySended[name] = fn.getTime();
 	fn.updateTableForSync('alreadySended', {name = name, time = DB.realm.alreadySended[name]})
 	addon.search.tempSendedInvites[name] = nil
 	debug(format("Remember: %s",name))
 end
-
+---
+--- get random message from message list
+---
+---@return string message
 function fn:getRndMsg()
 	return DB.factionrealm.messageList[math.random(1, math.max(1,#DB.factionrealm.messageList))]
 end
-
+---
+---@param noInv boolean don't real invite
 function fn:invitePlayer(noInv)
 	local list = addon.search.inviteList
 	if #list==0 then return end
@@ -614,20 +706,16 @@ function fn:invitePlayer(noInv)
 	onListUpdate()
 end
 
-local function SearchOnUpdate()
-	interface.scanFrame.progressBar:SetProgress(GetTime())
-end
-
-local Searchframe = CreateFrame('Frame')
-
-
-
 local frame = CreateFrame('Frame')
 frame:RegisterEvent('PLAYER_ENTERING_WORLD')
 frame:SetScript('OnEvent', function()
 	-- C_ChatInfo.SendAddonMessage(FGISYNC_PREFIX, "LOGIN|GET_FGI_USERS", "GUILD")
 end)
-
+---
+--- get depth of search level
+---
+---@param query string search query
+---@return number|boolean
 local function getSearchDeepLvl(query)
 	-- local l2 = (("%%d+-%%d+ %s\"%s+"):format(L["r-"],addon.ruReg)):gsub("-","%%-")
 	local l2 = L["r-"]:gsub("-","%%-")
@@ -643,7 +731,11 @@ local function getSearchDeepLvl(query)
 		return false
 	end
 end
-
+---
+--- get search params from query string
+---
+---@param query string search query
+---@return table queryParameters
 local function searchGetParams(query)
 	local class = query:match(("%s%%\"(%s+)%%\""):format(L["c-"],addon.ruReg):gsub("-","%%-"))
 	local race = query:match(("%s%%\"(%s+)%%\""):format(L["r-"],addon.ruReg):gsub("-","%%-"))
@@ -654,7 +746,9 @@ local function searchGetParams(query)
 	
 	return {class = class,race = race, min = lvl[1], max = lvl[2]}
 end
-
+---
+---@param query string search query
+---@return boolean
 local function isQueryFiltered(query)
 	if DB.realm.filtersList == {} or not DB.realm.enableFilters then return false end
 	local filter = {}
@@ -692,10 +786,14 @@ local function isQueryFiltered(query)
 	end
 	return false
 end
-
+---
+--- search query split
+---
+---@param query string search query
+---@param lvl number search level depth
 local function searchAddWhoList(query, lvl)
 	local progress = addon.search.progress-1
-	local tAddN =0
+	local tAddN = 0
 	local function LVLsplit(query)
 		local v1 = query:gsub("(%d+)%-(%d+)", function(a,b)
 			local dif = b-a
@@ -775,7 +873,7 @@ local function searchAddWhoList(query, lvl)
 		-- interface.scanFrame.progressBar:SetMinMax(min, max+(new)*FGI_SCANINTERVALTIME)
 		addon.search.progress = addon.search.progress - 1
 	end
-	local queryParams = searchGetParams(query, lvl)
+	local queryParams = searchGetParams(query)
 	local difference = (queryParams.max - queryParams.min) > 0
 	if difference then
 		LVLsplit(query)
@@ -785,21 +883,34 @@ local function searchAddWhoList(query, lvl)
 		CLASSsplit(query, queryParams.race)
 	end
 end
-
+---
+--- find female class name
+---
+---@param className string
+---@return string|boolean className
 local function findClass(className)
 	for k,v in pairs(L.femaleClass) do
 		if v==className then return L.class[k] end
 	end
 	return false
 end
-
+---
+--- find female race name
+---
+---@param raceName string
+---@return string|boolean raceName
 local function findRace(raceName)
 	for k,v in pairs(L.femaleRace) do
 		if v==raceName then return L.race[k] end
 	end
 	return false
 end
-
+---
+--- get player raid progress by RIO
+---
+---@param name string player name
+---@param realm string|boolean realm name
+---@return table raidProgress
 local function getCharacterRaidProgress(name, realm)
 	if not RaiderIO or not name then return {} end
 	local result = {}
@@ -816,9 +927,13 @@ local function getCharacterRaidProgress(name, realm)
 	end
 	return result -- result = {[i] = { raidShortName, difficultyID--[[1-Normal, 2-Heroic, 3-Mythic]], progress, bossCount }, [i+1] = { ... }}
 end
-
+---
+--- check finded player on filters
+---
+---@param player table player data: level, name, class, race, rio*
+---@return boolean
 function fn:filtered(player)
-	for k,v in pairs(DB.realm.filtersList) do
+	for _,v in pairs(DB.realm.filtersList) do
 		if v.filterOn then
 			if v.lvlRange then
 				local min, max = fn:split(v.lvlRange, ":", -1)
@@ -896,46 +1011,52 @@ function fn:filtered(player)
 	end
 	return false
 end
-
+---
+--- check the found player and add him if he meets all the requirements
+---
+---@param p table player data
 function fn:addNewPlayer(p)
 	local list = addon.search.inviteList
 	local playerInfoStr = format("%s - lvl:%d; race:%s; class:%s; Guild: \"%s\"; Zone: \"%s\"", p.Name, p.Level, p.Race, p.Class, p.Guild, p.Zone)
-	if p.Guild == "" or FGI.ai then
-		if not IsInBlackList(p.Name) then
-			if not IsInLeaveList(p.Name) then
-				if not IsInTempList(addon.search, p.Name) then
-					if not IsInAlreadySendedList(p.Name) then
-						if not IsInQuietZone(p.Zone) then
-							if not IsCustomFiltered(p) then
-								fn.history:onFound({lvl = p.Level, race = p.Race, class = p.Class});
-								table.insert(list, {name = p.Name, lvl = p.Level, race = p.Race, class = p.Class, NoLocaleClass = p.NoLocaleClass})
-								addon.search.tempSendedInvites[p.Name] = true
-								debug(format("Add player %s", playerInfoStr), color.green)
-							else
-								addon.searchInfo.filtered()
-								debug(format("Player (%s) has been fitlered", playerInfoStr), color.yellow)
-							end
-							addon.searchInfo.unique()
-						else
-							debug(format("Player (%s) located in a quiet area", playerInfoStr), color.yellow)
-						end
-					else
-						debug(format("Invitation has already been sent to the player %s", playerInfoStr), color.yellow)
-					end
-				else
-					debug(format("Player (%s) alrady added", playerInfoStr), color.yellow)
-				end
-			else
-				debug(format("Player (%s) previously exited (or was expelled) from the guild.", playerInfoStr), color.red)
-			end
-		else
-			debug(format("Player (%s) was found in the blacklist.", playerInfoStr), color.red)
-		end
-	else
-		debug(format("Player (%s) already have guild.", playerInfoStr), color.yellow)
-	end
-end
 
+	if not(p.Guild == "" or FGI.ai) then
+		debug(format("Player (%s) already have guild.", playerInfoStr), color.yellow)
+		return
+	end
+	if IsInBlackList(p.Name) then
+		debug(format("Player (%s) was found in the blacklist.", playerInfoStr), color.red)
+		return
+	end
+	if IsInLeaveList(p.Name) then
+		debug(format("Player (%s) previously exited (or was expelled) from the guild.", playerInfoStr), color.red)
+		return
+	end
+	if IsInTempList(p.Name) then
+		debug(format("Player (%s) alrady added", playerInfoStr), color.yellow)
+		return
+	end
+	if IsInAlreadySendedList(p.Name) then
+		debug(format("Invitation has already been sent to the player %s", playerInfoStr), color.yellow)
+		return
+	end
+	if IsInQuietZone(p.Zone) then
+		debug(format("Player (%s) located in a quiet area", playerInfoStr), color.yellow)
+		return
+	end
+	addon.searchInfo.unique()
+	if IsCustomFiltered(p) then
+		addon.searchInfo.filtered()
+		debug(format("Player (%s) has been fitlered", playerInfoStr), color.yellow)
+		return
+	end
+	fn.history:onFound({lvl = p.Level, race = p.Race, class = p.Class});
+	table.insert(list, {name = p.Name, lvl = p.Level, race = p.Race, class = p.Class, NoLocaleClass = p.NoLocaleClass})
+	addon.search.tempSendedInvites[p.Name] = true
+	debug(format("Add player %s", playerInfoStr), color.green)
+end
+---
+---@param query string search query
+---@param results table list of found players
 local function searchWhoResultCallback(query, results)
 	local searchLvl = getSearchDeepLvl(query)
 	if DB.global.logs.on then print(("%s " .. L["Запрос: %s. Поиск вернул игроков: %d"]):format("|cffffff00<|r|cff16ABB5FGI|r|cffffff00>|r", query, #results)) end
@@ -974,7 +1095,6 @@ local function searchWhoResultCallback(query, results)
 	
 	onListUpdate()
 end
-
 local function timeCallbackStart()
 	interface.scanFrame.pausePlay:SetDisabled(true)
 	interface.scanFrame.pausePlayLabel.timer = libWho:GetInterval()
@@ -988,7 +1108,6 @@ local function timeCallbackStart()
 	end, libWho:GetInterval())
 	interface.scanFrame.pausePlayLabel:SetText(interface.scanFrame.pausePlayLabel.timer)
 end
-
 local function timeCallbackEnd()
 	interface.scanFrame.pausePlay:SetDisabled(false)
 	if DB.global.searchAlertNotify then
@@ -1000,7 +1119,8 @@ libWho:SetCallback(searchWhoResultCallback)
 libWho:SetInterval(FGI_SCANINTERVALTIME)
 libWho:SetTimeCallbackStart(timeCallbackStart)
 libWho:SetTimeCallbackEnd(timeCallbackEnd)
-	
+
+--- init new search
 function fn:nextSearch()
 	if #addon.search.whoQueryList == 0 then
 		if DB.realm.customWho then
@@ -1011,17 +1131,15 @@ function fn:nextSearch()
 		addon.search.whoQueryList = {DB.global.lowLimit.."-"..DB.global.highLimit}
 		end
 	end
-	
-	
 	addon.search.progress = (addon.search.progress <= (#addon.search.whoQueryList or 1)) and addon.search.progress or 1
 	local curQuery = addon.search.whoQueryList[addon.search.progress]
 	if curQuery == nil then
-		return	print("epmty search query")
+		print("epmty search query")
+		return
 	end
 	fn.history:onSearch()
 	libWho:GetWho(curQuery)
 end
-
 local function dump(t,l)
 	local str = '{'
 	l = l or 1
@@ -1045,12 +1163,10 @@ local function dump(t,l)
 	return str
 	end
 end
-
 math.progress = function(End, cur)
 	local percentageDone = cur*100/End
 	return percentageDone>100 and 100 or percentageDone
 end
-
 math.round = function (val, decimal)
 	if (decimal) then
 		return math.floor( (val * 10^decimal) + 0.5) / (10^decimal)
@@ -1058,11 +1174,16 @@ math.round = function (val, decimal)
 		return math.floor(val+0.5)
 	end
 end
-
 table.pack = function(...)
 	return { ... }
 end
-
+---
+--- split string by delimiter
+---
+---@param inputstr string
+---@param sep string|nil delimiter
+---@param isNumber boolean
+---@return ...
 function fn:split(inputstr, sep, isNumber)
 	isNumber = isNumber or false
 	if sep == nil then sep = "%s" end
@@ -1073,7 +1194,10 @@ function fn:split(inputstr, sep, isNumber)
 	end
 	return unpack(t)
 end
-
+---
+--- checking if the player is in the guild and if he can invite
+---
+---@return boolean
 function fn:inGuildCanInvite()
 	if not addon.debug then
 		if not IsInGuild() then return false end
@@ -1082,18 +1206,37 @@ function fn:inGuildCanInvite()
 	
 	return true	
 end
-
 function fn.hideSysMsg()
 	return true
 end
-
 
 --[[----------------------------------------------------------------------------------------------
 									Synch
 ]]------------------------------------------------------------------------------------------------
 local CHANNEL_MOD = "GUILD"; -- Defaulf: GUILD. PARTY for test
 FGI_CHANNEL_MOD = CHANNEL_MOD; -- DEBUG global var for tests
-local Sync = {};
+local MSG_MULTI_FIRST = "\001";
+local MSG_MULTI_NEXT  = "\002";
+local MSG_MULTI_LAST  = "\003";
+local MSG_MULTI_END	  = "\004";
+local syncSettings;
+local Sync = {
+	-- queue = {},			--TODO sync queue
+	cache = {},			-- list of synchronized data for each player. we avoid transferring unnecessary data
+	trusted = {},		-- list of verified players
+	target = '',		-- player name
+	receivedStr = '',	-- received String
+	sendTable = {},		-- table for send
+	curTable = '',		-- the name of the table that is currently being passed
+	stateTable = {		-- state table
+		'CLOSED',			-- ready for receiving/transmitting
+		'LISTEN',			-- incoming/outgoing connection, exchange of settings, data preparation
+		'ESTABLISHED',		-- broadcast
+		'CHECK',			-- hash check. final check
+	}
+};
+;
+Sync.state = Sync.stateTable[1]; -- default state - CLOSED
 ---
 --- get only last week data
 ---
@@ -1236,32 +1379,6 @@ function fn.updateTableForSync(t, player)
 	if not t or not player.name then return end
 	Sync.tablesForSync[t][player.name] = player.time or fn.getTime();
 end
-
-local MSG_MULTI_FIRST = "\001";
-local MSG_MULTI_NEXT  = "\002";
-local MSG_MULTI_LAST  = "\003";
-local MSG_MULTI_END	  = "\004";
-local syncSettings;
-Sync = {
-	queue = {},
-	cache = {},
-	trusted = {},
-};
-Sync.stateTable = {
-	-- ready for receiving/transmitting
-	'CLOSED',
-	-- incoming/outgoing connection, exchange of settings, data preparation
-	'LISTEN',
-	-- broadcast
-	'ESTABLISHED',
-	-- hash check. final check
-	'CHECK',
-};
-Sync.state = Sync.stateTable[1]; -- default state - CLOSED
-Sync.target = ''; -- player name
-Sync.receivedStr = ''; -- received String
-Sync.sendTable = {}; -- table for send
-Sync.curTable = '';
 ---
 --- Sends a message to the specified channel for addons. Only FGI prefix is used
 ---

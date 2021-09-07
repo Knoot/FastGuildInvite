@@ -2,11 +2,8 @@ local addon = FGI
 local fn = addon.functions
 local L = FGI:GetLocale()
 local interface = addon.interface
-local settings = L.settings
 local Console = LibStub("AceConsole-3.0")
 local GUI = LibStub("AceGUI-3.0")
-local AceSerializer = LibStub("AceSerializer-3.0")
-local libc = LibStub:GetLibrary("LibCompress")
 local FastGuildInvite = addon.lib
 local DB = addon.DB
 local debugDB = addon.debugDB
@@ -14,10 +11,6 @@ addon.icon = LibStub("LibDBIcon-1.0")
 local icon = addon.icon
 local color = addon.color
 local debug = fn.debug
-
-local function istable(t)
-	return type(t) == "table"
-end
 
 addon.dataBroker = LibStub("LibDataBroker-1.1"):NewDataObject("FGI",
 	{type = "launcher", label = "FGI", icon = "Interface\\AddOns\\FastGuildInvite\\img\\minimap\\MiniMapButton"}

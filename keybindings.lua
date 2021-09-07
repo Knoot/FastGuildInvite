@@ -3,11 +3,8 @@ local fn = addon.functions
 local L = FGI:GetLocale()
 local settings = L.settings
 local size = settings.size
-local color = addon.color
 local interface = addon.interface
 local GUI = LibStub("AceGUI-3.0")
-local FastGuildInvite = addon.lib
-local DB
 local fontSize = fn.fontSize
 
 
@@ -54,25 +51,3 @@ frame:SetHeight(40)
 frame:SetCallback("OnKeyChanged", function(self) fn:SetKeybind(self:GetKey(), "nextSearch") end)
 frame:SetPoint("TOP", KeyBind.nextSearchLabel.frame, "BOTTOM", 0, -40)
 KeyBind:AddChild(frame)
-
-
-
-
-
--- set points
-local frame = CreateFrame('Frame')
-frame:RegisterEvent('PLAYER_LOGIN')
-frame:SetScript('OnEvent', function()
-	DB = addon.DB
-	--[[C_Timer.After(0.1, function()
-		KeyBind.invite:ClearAllPoints()
-		
-		
-		KeyBind.nextSearchLabel:ClearAllPoints()
-		KeyBind.nextSearchLabel:SetPoint("LEFT", KeyBind.inviteLabel.frame, "RIGHT", 50, 0)
-		
-		KeyBind.nextSearch:ClearAllPoints()
-		KeyBind.nextSearch:SetPoint("TOP", KeyBind.nextSearchLabel.frame, "BOTTOM", 0, -40)
-		
-	end)]]
-end)

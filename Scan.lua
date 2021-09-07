@@ -6,15 +6,11 @@ local size = settings.size
 local color = addon.color
 local interface = addon.interface
 local GUI = LibStub("AceGUI-3.0")
-local FastGuildInvite = addon.lib
 local DB
 local fontSize = fn.fontSize
 local debug = fn.debug
-
 local auto_decline = {}
 addon.msgQueue = {}
-
-local testnew = true
 
 local function Button_OnClick_NoSound(frame, ...)
 	GUI:ClearFocus()

@@ -1,12 +1,8 @@
 local addon = FGI
 local fn = addon.functions
 local L = FGI:GetLocale()
-local settings = L.settings
-local size = settings.size
-local color = addon.color
 local interface = addon.interface
 local GUI = LibStub("AceGUI-3.0")
-local FastGuildInvite = addon.lib
 local DB
 local fontSize = fn.fontSize
 

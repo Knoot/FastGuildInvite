@@ -1,7 +1,6 @@
 local addon = FGI;
 local fn = addon.functions;
 local L = FGI:GetLocale();
-local color = addon.color;
 local interface = addon.interface
 local Graph = LibStub("LibGraph-2.0");
 local GUI = LibStub("AceGUI-3.0");
