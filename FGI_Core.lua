@@ -1,3 +1,4 @@
+--TODO create file debug.lua
 local addon = FGI
 local fn = addon.functions
 local L = FGI:GetLocale()
@@ -11,6 +12,7 @@ addon.icon = LibStub("LibDBIcon-1.0")
 local icon = addon.icon
 local color = addon.color
 local debug = fn.debug
+local Analytic = addon.lib.WagoAnalytics
 
 addon.dataBroker = LibStub("LibDataBroker-1.1"):NewDataObject("FGI",
 	{type = "launcher", label = "FGI", icon = "Interface\\AddOns\\FastGuildInvite\\img\\minimap\\MiniMapButton"}
@@ -261,7 +263,7 @@ function FastGuildInvite:OnEnable()
 	end
 	end)
 	fn:FiltersUpdate()
-		
+	--TODO move to debug.lua
 	interface.debugFrame = GUI:Create("ClearFrame")
 	local debugFrame = interface.debugFrame
 	debugFrame:SetTitle("FGI Debug")
@@ -306,21 +308,34 @@ function FastGuildInvite:OnEnable()
 	
 	fn:SetKeybind(DB.global.keyBind.invite, "invite")
 	fn:SetKeybind(DB.global.keyBind.nextSearch, "nextSearch")
-	
-	
-	
-	
-	
-	
+
 	interface.debugFrame:ClearAllPoints()
 	interface.debugFrame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 0, 0)
-	
-	
-	
+
 	Console:RegisterChatCommand('fgi', 'FGIInput')
 	Console:RegisterChatCommand('FastGuildInvite', 'FGIInput')
 	Console:RegisterChatCommand('fgibl', 'FGIAddBlackList')
 	Console:RegisterChatCommand('fgidebug', 'FGIdebug')
+
+	Analytic:Switch('enable filters', DB.realm.enableFilters or false)
+	Analytic:Switch('custom who', DB.realm.customWho or false)
+	Analytic:SetCounter('invite type', DB.global.inviteType or 1)
+	Analytic:Switch('use keybinds', DB.global.keyBind.invite or DB.global.keyBind.nextSearch or false)
+	Analytic:SetCounter('clear DB period', DB.global.clearDBtimes)
+	Analytic:Switch('minimap', not DB.global.minimap.hide)
+	Analytic:Switch('debug mode', DB.global.debug or false)
+	Analytic:Switch('blacklist in officer chat', DB.global.blacklistOfficer)
+	Analytic:Switch('remember all', DB.global.rememberAll or false)
+	Analytic:Switch('queue notify', DB.global.queueNotify)
+	Analytic:Switch('search alert notify', DB.global.searchAlertNotify)
+	Analytic:Switch('show addon submenu', DB.global.createMenuButtons)
+	Analytic:Switch('set note', DB.global.setNote or false)
+	Analytic:Switch('set officer note', DB.global.setOfficerNote or false)
+	Analytic:Switch('confirm search clear', DB.global.confirmSearchClear)
+	Analytic:Switch('fast blacklist', DB.global.fastBlacklist or false)
+	Analytic:Switch('intro show', DB.global.introShow)
+	Analytic:Switch('save search', DB.global.saveSearch)
+	Analytic:Switch('quiet zones', DB.global.quietZones)
 end
 
 
@@ -364,7 +379,7 @@ local defaultSettings =  {
 		clearDBtimes = 3,
 		minimap = {hide = false},
 		debug = false,
-		security = {blacklist = true, sended = true},
+		security = {blacklist = true, sended = true}, --TODO remove? new sync
 		addonMSG = false,
 		blacklistOfficer = true,
 		rememberAll = false,
@@ -381,7 +396,6 @@ local defaultSettings =  {
 		saveSearch = true,
 		logs = {
 			on = false,
-			
 		},
 		scanFrameChilds = {
 			title = true,
@@ -400,7 +414,7 @@ local defaultSettings =  {
 		},
 		quietZones = true,
 	},
-} 
+}
 
 
 function FastGuildInvite:OnInitialize()

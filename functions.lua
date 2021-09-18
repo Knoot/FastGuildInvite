@@ -15,6 +15,7 @@ addon.search = {progress=1, inviteList={}, timeShift=0, tempSendedInvites={}, wh
 addon.removeMsgList = {}
 local DB
 local debugDB
+local Analytic = addon.lib.WagoAnalytics
 
 addon.searchInfo = {unique = {0}, sended = {0}, invited = {0}, filtered = {0}}
 local mt = {
@@ -1053,6 +1054,7 @@ function fn:addNewPlayer(p)
 	table.insert(list, {name = p.Name, lvl = p.Level, race = p.Race, class = p.Class, NoLocaleClass = p.NoLocaleClass})
 	addon.search.tempSendedInvites[p.Name] = true
 	debug(format("Add player %s", playerInfoStr), color.green)
+	-- Analytic:IncrementCounter('players fit') --TODO wait WagoAnalytics fix
 end
 ---
 ---@param query string search query
@@ -1139,6 +1141,7 @@ function fn:nextSearch()
 	end
 	fn.history:onSearch()
 	libWho:GetWho(curQuery)
+	-- Analytic:IncrementCounter('new search') --TODO wait WagoAnalytics fix
 end
 local function dump(t,l)
 	local str = '{'
