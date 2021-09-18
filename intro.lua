@@ -14,7 +14,8 @@ local L = {
 		
 		
 		updates = {
-			"Фильтр \"тихих зон\" добавлен.",
+			"Добавлена автоматическая синхронизация.",
+			"Добавлен сбор аналитики при использовании WagoAddons.",
 		},
 		
 		
@@ -27,7 +28,8 @@ local L = {
 		
 		
 		updates = {
-			"\"Quiet zones\" filter added.",
+			"Added automatic synchronization.",
+			"Added collection of analytics when using WagoAddons.",
 		},
 	}
 }
