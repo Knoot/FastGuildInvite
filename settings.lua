@@ -21,20 +21,6 @@ local function updateMsgFilters()
 	end
 end
 
-local function EditBoxChange(frame)
-	frame.editbox:SetScript("OnEnterPressed", function(self)
-		self:ClearFocus()
-		self.lasttext = self:GetText()
-	end)
-	frame.editbox:SetScript("OnEnter", function(self)
-		self.lasttext = self:GetText()
-	end)
-	frame.editbox:SetScript("OnEscapePressed", function(self)
-		self:SetText(self.lasttext or "")
-		self:ClearFocus()
-	end)
-end
-
 interface.settings = CreateFrame("Frame", UIParent)
 settings = interface.settings
 settings.name = "Fast Guild Invite"

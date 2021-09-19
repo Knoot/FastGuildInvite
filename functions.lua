@@ -1238,7 +1238,6 @@ local Sync = {
 		'CHECK',			-- hash check. final check
 	}
 };
-;
 Sync.state = Sync.stateTable[1]; -- default state - CLOSED
 ---
 --- get only last week data
@@ -1382,11 +1381,12 @@ function fn.updateTableForSync(t, player)
 	if not t or not player.name then return end
 	Sync.tablesForSync[t][player.name] = player.time or fn.getTime();
 end
+
 ---
 --- Sends a message to the specified channel for addons. Only FGI prefix is used
 ---
 ---@param message string most 255 characters
----@param chatType chatType
+---@param chatType string channel "GUILD" | "WHISPER" | "PARTY"(for test only)
 ---@param target? string player name. if `chatType` ~= `WHISPER`
 ---@param prio? string priority "BULK" | "NORMAL"(default) | "ALERT"
 local function SendSyncAddonMessage(message, chatType, target, prio)
