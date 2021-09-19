@@ -500,6 +500,7 @@ function fn.debug(...)
 	if colored then msg = format("%s%s|r", colored, msg) end
 	table.insert(debugDB,msg)
 end
+local debug = fn.debug
 ---
 ---@param key string
 ---@param keyType string

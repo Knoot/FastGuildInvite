@@ -24,7 +24,7 @@ Libs\WagoAnalytics\Shim.lua
 Libs\AceAddon-3.0\AceAddon-3.0.xml
 Libs\AceConsole-3.0\AceConsole-3.0.xml
 Libs\AceDB-3.0\AceDB-3.0.xml
-Libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
+Libs\CallbackHandler-1.0\CallbackHandler-1.0\CallbackHandler-1.0.xml
 Libs\AceEvent-3.0\AceEvent-3.0.xml
 Libs\AceGUI-3.0\AceGUI-3.0.xml
 Libs\AceSerializer-3.0\AceSerializer-3.0.xml
@@ -34,7 +34,7 @@ Libs\LibGraph-2.0\LibGraph-2.0\LibGraph-2.0.lua
 Libs\LibDeflate\lib.xml
 Libs\ChatThrottleLib\ChatThrottleLib.xml
 Libs\LibDataBroker-1.1\LibDataBroker-1.1.lua
-Libs\LibDBIcon-1.0\lib.xml
+Libs\LibDBIcon-1.0\LibDBIcon-1.0\lib.xml
 
 FGI_Constants.lua
 Locale\Locale.xml
