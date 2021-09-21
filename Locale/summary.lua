@@ -164,7 +164,7 @@ local size = L.settings.size
 L.race = L.race[UnitFactionGroup("player")]
 
 
-size.mainButtonsGRP = size.startScan + size.chooseInvites + size.settingsBtn
+size.mainButtonsGRP = size.startScan + size.settingsBtn
 size.mainCheckBoxGRP = math.max(size.backgroundRun, size.enableFilters, size.customListBtn)
 size.searchRangeGRP = math.max(size.lvlRange + size.raceFilterStart, size.searchInterval + size.classFilterStart)+30
 size.settingsCheckBoxGRP = math.max(size.addonMSG, size.systemMSG, size.sendMSG, size.minimapButton, size.rememberAll)

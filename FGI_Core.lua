@@ -523,12 +523,10 @@ function Console:FGIInput(str)
 	elseif str == 'resetWindowsPos' then
 		interface.mainFrame:ClearAllPoints()
 		interface.scanFrame:ClearAllPoints()
-		interface.chooseInvites:ClearAllPoints()
 		interface.dumpWindow:ClearAllPoints()
 		
 		interface.mainFrame:SetPoint("CENTER", UIParent)
 		interface.scanFrame:SetPoint("CENTER", UIParent)
-		interface.chooseInvites:SetPoint("CENTER", UIParent)
 		interface.dumpWindow:SetPoint("CENTER", UIParent)
 		
 		local point, relativeTo,relativePoint, xOfs, yOfs = interface.mainFrame.frame:GetPoint(1)
@@ -536,9 +534,6 @@ function Console:FGIInput(str)
 		
 		point, relativeTo,relativePoint, xOfs, yOfs = interface.scanFrame.frame:GetPoint(1)
 		DB.global.scanFrame = {point=point, relativeTo=relativeTo, relativePoint=relativePoint, xOfs=xOfs, yOfs=yOfs,}
-		
-		point, relativeTo,relativePoint, xOfs, yOfs = interface.chooseInvites.frame:GetPoint(1)
-		DB.global.chooseInvites = {point=point, relativeTo=relativeTo, relativePoint=relativePoint, xOfs=xOfs, yOfs=yOfs,}
 		
 		point, relativeTo,relativePoint, xOfs, yOfs = interface.dumpWindow.frame:GetPoint(1)
 		DB.global.dumpWindow = {point=point, relativeTo=relativeTo, relativePoint=relativePoint, xOfs=xOfs, yOfs=yOfs,}
