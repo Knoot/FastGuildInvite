@@ -1,5 +1,3 @@
---TODO remove choose invites
---TODO create function for decline invite
 local addon=FGI
 local fn=addon.functions
 local L = FGI:GetLocale()
