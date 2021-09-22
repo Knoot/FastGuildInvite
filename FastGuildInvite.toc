@@ -61,3 +61,4 @@ customInterface.lua
 dump.lua
 guild.lua
 statistic.lua
+debug.lua
