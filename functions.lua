@@ -1052,7 +1052,7 @@ function fn:addNewPlayer(p)
 	table.insert(list, {name = p.Name, lvl = p.Level, race = p.Race, class = p.Class, NoLocaleClass = p.NoLocaleClass})
 	addon.search.tempSendedInvites[p.Name] = true
 	debug(format("Add player %s", playerInfoStr), color.green)
-	-- Analytic:IncrementCounter('players fit') --TODO wait WagoAnalytics fix
+	Analytic:IncrementCounter('players fit')
 end
 ---
 ---@param query string search query
@@ -1139,7 +1139,7 @@ function fn:nextSearch()
 	end
 	fn.history:onSearch()
 	libWho:GetWho(curQuery)
-	-- Analytic:IncrementCounter('new search') --TODO wait WagoAnalytics fix
+	Analytic:IncrementCounter('new search')
 end
 local function dump(t,l)
 	local str = '{'
