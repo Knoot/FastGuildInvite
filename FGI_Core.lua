@@ -293,7 +293,24 @@ function FastGuildInvite:OnEnable()
 	Analytic:Switch('intro show', DB.global.introShow)
 	Analytic:Switch('save search', DB.global.saveSearch)
 	Analytic:Switch('quiet zones', DB.global.quietZones)
+
+	DB.factionrealm.guild = GetGuildInfo() or DB.factionrealm.guild
 end
+
+local guildUpdate = CreateFrame('Frame')
+guildUpdate:RegisterEvent('PLAYER_GUILD_UPDATE')
+guildUpdate:SetScript('onEvent', function(...)
+	if GetGuildInfo() ~= nil and DB.factionrealm.guild ~= GetGuildInfo() then
+		print(format('|cff00ff00<FGI>|r \nLastGuild: %s \nNewGuild: %s \nClearing the list of those who left the guild \nClearing the list of sent invitations\n Now the data has not been deleted, this is just a test message',
+			DB.factionrealm.guild,
+			GetGuildInfo()
+		))
+		DB.factionrealm.guild = GetGuildInfo()
+		-- clear data
+		-- DB.realm.alreadySended = {}
+		-- DB.realm.leave = {}
+	end
+end)
 
 
 local defaultSettings =  { 
@@ -327,6 +344,7 @@ local defaultSettings =  {
 			leave = {},
 			joined = {},
 		},
+		guild = nil,
 	},
 	global = {
 		inviteType = 1,
