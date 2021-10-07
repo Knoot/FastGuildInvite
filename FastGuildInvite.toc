@@ -3,7 +3,7 @@
 ## X-Interface: Retail
 #@end-version-retail@
 #@version-bcc@
-## Interface-BCC: 20501
+## Interface-BCC: 20502
 ## X-Interface: TBC
 #@end-version-bcc@
 #@version-classic@
