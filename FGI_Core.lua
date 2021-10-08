@@ -50,7 +50,7 @@ local function CanInteraction(name, server, unit)
 				end
 			end
 		end
-		
+
 		return canInvited
 	end
 	return false
@@ -137,12 +137,12 @@ local function DropDownOnShow(self)
 	if not dropdown then
 		return
 	end
-	
+
 	f.frame:SetParent(self)
 	f.frame:SetFrameStrata(self:GetFrameStrata())
 	f.frame:SetFrameLevel(self:GetFrameLevel() + 2)
 	f:ClearAllPoints()
-	
+
 	if dropdown.Button == LFGListFrameDropDownButton then -- LFD
 		-- ShowCustomDropDown(self, dropdown, dropdown.menuList[2].arg1)
 	elseif dropdown.which and supportedTypes[dropdown.which] then -- UnitPopup
@@ -159,7 +159,7 @@ local function DropDownOnShow(self)
 	else
 		return
 	end
-	
+
 	if self:GetLeft() >= self:GetWidth() then
 		f:SetPoint("TOPRIGHT", self, "TOPLEFT",0,0)
 	else
@@ -193,13 +193,13 @@ frame:RegisterEvent("CHAT_MSG_OFFICER")
 frame:SetScript("OnEvent", function(_,_, msg,_,_,_,name,...)
 	local function isCorrect(str)
 		local n,r = str:match("([^-%s]+)[%s]*-[%s]*([^-]+)")
-		if n==nil then 
+		if n==nil then
 			n = msg
 		end
 		-- if n==nil then return false end
 		return true, n, r
 	end
-	
+
 	if name == UnitName("Player") then print("player -> exit")end
 	if not msg:find("^!") then return end
 	if msg:find("^!fgi") then
@@ -240,7 +240,7 @@ function FastGuildInvite:OnEnable()
 		DropDownList1:HookScript("OnShow", DropDownOnShow)
 		DropDownList1:HookScript("OnHide", DropDownOnHide)
 	end
-	
+
 	addon.debug = DB.global.debug
 	fn:blackListAutoKick()
 	local parent = interface.settings.filters.content.filtersFrame
@@ -294,18 +294,18 @@ function FastGuildInvite:OnEnable()
 	Analytic:Switch('save search', DB.global.saveSearch)
 	Analytic:Switch('quiet zones', DB.global.quietZones)
 
-	DB.factionrealm.guild = GetGuildInfo() or DB.factionrealm.guild
+	DB.factionrealm.guild = GetGuildInfo('player') or DB.factionrealm.guild
 end
 
 local guildUpdate = CreateFrame('Frame')
 guildUpdate:RegisterEvent('PLAYER_GUILD_UPDATE')
 guildUpdate:SetScript('onEvent', function(...)
-	if GetGuildInfo() ~= nil and DB.factionrealm.guild ~= GetGuildInfo() then
+	if GetGuildInfo('player') ~= nil and DB.factionrealm.guild ~= GetGuildInfo('player') then
 		print(format('|cff00ff00<FGI>|r \nLastGuild: %s \nNewGuild: %s \nClearing the list of those who left the guild \nClearing the list of sent invitations\n Now the data has not been deleted, this is just a test message',
 			DB.factionrealm.guild,
-			GetGuildInfo()
+			GetGuildInfo('player')
 		))
-		DB.factionrealm.guild = GetGuildInfo()
+		DB.factionrealm.guild = GetGuildInfo('player')
 		-- clear data
 		-- DB.realm.alreadySended = {}
 		-- DB.realm.leave = {}
@@ -313,7 +313,7 @@ guildUpdate:SetScript('onEvent', function(...)
 end)
 
 
-local defaultSettings =  { 
+local defaultSettings =  {
 	profile = {
 	},
 	realm = {
@@ -396,7 +396,7 @@ function FastGuildInvite:OnInitialize()
 	self.db = LibStub("AceDB-3.0"):New("FGI_DB", defaultSettings, true)
 	self.debugdb = LibStub("AceDB-3.0"):New("FGI_DEBUG")
 	self.db.RegisterCallback(self, "OnDatabaseReset", function() C_UI.Reload() end)
-	
+
 	DB = self.db
 	addon.DB = DB
 	debugDB = self.debugdb.global
@@ -420,7 +420,7 @@ function FastGuildInvite:OnInitialize()
 		end
 	end
 
-	
+
 	icon:Register("FGI", addon.dataBroker, DB.global.minimap)
 	fn:initDB()
 end
@@ -440,10 +440,10 @@ function Console:FGIdebug(str)
 		for k,v in pairs(addon.debugDB)do
 			text = format("%s%s\n",text,v)
 		end
-		
+
 		interface.debugFrame.debugList:SetText(text)
 		return
-	
+
 	end
 end
 
@@ -480,7 +480,7 @@ function Console:FGIInput(str)
 		fn:invitePlayer()
 	elseif str == "nextSearch" then
 		interface.scanFrame.pausePlay.frame:Click()
-	elseif str:find("^blacklist") then 
+	elseif str:find("^blacklist") then
 		local name,reason = fn:parseBL("blacklist", str)
 		if not name then return print('Blacklist: nil name') end
 		fn:blackList(name, reason)
@@ -488,7 +488,7 @@ function Console:FGIInput(str)
 		if not reason and not DB.global.fastBlacklist then
 			StaticPopup_Show("FGI_BLACKLIST_CHANGE", _,_,  {name = name})
 		end
-	elseif str:find("^unblacklist") then 
+	elseif str:find("^unblacklist") then
 		local name = fn:parseBL("unblacklist", str)
 		if not name then return print('Unblacklist: nil name') end
 		fn:unblacklist(name)
@@ -499,20 +499,20 @@ function Console:FGIInput(str)
 		interface.mainFrame:ClearAllPoints()
 		interface.scanFrame:ClearAllPoints()
 		interface.dumpWindow:ClearAllPoints()
-		
+
 		interface.mainFrame:SetPoint("CENTER", UIParent)
 		interface.scanFrame:SetPoint("CENTER", UIParent)
 		interface.dumpWindow:SetPoint("CENTER", UIParent)
-		
+
 		local point, relativeTo,relativePoint, xOfs, yOfs = interface.mainFrame.frame:GetPoint(1)
 		DB.global.mainFrame = {point=point, relativeTo=relativeTo, relativePoint=relativePoint, xOfs=xOfs, yOfs=yOfs,}
-		
+
 		point, relativeTo,relativePoint, xOfs, yOfs = interface.scanFrame.frame:GetPoint(1)
 		DB.global.scanFrame = {point=point, relativeTo=relativeTo, relativePoint=relativePoint, xOfs=xOfs, yOfs=yOfs,}
-		
+
 		point, relativeTo,relativePoint, xOfs, yOfs = interface.dumpWindow.frame:GetPoint(1)
 		DB.global.dumpWindow = {point=point, relativeTo=relativeTo, relativePoint=relativePoint, xOfs=xOfs, yOfs=yOfs,}
-		
+
 		C_UI.Reload()
 	elseif str == "factorySettings" then
 		FastGuildInvite.db:ResetDB()
@@ -543,5 +543,5 @@ function Console:FGIHelp2()
 	print(L.blacklistAdd)
 	print(L.blacklistDelete)
 	print(L.blacklistGetList)
-	
+
 end
