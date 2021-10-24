@@ -203,9 +203,9 @@ frame:SetScript("OnEvent", function(_,_, msg,_,_,_,name,...)
 	if name == UnitName("Player") then print("player -> exit")end
 	if not msg:find("^!") then return end
 	if msg:find("^!fgi") then
-		SendChatMessage(" "..L.blacklistAdd , "OFFICER",  GetDefaultLanguage("player"))
-		SendChatMessage(" "..L.blacklistDelete , "OFFICER",  GetDefaultLanguage("player"))
-		SendChatMessage(" "..L.blacklistGetList , "OFFICER",  GetDefaultLanguage("player"))
+		SendChatMessage(" "..L.blacklistAdd , "OFFICER",  GetDefaultLanguage())
+		SendChatMessage(" "..L.blacklistDelete , "OFFICER",  GetDefaultLanguage())
+		SendChatMessage(" "..L.blacklistGetList , "OFFICER",  GetDefaultLanguage())
 	elseif msg:find("^!blacklistAdd") then
 		msg = msg:gsub("!blacklistAdd ", '')
 		local b,n,r = isCorrect(msg)
@@ -221,7 +221,7 @@ frame:SetScript("OnEvent", function(_,_, msg,_,_,_,name,...)
 		print("test delete",b,n,r)
 	elseif msg:find("^!blacklistGetList") then
 		for k,v in pairs(DB.realm.blackList) do
-			SendChatMessage(format("%s - %s", k, v) , "OFFICER",  GetDefaultLanguage("player"))
+			SendChatMessage(format("%s - %s", k, v) , "OFFICER",  GetDefaultLanguage())
 		end
 	end
 end)
@@ -345,6 +345,7 @@ local defaultSettings =  {
 			joined = {},
 		},
 		guild = nil,
+		locations = {},
 	},
 	global = {
 		inviteType = 1,
@@ -461,7 +462,7 @@ function Console:FGIAddBlackList(str)
 		if not b then return end
 		fn:blackList(n,r)
 		interface.blackList:add({name=n,reason=r})
-		SendChatMessage(format("%s %s - %s", format(L["Игрок %s добавлен в черный список."], n), L["Причина"], r) , "OFFICER",  GetDefaultLanguage("player"))
+		SendChatMessage(format("%s %s - %s", format(L["Игрок %s добавлен в черный список."], n), L["Причина"], r) , "OFFICER",  GetDefaultLanguage())
 	end
 end
 

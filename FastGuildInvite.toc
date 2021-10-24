@@ -49,6 +49,7 @@ settings.lua
 message.lua
 keybindings.lua
 filtersFrame.lua
+searchByLocation.lua
 Scan.lua
 blackList.lua
 customList.lua

@@ -11,25 +11,23 @@ local L = {
 		support = "Ниже вы можете найти ссылки если вы хотите материально поддержать автора.",
 		laterButton = "Напомнить при обновлении аддона",
 		neverButton = "Больше не показывать",
-		
-		
+
+
 		updates = {
-			"Добавлена автоматическая синхронизация.",
-			"Добавлен сбор аналитики при использовании WagoAddons.",
+			"Добавлено разделение поиска по зонам, список зон для углубленного поиска вы можете задать в настройках.",
 		},
-		
-		
+
+
 	},
 	enUS = {
 		head = "Thanks for helping make the addon better.",
 		support = "Below you can find links if you want to financially support the author.",
 		laterButton = "Remind me when updating addon",
 		neverButton = "Do not show again",
-		
-		
+
+
 		updates = {
-			"Added automatic synchronization.",
-			"Added collection of analytics when using WagoAddons.",
+			"Separation of search by zones has been added, the list for in-depth search can be configured in the settings.",
 		},
 	}
 }
@@ -204,8 +202,8 @@ local frame = CreateFrame('Frame')
 frame:RegisterEvent('PLAYER_LOGIN')
 frame:SetScript('OnEvent', function()
 	DB = addon.DB
-	
-	
+
+
 	if not DB.global.introShow or DB.global.introShow == addon.version or tonumber(FGI.version) == nil then
 		intro:Hide()
 	else
