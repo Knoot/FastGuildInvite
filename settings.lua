@@ -47,6 +47,11 @@ settings.filters.name = L["Фильтры"]
 settings.filters.parent = settings.name
 InterfaceOptions_AddCategory(settings.filters)
 
+settings.locations = CreateFrame("Frame", settings)
+settings.locations.name = L["Поиск по локациям"]
+settings.locations.parent = settings.name
+InterfaceOptions_AddCategory(settings.locations)
+
 settings.KeyBind = CreateFrame("Frame", settings)
 settings.KeyBind.name = "KeyBind"
 -- settings.KeyBind.refresh  = function(self)print(self,InterfaceOptionsFramePanelContainer.displayedPanel:GetHeight())end
@@ -136,7 +141,7 @@ frame:SetTooltip(L["Не отображать в чате системные с�
 frame.frame:HookScript("OnClick", function()
 	DB.realm.systemMSG = settingsCheckBoxGRP.systemMSG:GetValue()
 	updateMsgFilters()
-	
+
 end)
 frame:SetPoint("TOPLEFT", settings.settingsCheckBoxGRP.addonMSG.frame, "BOTTOMLEFT", 0, 0)
 settingsCheckBoxGRP:AddChild(frame)
@@ -148,7 +153,7 @@ frame:SetLabel(L["Выключить отправляемые сообщения
 frame:SetTooltip(L["Не отображать в чате отправляемые сообщения"])
 frame.frame:HookScript("OnClick", function()
 	DB.realm.sendMSG = settingsCheckBoxGRP.sendMSG:GetValue()
-	
+
 end)
 frame:SetPoint("TOPLEFT", settings.settingsCheckBoxGRP.systemMSG.frame, "BOTTOMLEFT", 0, 0)
 settingsCheckBoxGRP:AddChild(frame)
@@ -294,7 +299,7 @@ local frame = CreateFrame('Frame')
 frame:RegisterEvent('PLAYER_LOGIN')
 frame:SetScript('OnEvent', function()
 	DB = addon.DB
-	
+
 	settingsCheckBoxGRP.addonMSG:SetValue(DB.global.addonMSG or false)
 	settingsCheckBoxGRP.systemMSG:SetValue(DB.realm.systemMSG or false)
 	settingsCheckBoxGRP.sendMSG:SetValue(DB.realm.sendMSG or false)
@@ -309,7 +314,7 @@ frame:SetScript('OnEvent', function()
 	settingsCheckBoxGRP.saveSearch:SetValue(DB.global.saveSearch or false)
 	settingsCheckBoxGRP.showUpdateInfo:SetValue(DB.global.introShow or false)
 	settingsCheckBoxGRP.quietZones:SetValue(DB.global.quietZones or false)
-	
-	
+
+
 	updateMsgFilters()
 end)

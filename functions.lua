@@ -97,11 +97,11 @@ function fn:FilterChange(filterName)
 	local filter = FGI.DB.realm.filtersList[filterName]
 	local class = filter.classFilter
 	local raceFilter = filter.raceFilter
-	
+
 	filtersFrame.frame:Hide()
 	addfilterFrame.frame:Show()
-	
-	
+
+
 	if not class then
 		addfilterFrame.classesCheckBoxIgnore:SetValue(true)
 	else
@@ -121,9 +121,9 @@ function fn:FilterChange(filterName)
 		addfilterFrame.classesCheckBoxDemonHunter:SetValue(class[CLASS.DemonHunter] or false)
 		--@end-version-retail@
 	end
-	
-	
-	if not raceFilter then 
+
+
+	if not raceFilter then
 		addfilterFrame.rasesCheckBoxIgnore:SetValue(true)
 	else
 		addfilterFrame.rasesCheckBoxIgnore:SetValue(false)
@@ -133,7 +133,7 @@ function fn:FilterChange(filterName)
 			race:SetValue(raceFilter[name] and true or false)
 		end
 	end
-	
+
 	addfilterFrame.filterNameEdit:SetText(filterName)
 	addfilterFrame.filterNameEdit:SetDisabled(true)
 	addfilterFrame.excludeNameEditBox:SetText(filter.filterByName or "")
@@ -150,7 +150,7 @@ function fn:FilterChange(filterName)
 		addfilterFrame.rioRaidProgressH_EditBox:SetText('')
 		addfilterFrame.rioRaidProgressM_EditBox:SetText('')
 	end
-	
+
 	fn:classIgnoredToggle()
 	fn:racesIgnoredToggle()
 	addfilterFrame.change = true
@@ -212,7 +212,7 @@ function anim.Start(self, text, font, size)
 	text = "|cffffff00<|r|cff16ABB5FGI|r|cffffff00>|r "..text
 	anim.f:SetFont(font, size, "OUTLINE")
 	self.f:SetText(text)
-	
+
 	self:Show()
 	self.f.animation:Play()
 end
@@ -438,7 +438,7 @@ function fn:blackListAutoKick()
 	if not IsInGuild() then return end
 	-- autoKick on entering world
 	fn:blacklistKick()
-	
+
 	--init autoKick on guild entering
 	local frame = CreateFrame("Frame")
 	frame:RegisterEvent("CHAT_MSG_SYSTEM")
@@ -514,7 +514,7 @@ function fn:SetKeybind(key, keyType)
 	else
 		DBkey[keyType] = false
 	end
-	
+
 	interface.settings.KeyBind.content.invite:SetLabel(format(L["Назначить кнопку (%s)"], DBkey.invite or "none"))
 	interface.settings.KeyBind.content.invite:SetKey(DBkey.invite)
 	interface.settings.KeyBind.content.nextSearch:SetLabel(format(L["Назначить кнопку (%s)"], DBkey.nextSearch or "none"))
@@ -562,11 +562,11 @@ function fn:FiltersUpdate()
 			race = race:sub(1, -2)
 		end
 		local count = filter.filteredCount
-		
+
 		frame:SetTooltip(format(L["filterTooltip"], name, state, filterByName, lvlRange, letterFilterVowels, letterFilterConsonants, class, race, count))
-		
+
 		i = i + 1
-		
+
 	end
 end
 ---
@@ -620,9 +620,9 @@ function fn:msgMod(msg, name, noErr)
 				DB.global.guildLinks[link:match("%[.*: (.*)%]")] = link
 			end
 		end
-		
+
 		msg = msg:gsub("GUILDLINK", link and link:gsub(" ", " ") or 'G_LINK')
-		
+
 		if not link and not noErr then
 			print(L["Невозможно создать ссылку гильдии. Откройте окно гильдии и попробуйте снова. Если проблема не устранена, вероятно вы не можете создавать ссылку гильдии."])
 			return nil
@@ -647,10 +647,10 @@ function fn:sendWhisper(name)
 	local msg = fn:getRndMsg()
 	if not msg then return print("<FGI> - "..L["Выберите сообщение"]) end
 	if not name then return debug("send message - nil name") end
-	
+
 	debug(format("Send whisper: %s %s",name, msg))
 	msg = fn:msgMod(msg, name)
-	
+
 	if msg ~= nil then
 		if DB.realm.sendMSG then
 			addon.removeMsgList[name:match("([^-]*)")] = true
@@ -716,11 +716,12 @@ end)
 ---@param query string search query
 ---@return number|boolean
 local function getSearchDeepLvl(query)
-	-- local l2 = (("%%d+-%%d+ %s\"%s+"):format(L["r-"],addon.ruReg)):gsub("-","%%-")
 	local l2 = L["r-"]:gsub("-","%%-")
-	-- local l3 = (("%%d+-%%d+ %s\"%s+%%\" %s"):format(L["r-"],addon.ruReg,L["c-"])):gsub("-","%%-")
 	local l3 = (("%s.+ %s"):format(L["r-"],L["c-"])):gsub("-","%%-")
-	if query:find(l3) then
+	local l4 = (("%s.+ %s.+ %s"):format(L["r-"],L["c-"],L["z-"])):gsub("-","%%-")
+	if query:find(l4) then
+		return 4
+	elseif query:find(l3) then
 		return 3
 	elseif query:find(l2) then
 		return 2
@@ -742,7 +743,7 @@ local function searchGetParams(query)
 	for s in query:gmatch("%d+") do
 		table.insert(lvl, s)
 	end
-	
+
 	return {class = class,race = race, min = lvl[1], max = lvl[2]}
 end
 ---
@@ -807,8 +808,8 @@ local function searchAddWhoList(query, lvl)
 			return a.."-"..b
 		end)
 		table.remove(addon.search.whoQueryList, progress)
-		
-		
+
+
 		if isQueryFiltered(v1) then
 			tAddN = tAddN-1
 		else
@@ -821,9 +822,9 @@ local function searchAddWhoList(query, lvl)
 			debug(format("Add new lvl query: (%s); Query: %s", v2, query))
 			table.insert(addon.search.whoQueryList, progress+1-(2-tAddN), v2)
 		end
-		
-		
-		
+
+
+
 		local min, max = interface.scanFrame.progressBar:GetMinMax()
 		-- interface.scanFrame.progressBar:SetMinMax(min, max+tAddN*FGI_SCANINTERVALTIME)
 		addon.search.progress = addon.search.progress - 1
@@ -854,7 +855,7 @@ local function searchAddWhoList(query, lvl)
 					break
 				end
 			end
-			
+
 			if not RaceClassCombo[race] then return print("FGI Error race -",race) end
 		else
 			return table.insert(addon.search.whoQueryList, progress, query)
@@ -872,6 +873,20 @@ local function searchAddWhoList(query, lvl)
 		-- interface.scanFrame.progressBar:SetMinMax(min, max+(new)*FGI_SCANINTERVALTIME)
 		addon.search.progress = addon.search.progress - 1
 	end
+	local function locationSplit(query)
+		local locations = DB.factionrealm.locations
+		local new = 0
+		table.remove(addon.search.whoQueryList, progress)
+		for _, location in pairs(locations) do
+			local newQuery = format("%s %s\"%s\"", query, L["z-"], location)
+			if not isQueryFiltered(newQuery) then
+				table.insert(addon.search.whoQueryList, progress+new, newQuery)
+				new = new + 1
+			end
+		end
+		addon.search.progress = addon.search.progress - 1
+	end
+
 	local queryParams = searchGetParams(query)
 	local difference = (queryParams.max - queryParams.min) > 0
 	if difference then
@@ -880,6 +895,8 @@ local function searchAddWhoList(query, lvl)
 		RACEsplit(query)
 	elseif lvl == 2 then
 		CLASSsplit(query, queryParams.race)
+	elseif lvl == 3 and #DB.factionrealm.locations > 0 then
+		locationSplit(query)
 	end
 end
 ---
@@ -978,7 +995,7 @@ function fn:filtered(player)
 						curPrev = score.mythicKeystoneProfile.previousScore or 0,
 						mainPrev = score.mythicKeystoneProfile.mainPreviousScore or 0
 					}
-					if 
+					if
 						not(
 						(score.current >= v.rioMPlus)							-- check current score
 						or
@@ -1073,10 +1090,12 @@ local function searchWhoResultCallback(query, results)
 			searchAddWhoList(query,1)
 		elseif searchLvl == 2 and #results>=FGI_MAXWHORETURN then
 			searchAddWhoList(query,2)
-		-- 3lvl can't modified
+		elseif searchLvl == 3 and #results>=FGI_MAXWHORETURN then
+			searchAddWhoList(query,3)
 		end
+		-- 4lvl can't modified
 	end
-	
+
 	addon.search.oldCount = #addon.search.inviteList
 	for i=1,#results do
 		local player = results[i]
@@ -1088,11 +1107,11 @@ local function searchWhoResultCallback(query, results)
 	if DB.global.saveSearch then
 		DB.factionrealm.search = addon.search
 	end
-	
+
 	local list = addon.search.inviteList
 	interface.scanFrame.progressBar:SetMinMax(0, #addon.search.whoQueryList)
 	interface.scanFrame.progressBar:SetProgress(addon.search.progress-1)
-	
+
 	onListUpdate()
 end
 local function timeCallbackStart()
@@ -1204,8 +1223,8 @@ function fn:inGuildCanInvite()
 		if not IsInGuild() then return false end
 		if not CanGuildInvite() then return false end
 	end
-	
-	return true	
+
+	return true
 end
 function fn.hideSysMsg()
 	return true
@@ -1303,7 +1322,7 @@ end
 local function StringHash(text)
     local counter = 1;
     local len = string.len(text);
-    for i = 1, len, 3 do 
+    for i = 1, len, 3 do
         counter = math.fmod(counter*8161, 4294967279) +  -- 2^32 - 17: Prime!
             (string.byte(text,i)*16776193) +
             ((string.byte(text,i+1) or (len-i+256))*8372226) +
@@ -1323,7 +1342,7 @@ local function spairs(t, order)
 	for k in pairs(t) do table.insert(keys, k); end
 
 	-- if order function given, sort by it by passing the table and keys a, b,
-	-- otherwise just sort the keys 
+	-- otherwise just sort the keys
 	if order then
 			table.sort(keys, function(a,b) return order(t, a, b) end);
 	else
@@ -1338,7 +1357,7 @@ end
 ---@param global boolean `true` for total hash
 ---@return number hash
 local function getTableHash(t, global)
-	if IsInCombat(true) then 
+	if IsInCombat(true) then
 		return 0;
 	end
     return StringHash(Serializer:Serialize(global and t or spairs(t)));
@@ -1348,7 +1367,7 @@ end
 ---
 ---@return number hash
 local function getTotalHash()
-	if IsInCombat(true) then 
+	if IsInCombat(true) then
 		return 0;
 	end
 	local result = {};
@@ -1507,7 +1526,7 @@ function fn.decodeData(data)
 		print("|cffff0000<FGI>|r: error decompressing." .. (Sync.target ~= '' and "Data from " .. Sync.target or '')); -- DEBUG print
 		return false;
 	end
-	
+
 	-- Deserialize the decompressed data
 	local success, final = Serializer:Deserialize(decompress_deflate);
 	if (not success) then
