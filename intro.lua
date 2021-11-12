@@ -14,7 +14,6 @@ local L = {
 
 
 		updates = {
-			"Добавлено разделение поиска по зонам, список зон для углубленного поиска вы можете задать в настройках.",
 		},
 
 
@@ -27,7 +26,6 @@ local L = {
 
 
 		updates = {
-			"Separation of search by zones has been added, the list for in-depth search can be configured in the settings.",
 		},
 	}
 }
@@ -203,8 +201,7 @@ frame:RegisterEvent('PLAYER_LOGIN')
 frame:SetScript('OnEvent', function()
 	DB = addon.DB
 
-
-	if not DB.global.introShow or DB.global.introShow == addon.version or tonumber(FGI.version) == nil then
+	if not DB.global.introShow or DB.global.introShow == addon.version or tonumber(FGI.version) == nil or #L.updates == 0 then
 		intro:Hide()
 	else
 		local str = ""
