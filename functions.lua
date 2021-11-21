@@ -1016,10 +1016,10 @@ function fn:filtered(player)
 				local filtered = {[1] = 0, [2] = 0,	[3] = 0}
 				for _,raid in pairs(getCharacterRaidProgress(player.Name, player.Realm or GetNormalizedRealmName())) do
 					if v.rioRaid.name == raid.raidShortName then
-						filtered[raid.difficultyID] = v.rioRaid[raid.difficultyID]
+						filtered[raid.difficultyID] = raid.progress
 					end
 				end
-				if filtered[1] < v.rioRaid[1] or filtered[2] < v.rioRaid[2] or filtered[2] < v.rioRaid[2] then
+				if filtered[1] < v.rioRaid[1] or filtered[2] < v.rioRaid[2] or filtered[3] < v.rioRaid[3] then
 					return true--,"raidProgress"
 				end
 			end
