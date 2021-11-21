@@ -14,6 +14,7 @@ local L = {
 
 
 		updates = {
+			"При смене гильдии очищается список уже приглашенных игроков и список игроков покинувших гильдию."
 		},
 
 
@@ -26,6 +27,7 @@ local L = {
 
 
 		updates = {
+			"When changing a guild, the list of already invited players and the list of players who have left the guild are cleared."
 		},
 	}
 }

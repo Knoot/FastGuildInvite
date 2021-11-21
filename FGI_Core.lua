@@ -301,14 +301,10 @@ local guildUpdate = CreateFrame('Frame')
 guildUpdate:RegisterEvent('PLAYER_GUILD_UPDATE')
 guildUpdate:SetScript('onEvent', function(...)
 	if GetGuildInfo('player') ~= nil and DB.factionrealm.guild ~= GetGuildInfo('player') then
-		print(format('|cff00ff00<FGI>|r \nLastGuild: %s \nNewGuild: %s \nClearing the list of those who left the guild \nClearing the list of sent invitations\n Now the data has not been deleted, this is just a test message',
-			DB.factionrealm.guild,
-			GetGuildInfo('player')
-		))
 		DB.factionrealm.guild = GetGuildInfo('player')
 		-- clear data
-		-- DB.realm.alreadySended = {}
-		-- DB.realm.leave = {}
+		DB.realm.alreadySended = {}
+		DB.realm.leave = {}
 	end
 end)
 
