@@ -14,7 +14,7 @@ local L = {
 
 
 		updates = {
-			"При смене гильдии очищается список уже приглашенных игроков и список игроков покинувших гильдию."
+			"Исправление добавления в черный список. Теперь при добавлении в черный список из чата, если игрок с вашего реалма, название реалма будет удаляться из имени. Скрипт для автоматического изменения имен игроков в черном списке находится на сервере Discord."
 		},
 
 
@@ -27,7 +27,7 @@ local L = {
 
 
 		updates = {
-			"When changing a guild, the list of already invited players and the list of players who have left the guild are cleared."
+			"Correction of adding to the blacklist. Now, when adding to the blacklist from the chat, if the player is from your realm, the name of the realm will be removed from the name. The script to automatically change the names of blacklisted players is located on the Discord server."
 		},
 	}
 }
