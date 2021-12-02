@@ -459,6 +459,8 @@ end
 ---@param name string player name
 ---@param reason string|boolean
 function fn:blackList(name, reason)
+	name = name:gsub('-'..GetRealmName(), '') -- delete self realm
+
 	DB.realm.blackList[name] = reason or (DB.global.blacklistReasonText == nil and L.defaultReason or DB.global.blacklistReasonText)
 	-- fn.updateTableForSync('blackList', {name = name, time = DB.realm.blackList[name]})
 	if not DB.global.addonMSG then
