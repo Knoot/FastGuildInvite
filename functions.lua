@@ -454,12 +454,20 @@ function fn:blackListAutoKick()
 	end)
 end
 ---
+---	removing the realm from the player name if it matches the current realm
+---
+---@param playerName string
+---@return string playerName
+local function removeSelfRealm(playerName)
+	return playerName:gsub('-'..GetRealmName(), '')
+end
+---
 --- add player in blacklist
 ---
 ---@param name string player name
 ---@param reason string|boolean
 function fn:blackList(name, reason)
-	name = name:gsub('-'..GetRealmName(), '') -- delete self realm
+	name = removeSelfRealm(name)
 
 	DB.realm.blackList[name] = reason or (DB.global.blacklistReasonText == nil and L.defaultReason or DB.global.blacklistReasonText)
 	-- fn.updateTableForSync('blackList', {name = name, time = DB.realm.blackList[name]})
@@ -473,6 +481,7 @@ end
 ---
 ---@param name string player name
 function fn:unblacklist(name)
+	name = removeSelfRealm(name)
 	local inBlacklist = IsInBlackList(name, true)
 	if inBlacklist then
 		fn:blacklistRemove(inBlacklist)

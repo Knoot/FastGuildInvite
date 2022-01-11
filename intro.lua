@@ -13,9 +13,7 @@ local L = {
 		neverButton = "Больше не показывать",
 
 
-		updates = {
-			"Исправление добавления в черный список. Теперь при добавлении в черный список из чата, если игрок с вашего реалма, название реалма будет удаляться из имени. Скрипт для автоматического изменения имен игроков в черном списке находится на сервере Discord."
-		},
+		updates = {},
 
 
 	},
@@ -26,9 +24,7 @@ local L = {
 		neverButton = "Do not show again",
 
 
-		updates = {
-			"Correction of adding to the blacklist. Now, when adding to the blacklist from the chat, if the player is from your realm, the name of the realm will be removed from the name. The script to automatically change the names of blacklisted players is located on the Discord server."
-		},
+		updates = {},
 	}
 }
 L = GetLocale() == "ruRU" and L.ruRU or L.enUS
