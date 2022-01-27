@@ -21,7 +21,7 @@ local noteHelp = "\n\n"..
 '%B - month (' .. date('%B') .. ")\n"..
 '%b - month (' .. date('%b') .. ")\n"..
 '%A - weekday (' .. date('%A') .. ")\n"..
-'%a - weekday ' .. date('%a') .. ")\n"..
+'%a - weekday (' .. date('%a') .. ")\n"..
 '%w - weekday (' .. date('%w') .. ")\n"..
 '%I - hour, using a 12-hour clock (' .. date('%I') .. ")\n"..
 '%p - "AM" or "PM" (' .. date('%p') .. ")\n"..
@@ -135,10 +135,10 @@ local frame = CreateFrame('Frame')
 frame:RegisterEvent('PLAYER_LOGIN')
 frame:SetScript('OnEvent', function()
 	DB = addon.DB
-	
+
 	Guild.setNote:SetValue(DB.global.setNote or false)
 	Guild.noteText:SetText(DB.global.noteText or ""); Guild.noteText.temptext = Guild.noteText:GetText()
 	Guild.setOfficerNote:SetValue(DB.global.setOfficerNote or false)
 	Guild.officerNoteText:SetText(DB.global.officerNoteText or ""); Guild.officerNoteText.temptext = Guild.officerNoteText:GetText()
-	
+
 end)
