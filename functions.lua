@@ -994,7 +994,7 @@ function fn:filtered(player)
 				end
 			end
 			if v.rioMPlus and v.rioMPlus > 0 and RaiderIO then
-				local score = RaiderIO.GetProfile(player.Name, player.Realm or GetNormalizedRealmName(), addon.playerInfo.faction)
+				local score = RaiderIO.GetProfile(player.Name .. '-' .. (player.Realm or GetNormalizedRealmName()), addon.playerInfo.faction)
 				if not score or not score.mythicKeystoneProfile then
 					v.filteredCount = v.filteredCount + 1
 					fn:FiltersUpdate()
