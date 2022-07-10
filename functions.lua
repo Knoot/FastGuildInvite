@@ -621,14 +621,14 @@ function fn:msgMod(msg, name, noErr)
 	end
 	if msg:find("GUILDLINK") then
 		local club, link
-		DB.global.guildLinks = DB.global.guildLinks or {}
-		if DB.global.guildLinks[GetGuildInfo("player")] then
-			link = DB.global.guildLinks[GetGuildInfo("player")]
+		DB.factionrealm.guildLinks = DB.factionrealm.guildLinks or {}
+		if DB.factionrealm.guildLinks[GetGuildInfo("player")] then
+			link = DB.factionrealm.guildLinks[GetGuildInfo("player")]
 		elseif ClubFinderGetCurrentClubListingInfo then
 			club = ClubFinderGetCurrentClubListingInfo(C_Club.GetGuildClubId())
 			if club then
 				link = GetClubFinderLink(club.clubFinderGUID, club.name)
-				DB.global.guildLinks[link:match("%[.*: (.*)%]")] = link
+				DB.factionrealm.guildLinks[link:match("%[.*: (.*)%]")] = link
 			end
 		end
 
