@@ -646,7 +646,7 @@ function fn:msgMod(msg, name, noErr)
 	return msg
 end
 function fn.hideWhisper(...)
-	local text, _, _, _, name = select(0,...)
+	local text, _, _, _, name = select(3, ...)
 	name = name:match("([^-]*)")
 
 	if addon.removeMsgList[name] ~= nil then
