@@ -60,6 +60,10 @@ FGI_CONST = {
 		13309,
 		12837,
 		13577,
+		8443,
+		6984,
+		6951,
+		10225,
 		--@end-version-retail@
 		
 		--@version-bbc@
