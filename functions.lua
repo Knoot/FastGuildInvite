@@ -646,12 +646,18 @@ function fn:msgMod(msg, name, noErr)
 	return msg
 end
 function fn.hideWhisper(...)
-	local name = select(4,...):match("([^-]*)")
-	if addon.removeMsgList[name] then
-		return true
-	else
-		return false, select(3,...)
+	local text, _, _, _, name = select(0,...)
+	name = name:match("([^-]*)")
+
+	if addon.removeMsgList[name] ~= nil then
+		for _, msg in pairs(addon.removeMsgList[name]) do
+			if text == msg then
+				return true
+			end
+		end
 	end
+
+	return false, select(3,...)
 end
 ---@param name string player name
 function fn:sendWhisper(name)
@@ -664,9 +670,13 @@ function fn:sendWhisper(name)
 
 	if msg ~= nil then
 		if DB.realm.sendMSG then
-			addon.removeMsgList[name:match("([^-]*)")] = true
+			addon.removeMsgList[name:match("([^-]*)")] = {}
 		end
-		for _,message in pairs(fn:messageSplit(msg)) do
+		for _, message in pairs(fn:messageSplit(msg)) do
+			if addon.removeMsgList[name:match("([^-]*)")] ~= nil then
+				table.insert(addon.removeMsgList[name:match("([^-]*)")], message)
+			end
+
 			SendChatMessage(message:gsub(" ", " "), 'WHISPER', GetDefaultLanguage("player"), name)
 		end
 	end
