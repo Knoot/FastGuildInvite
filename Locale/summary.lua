@@ -56,8 +56,9 @@ L.race = {
 	},
 }
 --@end-version-classic@
---@version-bcc@
+--@version-wrath@
 L.class = {
+	DeathKnight = LOCALIZED_CLASS_NAMES_MALE.DEATHKNIGHT,
 	Druid = LOCALIZED_CLASS_NAMES_MALE.DRUID,
 	Hunter = LOCALIZED_CLASS_NAMES_MALE.HUNTER,
 	Mage = LOCALIZED_CLASS_NAMES_MALE.MAGE,
@@ -84,7 +85,7 @@ L.race = {
 		Draenei = GetRaceName(11),	--	"Дреней"
 	},
 }
---@end-version-bcc@
+--@end-version-wrath@
 --@retail@
 L.class = {
 	DeathKnight = LOCALIZED_CLASS_NAMES_MALE.DEATHKNIGHT,

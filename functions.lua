@@ -43,21 +43,21 @@ local RaceClassCombo = {
 	Undead = {CLASS.Warrior,CLASS.Priest,CLASS.Mage,CLASS.Rogue,CLASS.Warlock},
 }
 --@end-version-classic@
---@version-bbc@
+--@version-wrath@
 -- race and class mappings table
 local RaceClassCombo = {
-	Draenei = {CLASS.Hunter,CLASS.Mage,CLASS.Paladin,CLASS.Priest,CLASS.Shaman,CLASS.Warrior},
-	Dwarf = {CLASS.Hunter,CLASS.Paladin,CLASS.Priest,CLASS.Rogue,CLASS.Warrior},
-	Gnome = {CLASS.Mage,CLASS.Rogue,CLASS.Warlock,CLASS.Warrior},
-	Human = {CLASS.Mage,CLASS.Paladin,CLASS.Priest,CLASS.Rogue,CLASS.Warlock,CLASS.Warrior},
-	NightElf = {CLASS.Druid,CLASS.Hunter,CLASS.Priest,CLASS.Rogue,CLASS.Warrior},
-	BloodElf = {CLASS.Hunter,CLASS.Mage,CLASS.Paladin,CLASS.Priest,CLASS.Rogue,CLASS.Warlock},
-	Orc = {CLASS.Hunter,CLASS.Rogue,CLASS.Shaman,CLASS.Warlock,CLASS.Warrior},
-	Tauren = {CLASS.Druid,CLASS.Hunter,CLASS.Shaman,CLASS.Warrior},
-	Troll = {CLASS.Hunter,CLASS.Mage,CLASS.Priest,CLASS.Rogue,CLASS.Shaman,CLASS.Warrior},
-	Undead = {CLASS.Mage,CLASS.Priest,CLASS.Rogue,CLASS.Warlock,CLASS.Warrior},
+	Draenei = {CLASS.Hunter,CLASS.Mage,CLASS.Paladin,CLASS.Priest,CLASS.Shaman,CLASS.Warrior,CLASS.DeathKnight},
+	Dwarf = {CLASS.Hunter,CLASS.Paladin,CLASS.Priest,CLASS.Rogue,CLASS.Warrior,CLASS.DeathKnight},
+	Gnome = {CLASS.Mage,CLASS.Rogue,CLASS.Warlock,CLASS.Warrior,CLASS.DeathKnight},
+	Human = {CLASS.Mage,CLASS.Paladin,CLASS.Priest,CLASS.Rogue,CLASS.Warlock,CLASS.Warrior,CLASS.DeathKnight},
+	NightElf = {CLASS.Druid,CLASS.Hunter,CLASS.Priest,CLASS.Rogue,CLASS.Warrior,CLASS.DeathKnight},
+	BloodElf = {CLASS.Hunter,CLASS.Mage,CLASS.Paladin,CLASS.Priest,CLASS.Rogue,CLASS.Warlock,CLASS.DeathKnight},
+	Orc = {CLASS.Hunter,CLASS.Rogue,CLASS.Shaman,CLASS.Warlock,CLASS.Warrior,CLASS.DeathKnight},
+	Tauren = {CLASS.Druid,CLASS.Hunter,CLASS.Shaman,CLASS.Warrior,CLASS.DeathKnight},
+	Troll = {CLASS.Hunter,CLASS.Mage,CLASS.Priest,CLASS.Rogue,CLASS.Shaman,CLASS.Warrior,CLASS.DeathKnight},
+	Undead = {CLASS.Mage,CLASS.Priest,CLASS.Rogue,CLASS.Warlock,CLASS.Warrior,CLASS.DeathKnight},
 }
---@end-version-bbc@
+--@end-version-wrath@
 --@version-retail@
 -- race and class mappings table
 local RaceClassCombo = {
@@ -115,8 +115,9 @@ function fn:FilterChange(filterName)
 		addfilterFrame.classesCheckBoxShaman:SetValue(class[CLASS.Shaman] or false)
 		addfilterFrame.classesCheckBoxWarlock:SetValue(class[CLASS.Warlock] or false)
 		addfilterFrame.classesCheckBoxWarrior:SetValue(class[CLASS.Warrior] or false)
-		--@version-retail@
 		addfilterFrame.classesCheckBoxDeathKnight:SetValue(class[CLASS.DeathKnight] or false)
+
+		--@version-retail@
 		addfilterFrame.classesCheckBoxMonk:SetValue(class[CLASS.Monk] or false)
 		addfilterFrame.classesCheckBoxDemonHunter:SetValue(class[CLASS.DemonHunter] or false)
 		--@end-version-retail@

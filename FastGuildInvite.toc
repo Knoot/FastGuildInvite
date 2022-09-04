@@ -2,12 +2,12 @@
 ## Interface-Retail: 90205
 ## X-Interface: Retail
 #@end-version-retail@
-#@version-bcc@
-## Interface-BCC: 20502
-## X-Interface: TBC
-#@end-version-bcc@
+#@version-wrath@
+## Interface-Wrath: 30400
+## X-Interface: Wrath
+#@end-version-wrath@
 #@version-classic@
-## Interface-Classic: 11400
+## Interface-Classic: 11403
 ## X-Interface: Classic
 #@end-version-classic@
 ## Author: Knoot

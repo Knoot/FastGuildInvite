@@ -45,7 +45,7 @@ FGI_CONST = {
 		3698,
 		3702,
 		8624,
-		
+
 		--@version-retail@
 	--raids
 		13224,
@@ -65,36 +65,37 @@ FGI_CONST = {
 		6951,
 		10225,
 		--@end-version-retail@
-		
-		--@version-bbc@
+
+		--@version-wrath@
 	--raids
-		4075,
-		3959,
-		3606,
-		3457,
-		3845,
-		3923,
-		3607,
-		3836,
+		4987,
+		4812,
+		2159,
+		4722,
+		4273,
+		4500,
+		4493,
+		3456,
+		4603,
 	--dungeons
-		3848,
-		2366,
-		3717,
-		4131,
-		3789,
-		2367,
-		3791,
-		3714,
-		3715,
-		3716,
-		3849,
-		3713,
-		3792,
-		3847,
-		3562,
-		3790,
-		--@end-version-bbc@
-		
+		4820,
+		4813,
+		4809,
+		4723,
+		4100,
+		1196,
+		4228,
+		4272,
+		4264,
+		4416,
+		4415,
+		4196,
+		4265,
+		4494,
+		4277,
+		206,
+		--@end-version-wrath@
+
 		--@version-classic@
 	--raids
 		3456,
@@ -132,9 +133,9 @@ C_ChatInfo.RegisterAddonMessagePrefix(FGISYNC_PREFIX_G)
 --@version-classic@
 FGI_MAXLVL = 60
 --@end-version-classic@
---@version-bcc@
-FGI_MAXLVL = 70
---@end-version-bcc@
+--@version-wrath@
+FGI_MAXLVL = 80
+--@end-version-wrath@
 --@retail@
 FGI_MAXLVL = 60
 --@end-retail@
