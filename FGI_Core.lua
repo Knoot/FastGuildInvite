@@ -297,16 +297,16 @@ function FastGuildInvite:OnEnable()
 	DB.factionrealm.guild = GetGuildInfo('player') or DB.factionrealm.guild
 end
 
-local guildUpdate = CreateFrame('Frame')
-guildUpdate:RegisterEvent('PLAYER_GUILD_UPDATE')
-guildUpdate:SetScript('onEvent', function(...)
-	if GetGuildInfo('player') ~= nil and DB.factionrealm.guild ~= GetGuildInfo('player') then
-		DB.factionrealm.guild = GetGuildInfo('player')
-		-- clear data
-		DB.realm.alreadySended = {}
-		DB.realm.leave = {}
-	end
-end)
+-- local guildUpdate = CreateFrame('Frame')
+-- guildUpdate:RegisterEvent('PLAYER_GUILD_UPDATE')
+-- guildUpdate:SetScript('onEvent', function(...)
+-- 	if GetGuildInfo('player') ~= nil and DB.factionrealm.guild ~= GetGuildInfo('player') then
+-- 		DB.factionrealm.guild = GetGuildInfo('player')
+-- 		-- clear data
+-- 		DB.realm.alreadySended = {}
+-- 		DB.realm.leave = {}
+-- 	end
+-- end)
 
 
 local defaultSettings =  {
@@ -492,6 +492,7 @@ function Console:FGIInput(str)
 	elseif str == 'debug' then
 		toggleDebug()
 	elseif str == 'resetDB' then DB.realm.alreadySended = {}
+	elseif str == 'clearLeave' then DB.realm.leave = {}
 	elseif str == 'resetWindowsPos' then
 		interface.mainFrame:ClearAllPoints()
 		interface.scanFrame:ClearAllPoints()
@@ -522,6 +523,7 @@ function Console:FGIHelp()
 	print("|cffffff00<|r|cff16ABB5FGI|r|cffffff00>|r Help")
 	print(L.show)
 	print(L.resetDB)
+	print(L.clearLeave)
 	print(L.factorySettings)
 	print(L.resetWindowsPos)
 	print(L.invite)
