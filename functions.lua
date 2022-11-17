@@ -84,6 +84,7 @@ local RaceClassCombo = {
 	ZandalariTroll = {CLASS.Warrior,CLASS.Paladin,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Shaman,CLASS.Mage,CLASS.Monk,CLASS.Druid,},
 	Mechagnome = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.DeathKnight},
 	Vulpera = {CLASS.Warrior,CLASS.Hunter,CLASS.Rogue,CLASS.Priest,CLASS.Shaman,CLASS.Mage,CLASS.Warlock,CLASS.Monk,CLASS.DeathKnight},
+	Dracthyr = {CLASS.Evoker},
 }
 --@end-version-retail@
 
@@ -296,7 +297,7 @@ end
 --- show the data of the current player in the scan window
 local function onListUpdate()
 	local list = addon.search.inviteList
-	interface.scanFrame.player:SetText(#list > 0 and format("%s%s %d %s|r", color[list[1].NoLocaleClass:upper()], list[1].name, list[1].lvl, list[1].class) or "")
+	interface.scanFrame.player:SetText(#list > 0 and format("%s%s %d %s|r", color[list[1].NoLocaleClass:upper()] or color.gray, list[1].name, list[1].lvl, list[1].class) or "")
 	if #list > 0 then
 		interface.scanFrame.player.data = {
 			name = list[1].name:find("%-") and list[1].name:match("(.*)%-") or list[1].name,

@@ -81,6 +81,7 @@ L.settings = {
 		Ignore = 120,
 		DeathKnight = 130,
 		DemonHunter = 160,
+		Evoker = 160,
 		Druid = 70,
 		Hunter = 80,
 		Mage = 50,
@@ -116,6 +117,7 @@ L.settings = {
 		KulTiran = 120,
 		Mechagnome = 150,
 		Vulpera = 120,
+		Dracthyr = 120,
 		
 		
 		filterNameLabel = 200,

@@ -100,6 +100,7 @@ L.class = {
 	Shaman = LOCALIZED_CLASS_NAMES_MALE.SHAMAN,
 	Warlock = LOCALIZED_CLASS_NAMES_MALE.WARLOCK,
 	Warrior = LOCALIZED_CLASS_NAMES_MALE.WARRIOR,
+	Evoker = LOCALIZED_CLASS_NAMES_MALE.EVOKER,
 }
 L.race = {
 	Horde = {
@@ -115,6 +116,7 @@ L.race = {
 		Pandaren = GetRaceName(26),	--	"Пандарен"
 		ZandalariTroll = GetRaceName(31),	--	"Зандалар"
 		Vulpera = GetRaceName(35),	--	"Вульпера"
+		Dracthyr = GetRaceName(52),	--	"Драгтир"
 	},
 	Alliance = {
 		Dwarf = GetRaceName(3),	--	"Дворф"
@@ -129,6 +131,7 @@ L.race = {
 		Worgen = GetRaceName(22),	--	"Ворген"
 		KulTiran = GetRaceName(32),	--	"Култирасец"
 		Mechagnome = GetRaceName(37),	--	"Механогном"
+		Dracthyr = GetRaceName(70),	--	"Драгтир"
 	},
 }
 --@end-retail@
@@ -150,6 +153,7 @@ L.femaleRace = {
 	VoidElf = L["VoidElf"],
 	KulTiran = L["KulTiran"],
 	Mechagnome = L["Mechagnome"],
+	Dracthyr = L["Dracthyr"],
 }
 
 L.femaleClass = {}

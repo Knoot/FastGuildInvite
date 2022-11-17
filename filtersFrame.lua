@@ -56,6 +56,8 @@ local function defaultValues()
 	addfilterFrame.classesCheckBoxMonk:Hide()
 	addfilterFrame.classesCheckBoxDemonHunter:SetValue(false)
 	addfilterFrame.classesCheckBoxDemonHunter:Hide()
+	addfilterFrame.classesCheckBoxEvoker:SetValue(false)
+	addfilterFrame.classesCheckBoxEvoker:Hide()
 	--@end-version-retail@
 	addfilterFrame.classesCheckBoxIgnore:SetValue(true)
 	
@@ -95,6 +97,7 @@ function fn:classIgnoredToggle()
 		--@version-retail@
 		addfilterFrame.classesCheckBoxMonk:Show()
 		addfilterFrame.classesCheckBoxDemonHunter:Show()
+		addfilterFrame.classesCheckBoxEvoker:Show()
 		--@end-version-retail@
 	else
 		addfilterFrame.classesCheckBoxDruid:Hide()
@@ -111,6 +114,7 @@ function fn:classIgnoredToggle()
 		--@version-retail@
 		addfilterFrame.classesCheckBoxMonk:Hide()
 		addfilterFrame.classesCheckBoxDemonHunter:Hide()
+		addfilterFrame.classesCheckBoxEvoker:Hide()
 		--@end-version-retail@
 	end
 end
@@ -131,6 +135,7 @@ local function getClassFilter()
 		--@version-retail@
 		[L.class.Monk] = addfilterFrame.classesCheckBoxMonk:GetValue() or nil,
 		[L.class.DemonHunter] = addfilterFrame.classesCheckBoxDemonHunter:GetValue() or nil,
+		[L.class.Evoker] = addfilterFrame.classesCheckBoxEvoker:GetValue() or nil,
 		--@end-version-retail@
 	}
 	return arr
@@ -232,6 +237,14 @@ local function createClassBoxes()
 	frame:SetLabel(L.class.DemonHunter)
 	fontSize(frame.text)
 	frame:SetPoint("TOPLEFT", addfilterFrame.classesCheckBoxMonk.frame, "BOTTOMLEFT", 0, 0)
+	addfilterFrame:AddChild(frame)
+
+	addfilterFrame.classesCheckBoxEvoker = GUI:Create("TCheckBox")
+	local frame = addfilterFrame.classesCheckBoxEvoker
+	frame:SetWidth(size.Evoker)
+	frame:SetLabel(L.class.Evoker)
+	fontSize(frame.text)
+	frame:SetPoint("TOPLEFT", addfilterFrame.classesCheckBoxDemonHunter.frame, "BOTTOMLEFT", 0, 0)
 	addfilterFrame:AddChild(frame)
 	--@end-version-retail@
 end

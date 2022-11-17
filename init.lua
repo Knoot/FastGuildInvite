@@ -32,6 +32,7 @@ addon.color = {
 	MONK='|cff00ff96',
 	DRUID='|cffff7d0a',
 	DEMONHUNTER='|cffa330c9',
+	EVOKER='|cff308a77',
 	green='|cff00ff00',
 	red='|cffff0000',
 	gray='|cff8c8c8c',
