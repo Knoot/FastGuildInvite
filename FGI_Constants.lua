@@ -137,7 +137,7 @@ FGI_MAXLVL = 60
 FGI_MAXLVL = 80
 --@end-version-wrath@
 --@retail@
-FGI_MAXLVL = 60
+FGI_MAXLVL = 70
 --@end-retail@
 
 function FGI:GetLocale()
