@@ -1037,9 +1037,20 @@ function fn:filtered(player)
 			end
 			if v.rioRaid and RaiderIO then
 				local filtered = {[1] = 0, [2] = 0,	[3] = 0}
-				for _,raid in pairs(getCharacterRaidProgress(player.Name, player.Realm or GetNormalizedRealmName())) do
-					if v.rioRaid.name == raid.raidShortName then
-						filtered[raid.difficultyID] = raid.progress
+				local RIOData = RaiderIO.GetProfile(player.Name .. '-' .. (player.Realm or GetNormalizedRealmName()), addon.playerInfo.faction)
+				if
+					RIOData == nil
+					or RIOData.raidProfile == nil
+					or RIOData.raidProfile.raidProgress == nil
+				then
+					return true
+				end
+				
+				for _, raidProgress in pairs(RIOData.raidProfile.raidProgress) do
+					if v.rioRaid.name == raidProgress.raid.dungeon.shortName then
+						for _, progress in pairs(raidProgress.progress) do
+							filtered[progress.difficulty] = progress.kills
+						end
 					end
 				end
 				if filtered[1] < v.rioRaid[1] or filtered[2] < v.rioRaid[2] or filtered[3] < v.rioRaid[3] then
