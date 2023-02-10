@@ -121,6 +121,7 @@ function fn:FilterChange(filterName)
 		--@version-retail@
 		addfilterFrame.classesCheckBoxMonk:SetValue(class[CLASS.Monk] or false)
 		addfilterFrame.classesCheckBoxDemonHunter:SetValue(class[CLASS.DemonHunter] or false)
+		addfilterFrame.classesCheckBoxEvoker:SetValue(class[CLASS.Evoker] or false)
 		--@end-version-retail@
 	end
 
