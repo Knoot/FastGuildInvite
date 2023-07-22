@@ -1,9 +1,9 @@
-## Interface: 100100
+## Interface: 100105
 #@version-retail@
 ## X-Interface: Retail
 #@end-version-retail@
 #@version-wrath@
-## Interface-Wrath: 30400
+## Interface-Wrath: 30402
 ## X-Interface: Wrath
 #@end-version-wrath@
 #@version-classic@
