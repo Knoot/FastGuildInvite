@@ -48,8 +48,11 @@ local function defaultValues()
 	addfilterFrame.classesCheckBoxWarlock:Hide()
 	addfilterFrame.classesCheckBoxWarrior:SetValue(false)
 	addfilterFrame.classesCheckBoxWarrior:Hide()
+
+	--[===[@non-version-classic@
 	addfilterFrame.classesCheckBoxDeathKnight:SetValue(false)
 	addfilterFrame.classesCheckBoxDeathKnight:Hide()
+	--@end-non-version-classic@]===]
 
 	--@version-retail@
 	addfilterFrame.classesCheckBoxMonk:SetValue(false)
@@ -92,7 +95,10 @@ function fn:classIgnoredToggle()
 		addfilterFrame.classesCheckBoxShaman:Show()
 		addfilterFrame.classesCheckBoxWarlock:Show()
 		addfilterFrame.classesCheckBoxWarrior:Show()
+
+		--[===[@non-version-classic@
 		addfilterFrame.classesCheckBoxDeathKnight:Show()
+		--@end-non-version-classic@]===]
 
 		--@version-retail@
 		addfilterFrame.classesCheckBoxMonk:Show()
@@ -109,7 +115,10 @@ function fn:classIgnoredToggle()
 		addfilterFrame.classesCheckBoxShaman:Hide()
 		addfilterFrame.classesCheckBoxWarlock:Hide()
 		addfilterFrame.classesCheckBoxWarrior:Hide()
+
+		--[===[@non-version-classic@
 		addfilterFrame.classesCheckBoxDeathKnight:Hide()
+		--@end-non-version-classic@]===]
 
 		--@version-retail@
 		addfilterFrame.classesCheckBoxMonk:Hide()
@@ -130,7 +139,10 @@ local function getClassFilter()
 		[L.class.Shaman] = addfilterFrame.classesCheckBoxShaman:GetValue() or nil,
 		[L.class.Warlock] = addfilterFrame.classesCheckBoxWarlock:GetValue() or nil,
 		[L.class.Warrior] = addfilterFrame.classesCheckBoxWarrior:GetValue() or nil,
+
+		--[===[@non-version-classic@
 		[L.class.DeathKnight] = addfilterFrame.classesCheckBoxDeathKnight:GetValue() or nil,
+		--@end-non-version-classic@]===]
 
 		--@version-retail@
 		[L.class.Monk] = addfilterFrame.classesCheckBoxMonk:GetValue() or nil,
@@ -213,14 +225,16 @@ local function createClassBoxes()
 	fontSize(frame.text)
 	frame:SetPoint("TOPLEFT", addfilterFrame.classesCheckBoxWarlock.frame, "BOTTOMLEFT", 0, 0)
 	addfilterFrame:AddChild(frame)
-	addfilterFrame.classesCheckBoxDeathKnight = GUI:Create("TCheckBox")
 
+	--[===[@non-version-classic@
+	addfilterFrame.classesCheckBoxDeathKnight = GUI:Create("TCheckBox")
 	local frame = addfilterFrame.classesCheckBoxDeathKnight
 	frame:SetWidth(size.DeathKnight)
 	frame:SetLabel(L.class.DeathKnight)
 	fontSize(frame.text)
 	frame:SetPoint("TOPLEFT", addfilterFrame.classesCheckBoxWarrior.frame, "BOTTOMLEFT", 0, -2)
 	addfilterFrame:AddChild(frame)
+	--@end-non-version-classic@]===]
 
 	--@version-retail@
 	addfilterFrame.classesCheckBoxMonk = GUI:Create("TCheckBox")
