@@ -116,7 +116,10 @@ function fn:FilterChange(filterName)
 		addfilterFrame.classesCheckBoxShaman:SetValue(class[CLASS.Shaman] or false)
 		addfilterFrame.classesCheckBoxWarlock:SetValue(class[CLASS.Warlock] or false)
 		addfilterFrame.classesCheckBoxWarrior:SetValue(class[CLASS.Warrior] or false)
+		
+		--[===[@non-version-classic@
 		addfilterFrame.classesCheckBoxDeathKnight:SetValue(class[CLASS.DeathKnight] or false)
+		--@end-non-version-classic@]===]
 
 		--@version-retail@
 		addfilterFrame.classesCheckBoxMonk:SetValue(class[CLASS.Monk] or false)
