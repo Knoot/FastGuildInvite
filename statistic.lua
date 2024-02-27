@@ -270,7 +270,7 @@ graphSett:AddChild(frame);
 
 graphSett.update = GUI:Create("Button");
 local frame = graphSett.update;
-frame:SetText('Обновить')
+frame:SetText(L['Обновить']);
 frame:SetWidth(110);
 frame:SetPoint("TOPLEFT", graphSett.leave.frame, "TOPRIGHT", 0, 0);
 frame:SetCallback("OnClick", function()

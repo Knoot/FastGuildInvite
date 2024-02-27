@@ -322,12 +322,7 @@ local frame = mainFrame.searchInfo
 frame:SetWidth(350)
 frame.label:SetJustifyH("LEFT")
 fontSize(frame.label, nil, 12)
-frame.placeholder = [[Statistics.
-Total unique players found: %d
-Invitations sent: %d
-Invitations accepted: %d
-Players Filtered by Custom Filters: %d
-]]
+frame.placeholder = L['Статистика поиска']
 frame.update = function(t)
 	local unique, sended , invited, filtered = unpack(t)
 	frame:SetText(format(frame.placeholder, unique, sended , invited, filtered))

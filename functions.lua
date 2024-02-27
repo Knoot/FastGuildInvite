@@ -532,9 +532,9 @@ function fn:SetKeybind(key, keyType)
 		DBkey[keyType] = false
 	end
 
-	interface.settings.KeyBind.content.invite:SetLabel(format(L["Назначить кнопку (%s)"], DBkey.invite or "none"))
+	interface.settings.KeyBind.content.invite:SetLabel(format(L["Назначить кнопку (%s)"], DBkey.invite or L["none"]))
 	interface.settings.KeyBind.content.invite:SetKey(DBkey.invite)
-	interface.settings.KeyBind.content.nextSearch:SetLabel(format(L["Назначить кнопку (%s)"], DBkey.nextSearch or "none"))
+	interface.settings.KeyBind.content.nextSearch:SetLabel(format(L["Назначить кнопку (%s)"], DBkey.nextSearch or L["none"]))
 	interface.settings.KeyBind.content.nextSearch:SetKey(DBkey.nextSearch)
 end
 function fn:FiltersInit()

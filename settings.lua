@@ -53,7 +53,7 @@ settings.locations.parent = settings.name
 InterfaceOptions_AddCategory(settings.locations)
 
 settings.KeyBind = CreateFrame("Frame", settings)
-settings.KeyBind.name = "KeyBind"
+settings.KeyBind.name = L["KeyBind"]
 -- settings.KeyBind.refresh  = function(self)print(self,InterfaceOptionsFramePanelContainer.displayedPanel:GetHeight())end
 settings.KeyBind.parent = settings.name
 InterfaceOptions_AddCategory(settings.KeyBind)

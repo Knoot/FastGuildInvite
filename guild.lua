@@ -10,26 +10,26 @@ local DB
 local Guild
 
 local noteHelp = "\n\n"..
-'%c - date and time (' .. date('%c') .. ")\n"..
-'%Y - year (' .. date('%Y') .. ")\n"..
-'%y - year (' .. date('%y') .. ")\n"..
-'%m - month (' .. date('%m') .. ")\n"..
-'%d - day (' .. date('%d') .. ")\n"..
-'%H - hour, using a 24-hour clock (' .. date('%H') .. ")\n"..
-'%M - minute (' .. date('%M') .. ")\n"..
-'%S - second (' .. date('%S') .. ")\n"..
-'%B - month (' .. date('%B') .. ")\n"..
-'%b - month (' .. date('%b') .. ")\n"..
-'%A - weekday (' .. date('%A') .. ")\n"..
-'%a - weekday (' .. date('%a') .. ")\n"..
-'%w - weekday (' .. date('%w') .. ")\n"..
-'%I - hour, using a 12-hour clock (' .. date('%I') .. ")\n"..
-'%p - "AM" or "PM" (' .. date('%p') .. ")\n"..
-'%x - date (' .. date('%x') .. ")\n"..
-'%X - time (' .. date('%X') .. ")\n"..
-'%% - the character (' .. date('%%') .. ")\n"..
-'NAME - the character name (' .. UnitName('player') .. ")\n"..
-"\n\n Joined: %m/%d/%Y = "..date('Joined: %m/%d/%Y')
+'%c - ' .. L['date and time'] .. ' (' .. date('%c') .. ")\n"..
+'%Y - ' .. L['year'] .. ' (' .. date('%Y') .. ")\n"..
+'%y - ' .. L['year'] .. ' (' .. date('%y') .. ")\n"..
+'%m - ' .. L['month'] .. ' (' .. date('%m') .. ")\n"..
+'%d - ' .. L['day'] .. ' (' .. date('%d') .. ")\n"..
+'%H - ' .. L['hour, using a 24-hour clock'] .. ' (' .. date('%H') .. ")\n"..
+'%M - ' .. L['minute'] .. ' (' .. date('%M') .. ")\n"..
+'%S - ' .. L['second'] .. ' (' .. date('%S') .. ")\n"..
+'%B - ' .. L['month'] .. ' (' .. date('%B') .. ")\n"..
+'%b - ' .. L['month'] .. ' (' .. date('%b') .. ")\n"..
+'%A - ' .. L['weekday'] .. ' (' .. date('%A') .. ")\n"..
+'%a - ' .. L['weekday'] .. ' (' .. date('%a') .. ")\n"..
+'%w - ' .. L['weekday'] .. ' (' .. date('%w') .. ")\n"..
+'%I - ' .. L['hour, using a 12-hour clock'] .. ' (' .. date('%I') .. ")\n"..
+'%p - ' .. L['"AM" or "PM"'] .. ' (' .. date('%p') .. ")\n"..
+'%x - ' .. L['date'] .. ' (' .. date('%x') .. ")\n"..
+'%X - ' .. L['time'] .. ' (' .. date('%X') .. ")\n"..
+'%% - ' .. L['the character'] .. ' (' .. date('%%') .. ")\n"..
+'NAME - ' .. L['the character name'] .. ' (' .. UnitName('player') .. ")\n"..
+"\n\n ' .. 'Joined: %m/%d/%Y = "..date('Joined: %m/%d/%Y')
 
 local function EditBoxChange(frame)
 	frame.editbox:SetScript("OnEnterPressed", function(self)

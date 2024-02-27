@@ -1,6 +1,6 @@
 FGI.L.zhCN = {}
 local L = FGI.L.zhCN
---@localization(locale="enUS", format="lua_additive_table", handle-unlocalized="ignore")@
+--@localization(locale="zhCN", format="lua_additive_table", handle-unlocalized="ignore")@
 
 
 

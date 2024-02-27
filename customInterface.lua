@@ -28,7 +28,7 @@ scanFrame:SetPoint("TOPLEFT", CustomInterface.frame, "TOPLEFT", 0, 0)
 
 scanFrame.title = GUI:Create("Label")
 local frame = scanFrame.title
-frame:SetText("Scan Frame")
+frame:SetText(L["Окно поиска"])
 fontSize(frame.label)
 frame:SetWidth(w)
 frame:SetPoint("TOPLEFT", scanFrame.frame, "TOPLEFT", 0, 0)
