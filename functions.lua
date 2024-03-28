@@ -339,13 +339,13 @@ function fn:parseBL(cmd, str)
 	local name, realm, reason
 		str = str:gsub(cmd, '')
 	if str:find('.+%-.+%s%-%s.+') then
-		name,realm,reason = str:match("^(.+)%-(.+)%s%-%s(.+)")
+		name,realm,reason = str:match("^%s?(.+)%-(.+)%s%-%s(.+)")
 	elseif str:find('.+%s%-%s.+') then
-		name,reason = str:match("^(.+)%s%-%s(.+)")
+		name,reason = str:match("^%s?(.+)%s%-%s(.+)")
 	elseif str:find('.+%-.+') then
-		name,realm,reason = str:match("^(.+)-(.+)")
+		name,realm,reason = str:match("^%s?(.+)-(.+)")
 	else
-		name = str:match("^([^%s]+)")
+		name = str:match("^%s?([^%s]+)")
 		reason = false
 	end
 	return realm and name..'-'..realm or name, reason
@@ -465,7 +465,10 @@ end
 ---@param playerName string
 ---@return string playerName
 local function removeSelfRealm(playerName)
-	return playerName:gsub('-'..GetRealmName(), '')
+	return playerName
+		:gsub('-' .. GetRealmName(), '') -- realm with space
+		:gsub('-' .. GetRealmName():gsub(' ', ''), '') -- realm without space
+		:gsub(' ', '') -- spaces
 end
 ---
 --- add player in blacklist
