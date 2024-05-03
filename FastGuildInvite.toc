@@ -2,12 +2,16 @@
 #@version-retail@
 ## X-Interface: Retail
 #@end-version-retail@
+#@version-cata@
+## Interface-Cata: 40400
+## X-Interface: Cata
+#@end-version-cata@
 #@version-wrath@
 ## Interface-Wrath: 30403
 ## X-Interface: Wrath
 #@end-version-wrath@
 #@version-classic@
-## Interface-Classic: 11500
+## Interface-Classic: 11501
 ## X-Interface: Classic
 #@end-version-classic@
 ## Author: Knoot

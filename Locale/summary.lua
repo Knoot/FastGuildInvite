@@ -86,6 +86,38 @@ L.race = {
 	},
 }
 --@end-version-wrath@
+--@version-cata@
+L.class = {
+	DeathKnight = LOCALIZED_CLASS_NAMES_MALE.DEATHKNIGHT,
+	Druid = LOCALIZED_CLASS_NAMES_MALE.DRUID,
+	Hunter = LOCALIZED_CLASS_NAMES_MALE.HUNTER,
+	Mage = LOCALIZED_CLASS_NAMES_MALE.MAGE,
+	Paladin = LOCALIZED_CLASS_NAMES_MALE.PALADIN,
+	Priest = LOCALIZED_CLASS_NAMES_MALE.PRIEST,
+	Rogue = LOCALIZED_CLASS_NAMES_MALE.ROGUE,
+	Shaman = LOCALIZED_CLASS_NAMES_MALE.SHAMAN,
+	Warlock = LOCALIZED_CLASS_NAMES_MALE.WARLOCK,
+	Warrior = LOCALIZED_CLASS_NAMES_MALE.WARRIOR,
+}
+L.race = {
+	Horde = {
+		Orc = GetRaceName(2),	--	"Орк"
+		Tauren = GetRaceName(6),	--	"Таурен"
+		Troll = GetRaceName(8),	--	"Тролль"
+		Undead = GetRaceName(5),	--	"Нежить"
+		BloodElf = GetRaceName(10),	--	"Эльф крови"
+		Goblin = GetRaceName(9),	--	"Гоблин"
+	},
+	Alliance = {
+		Dwarf = GetRaceName(3),	--	"Дворф"
+		Gnome = GetRaceName(7),	--	"Гном"
+		Human = GetRaceName(1),	--	"Человек"
+		NightElf = GetRaceName(4),	--	"Ночной эльф"
+		Draenei = GetRaceName(11),	--	"Дреней"
+		Worgen = GetRaceName(22),	--	"Ворген"
+	},
+}
+--@end-version-cata@
 --@retail@
 L.class = {
 	DeathKnight = LOCALIZED_CLASS_NAMES_MALE.DEATHKNIGHT,

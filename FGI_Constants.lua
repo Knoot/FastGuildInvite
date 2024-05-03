@@ -138,6 +138,9 @@ FGI_MAXLVL = 60
 --@version-wrath@
 FGI_MAXLVL = 80
 --@end-version-wrath@
+--@version-cata@
+FGI_MAXLVL = 85
+--@end-version-cata@
 --@retail@
 FGI_MAXLVL = 70
 --@end-retail@
