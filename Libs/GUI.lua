@@ -152,7 +152,7 @@ local function Constructor()
 	text:ClearAllPoints()
 	text:SetPoint("TOPLEFT", 5, -1)
 	text:SetPoint("BOTTOMRIGHT", -5, 1)
-	text:SetJustifyV("LEFT")
+	text:SetJustifyV("MIDDLE")
 	
 	local highlight = frame:CreateTexture()
 	highlight:SetColorTexture(1,0,0,0.2)
