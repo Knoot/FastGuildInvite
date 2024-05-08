@@ -47,6 +47,21 @@ local RaceClassCombo = {
 -- race and class mappings table
 local RaceClassCombo = {
 	Draenei = {CLASS.Hunter,CLASS.Mage,CLASS.Paladin,CLASS.Priest,CLASS.Shaman,CLASS.Warrior,CLASS.DeathKnight},
+	Dwarf = {CLASS.Hunter,CLASS.Paladin,CLASS.Priest,CLASS.Rogue,CLASS.Warrior,CLASS.DeathKnight},
+	Gnome = {CLASS.Mage,CLASS.Rogue,CLASS.Warlock,CLASS.Warrior,CLASS.DeathKnight},
+	Human = {CLASS.Mage,CLASS.Paladin,CLASS.Priest,CLASS.Rogue,CLASS.Warlock,CLASS.Warrior,CLASS.DeathKnight},
+	NightElf = {CLASS.Druid,CLASS.Hunter,CLASS.Priest,CLASS.Rogue,CLASS.Warrior,CLASS.DeathKnight},
+	BloodElf = {CLASS.Hunter,CLASS.Mage,CLASS.Paladin,CLASS.Priest,CLASS.Rogue,CLASS.Warlock,CLASS.DeathKnight},
+	Orc = {CLASS.Hunter,CLASS.Rogue,CLASS.Shaman,CLASS.Warlock,CLASS.Warrior,CLASS.DeathKnight},
+	Tauren = {CLASS.Druid,CLASS.Hunter,CLASS.Shaman,CLASS.Warrior,CLASS.DeathKnight},
+	Troll = {CLASS.Hunter,CLASS.Mage,CLASS.Priest,CLASS.Rogue,CLASS.Shaman,CLASS.Warrior,CLASS.DeathKnight},
+	Undead = {CLASS.Mage,CLASS.Priest,CLASS.Rogue,CLASS.Warlock,CLASS.Warrior,CLASS.DeathKnight},
+}
+--@end-version-wrath@
+--@version-cata@
+-- race and class mappings table
+local RaceClassCombo = {
+	Draenei = {CLASS.Hunter,CLASS.Mage,CLASS.Paladin,CLASS.Priest,CLASS.Shaman,CLASS.Warrior,CLASS.DeathKnight},
 	Dwarf = {CLASS.Hunter,CLASS.Mage,CLASS.Paladin,CLASS.Priest,CLASS.Rogue,CLASS.Shaman,CLASS.Warlock,CLASS.Warrior,CLASS.DeathKnight},
 	Gnome = {CLASS.Mage,CLASS.Priest,CLASS.Rogue,CLASS.Warlock,CLASS.Warrior,CLASS.DeathKnight},
 	Human = {CLASS.Mage,CLASS.Hunter,CLASS.Paladin,CLASS.Priest,CLASS.Rogue,CLASS.Warlock,CLASS.Warrior,CLASS.DeathKnight},
@@ -58,21 +73,6 @@ local RaceClassCombo = {
 	Troll = {CLASS.Druid,CLASS.Hunter,CLASS.Mage,CLASS.Priest,CLASS.Rogue,CLASS.Warlock,CLASS.Shaman,CLASS.Warrior,CLASS.DeathKnight},
 	Undead = {CLASS.Hunter,CLASS.Mage,CLASS.Priest,CLASS.Rogue,CLASS.Warlock,CLASS.Warrior,CLASS.DeathKnight},
 	Goblin = {CLASS.DeathKnight,CLASS.Hunter,CLASS.Mage,CLASS.Priest,CLASS.Rogue,CLASS.Shaman,CLASS.Warlock,CLASS.Warrior},
-}
---@end-version-wrath@
---@version-cata@
--- race and class mappings table
-local RaceClassCombo = {
-	Draenei = {CLASS.Hunter,CLASS.Mage,CLASS.Paladin,CLASS.Priest,CLASS.Shaman,CLASS.Warrior,CLASS.DeathKnight},
-	Dwarf = {CLASS.Hunter,CLASS.Paladin,CLASS.Priest,CLASS.Rogue,CLASS.Warrior,CLASS.DeathKnight},
-	Gnome = {CLASS.Mage,CLASS.Rogue,CLASS.Warlock,CLASS.Warrior,CLASS.DeathKnight},
-	Human = {CLASS.Mage,CLASS.Paladin,CLASS.Priest,CLASS.Rogue,CLASS.Warlock,CLASS.Warrior,CLASS.DeathKnight},
-	NightElf = {CLASS.Druid,CLASS.Hunter,CLASS.Priest,CLASS.Rogue,CLASS.Warrior,CLASS.DeathKnight},
-	BloodElf = {CLASS.Hunter,CLASS.Mage,CLASS.Paladin,CLASS.Priest,CLASS.Rogue,CLASS.Warlock,CLASS.DeathKnight},
-	Orc = {CLASS.Hunter,CLASS.Rogue,CLASS.Shaman,CLASS.Warlock,CLASS.Warrior,CLASS.DeathKnight},
-	Tauren = {CLASS.Druid,CLASS.Hunter,CLASS.Shaman,CLASS.Warrior,CLASS.DeathKnight},
-	Troll = {CLASS.Hunter,CLASS.Mage,CLASS.Priest,CLASS.Rogue,CLASS.Shaman,CLASS.Warrior,CLASS.DeathKnight},
-	Undead = {CLASS.Mage,CLASS.Priest,CLASS.Rogue,CLASS.Warlock,CLASS.Warrior,CLASS.DeathKnight},
 }
 --@end-version-cata@
 --@version-retail@
