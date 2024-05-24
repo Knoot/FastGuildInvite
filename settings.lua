@@ -83,6 +83,11 @@ settings.CustomList.name = L["Пользовательский список"]
 settings.CustomList.parent = settings.name
 InterfaceOptions_AddCategory(settings.CustomList)
 
+settings.QuietList = CreateFrame("Frame", settings)
+settings.QuietList.name = L["Тихие зоны"]
+settings.QuietList.parent = settings.name
+InterfaceOptions_AddCategory(settings.QuietList)
+
 settings.credits = CreateFrame("Frame", settings)
 settings.credits.name = L["Благодарности"]
 settings.credits.parent = settings.name

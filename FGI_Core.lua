@@ -384,6 +384,7 @@ local defaultSettings =  {
 			leave = true
 		},
 		quietZones = true,
+		customQuietList = {},
 	},
 }
 

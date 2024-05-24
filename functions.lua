@@ -14,6 +14,7 @@ addon.removeMsgList = {}
 local DB
 local debugDB
 local Analytic = addon.lib.WagoAnalytics
+local staticAreas, allAreas = {}, {};
 
 addon.searchInfo = {unique = {0}, sended = {0}, invited = {0}, filtered = {0}}
 local mt = {
@@ -190,17 +191,50 @@ function fn.fontSize(frame, font, size)
 	frame:SetFont(font, size)
 end
 ---
---- list of areas
+--- list of static areas
 ---
 ---@return table areas {area1 = true, area2 = true, ...}
-function fn.GetAreas()
+function fn.getStaticAreas()
+	-- cache
+	for _ in pairs(staticAreas) do
+		return staticAreas;
+	end
+
 	local areas = {};
-	for i=1,#FGI_CONST.areas do
+	for i=1, #FGI_CONST.areas do
 		local area = C_Map.GetAreaInfo(FGI_CONST.areas[i]);
 		if area then
 			areas[area] = true;
 		end
 	end
+
+	staticAreas = areas;
+
+	return areas;
+end
+---
+--- list of player and static areas
+---
+---@param force ?boolean true - skip cache
+---@return table areas {area1 = true, area2 = true, ...}
+function fn.getAreas(force)
+	if not force then
+		-- cache
+		for _ in pairs(allAreas) do
+			return allAreas;
+		end
+	end
+
+	local areas = {};
+	for k,v in pairs(fn.getStaticAreas()) do
+		areas[k] = v;
+	end
+	for i=1, #DB.global.customQuietList do
+		areas[DB.global.customQuietList[i]] = true;
+	end
+
+	allAreas = areas;
+
 	return areas;
 end
 
@@ -306,14 +340,13 @@ end
 local function IsCustomFiltered(player)
 	return (DB.realm.enableFilters and fn:filtered(player)) and true or false
 end
-local areas = fn.GetAreas();
 ---
 --- checking if the player is in an area we don't want to disturb him. if enabled in settings
 ---
 ---@param area string area name
 ---@return boolean
 local function IsInQuietZone(area)
-	return (DB.global.quietZones and areas[area]) and true or false
+	return (DB.global.quietZones and fn.getAreas()[area]) and true or false
 end
 --- show the data of the current player in the scan window
 local function onListUpdate()

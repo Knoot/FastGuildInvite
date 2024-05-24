@@ -177,7 +177,7 @@ frame:SetWidth(size.buttonGroupW)
 frame:SetHeight(40)
 frame:SetCallback("OnClick", function()
 	local str = "";
-	for k,_ in pairs(fn.GetAreas()) do
+	for k,_ in pairs(fn.getAreas()) do
 		str = format("%s\n%s", str, k)	-- areas
 	end
 	
