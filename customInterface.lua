@@ -9,14 +9,11 @@ local fontSize = fn.fontSize
 local CustomInterface
 
 local w,h = 623-20, 568-20
-interface.settings.CustomInterface.content = GUI:Create("SimpleGroup")
-CustomInterface = interface.settings.CustomInterface.content
-CustomInterface:SetWidth(w)
-CustomInterface:SetHeight(h)
-CustomInterface.frame:SetParent(interface.settings.CustomInterface)
+interface.settings.CustomInterface = GUI:Create("GroupFrame")
+CustomInterface = interface.settings.CustomInterface
 CustomInterface:SetLayout("NIL")
-CustomInterface:SetPoint("TOPLEFT", interface.settings.CustomInterface, "TOPLEFT", 10, -10)
-
+interface.settings:AddChild(CustomInterface)
+interface.settings.AddContent('CustomInterface', L["Настроить интерфейс"], CustomInterface, w-20, h-20)
 
 local scanFrame = GUI:Create("SimpleGroup")
 scanFrame:SetWidth(w)

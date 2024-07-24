@@ -32,13 +32,11 @@ end
 local blackList, scrollBar
 local w,h = 623, 568
 
-interface.settings.Blacklist.content = GUI:Create("SimpleGroup")
-blackList = interface.settings.Blacklist.content
-blackList:SetWidth(w-20)
-blackList:SetHeight(h-220)
-blackList.frame:SetParent(interface.settings.Blacklist)
-blackList:SetPoint("TOPLEFT", interface.settings.Blacklist, "TOPLEFT", 10, -10)
+interface.settings.Blacklist = GUI:Create("GroupFrame")
+blackList = interface.settings.Blacklist
 blackList:SetLayout("NIL")
+interface.settings:AddChild(blackList)
+interface.settings.AddContent('blackList', L["Черный список"], blackList, w-20, h-220)
 
 blackList.scrollBar = GUI:Create("ScrollFrame")
 scrollBar = blackList.scrollBar

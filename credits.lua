@@ -9,13 +9,11 @@ local fontSize = fn.fontSize
 local credits, scrollBar
 local w,h = 623, 568
 do		--	credits
-interface.settings.credits.content = GUI:Create("SimpleGroup")
-credits = interface.settings.credits.content
-credits:SetWidth(w-20)
-credits:SetHeight(h-20)
-credits.frame:SetParent(interface.settings.credits)
-credits:SetPoint("TOPLEFT", interface.settings.credits, "TOPLEFT", 10, -10)
+interface.settings.credits = GUI:Create("GroupFrame")
+credits = interface.settings.credits
 credits:SetLayout("NIL")
+interface.settings:AddChild(credits)
+interface.settings.AddContent('credits', L["Благодарности"], credits, w-20, h-20)
 
 credits.scrollBar = GUI:Create("ScrollFrame")
 scrollBar = credits.scrollBar

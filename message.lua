@@ -45,13 +45,11 @@ end
 
 
 local w,h = 623, 568
-interface.settings.CustomizePost.content = GUI:Create("SimpleGroup")
-CustomizePost = interface.settings.CustomizePost.content
-CustomizePost:SetWidth(w-20)
-CustomizePost:SetHeight(h-20-60)
-CustomizePost.frame:SetParent(interface.settings.CustomizePost)
+interface.settings.CustomizePost = GUI:Create("GroupFrame")
+CustomizePost = interface.settings.CustomizePost
 CustomizePost:SetLayout("NIL")
-CustomizePost:SetPoint("TOPLEFT", interface.settings.CustomizePost, "TOPLEFT", 10, -10)
+interface.settings:AddChild(CustomizePost)
+interface.settings.AddContent('CustomizePost', L["Настроить сообщения"], CustomizePost, nil, h-20-60, -30)
 
 CustomizePost.intro = GUI:Create("TLabel")
 local frame = CustomizePost.intro

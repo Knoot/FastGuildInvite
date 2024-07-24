@@ -9,11 +9,11 @@ local fontSize = fn.fontSize
 
 
 
-interface.settings.KeyBind.content = GUI:Create("SimpleGroup")
-local KeyBind = interface.settings.KeyBind.content
-KeyBind.frame:SetParent(interface.settings.KeyBind)
-KeyBind:SetPoint("TOPLEFT", interface.settings.KeyBind, "TOPLEFT", 10, -10)
+interface.settings.KeyBind = GUI:Create("GroupFrame")
+local KeyBind = interface.settings.KeyBind
 KeyBind:SetLayout("NIL")
+interface.settings:AddChild(KeyBind)
+interface.settings.AddContent('KeyBind', L["KeyBind"], KeyBind)
 
 KeyBind.inviteLabel = GUI:Create("TLabel")
 local frame = KeyBind.inviteLabel

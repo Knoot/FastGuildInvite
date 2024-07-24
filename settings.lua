@@ -21,111 +21,64 @@ local function updateMsgFilters()
 	end
 end
 
-interface.settings = CreateFrame("Frame", UIParent)
+
+local w,h = 650, 588
+interface.settings = GUI:Create("ClearFrame");
 settings = interface.settings
-settings.name = "Fast Guild Invite"
-InterfaceOptions_AddCategory(settings)
-
---[[settings.profile = CreateFrame("Frame", settings)
-settings.profile.name = "Profile"
--- settings.profile.refresh  = function(self)print(self:GetHeight())end
-settings.profile.parent = settings.name
-InterfaceOptions_AddCategory(settings.profile)]]
-
-settings.Security = CreateFrame("Frame", settings)
-settings.Security.name = L["Безопасность"]
-settings.Security.parent = settings.name
-InterfaceOptions_AddCategory(settings.Security)
-
-settings.Guild = CreateFrame("Frame", settings)
-settings.Guild.name = L["Гильдия"]
-settings.Guild.parent = settings.name
-InterfaceOptions_AddCategory(settings.Guild)
-
-settings.filters = CreateFrame("Frame", settings)
-settings.filters.name = L["Фильтры"]
-settings.filters.parent = settings.name
-InterfaceOptions_AddCategory(settings.filters)
-
-settings.locations = CreateFrame("Frame", settings)
-settings.locations.name = L["Поиск по локациям"]
-settings.locations.parent = settings.name
-InterfaceOptions_AddCategory(settings.locations)
-
-settings.KeyBind = CreateFrame("Frame", settings)
-settings.KeyBind.name = L["KeyBind"]
--- settings.KeyBind.refresh  = function(self)print(self,InterfaceOptionsFramePanelContainer.displayedPanel:GetHeight())end
-settings.KeyBind.parent = settings.name
-InterfaceOptions_AddCategory(settings.KeyBind)
-
-settings.CustomizePost = CreateFrame("Frame", settings)
-settings.CustomizePost.name = L["Настроить сообщения"]
-settings.CustomizePost.parent = settings.name
-InterfaceOptions_AddCategory(settings.CustomizePost)
-
-settings.Blacklist = CreateFrame("Frame", settings)
-settings.Blacklist.name = L["Черный список"]
-settings.Blacklist.parent = settings.name
-InterfaceOptions_AddCategory(settings.Blacklist)
-
-settings.Synchronization = CreateFrame("Frame", settings)
-settings.Synchronization.name = L["Синхронизация"]
-settings.Synchronization.parent = settings.name
-InterfaceOptions_AddCategory(settings.Synchronization)
-
-settings.CustomInterface = CreateFrame("Frame", settings)
-settings.CustomInterface.name = L["Настроить интерфейс"]
-settings.CustomInterface.parent = settings.name
-InterfaceOptions_AddCategory(settings.CustomInterface)
-
-settings.CustomList = CreateFrame("Frame", settings)
-settings.CustomList.name = L["Пользовательский список"]
-settings.CustomList.parent = settings.name
-InterfaceOptions_AddCategory(settings.CustomList)
-
-settings.QuietList = CreateFrame("Frame", settings)
-settings.QuietList.name = L["Тихие зоны"]
-settings.QuietList.parent = settings.name
-InterfaceOptions_AddCategory(settings.QuietList)
-
-settings.credits = CreateFrame("Frame", settings)
-settings.credits.name = L["Благодарности"]
-settings.credits.parent = settings.name
-InterfaceOptions_AddCategory(settings.credits)
-
-settings.Logs = CreateFrame("Frame", settings)
-settings.Logs.name = L["Логи"]
-settings.Logs.parent = settings.name
-InterfaceOptions_AddCategory(settings.Logs)
-
---[[settings.db = CreateFrame("Frame", settings)
-settings.db.name = "DB"
-settings.db.parent = settings.name
-InterfaceOptions_AddCategory(settings.db)]]
-
--- InterfaceOptionsFrame_OpenToCategory(settings)
--- InterfaceOptionsFrame_OpenToCategory(settings)
--- InterfaceOptionsFrame_OpenToCategory(settings.CustomInterface)
--- InterfaceOptionsFrame_OpenToCategory(settings.CustomInterface)
-
-
-local w,h = 623, 568
-interface.settings.content = GUI:Create("SimpleGroup")
-settings = interface.settings.content
-settings:SetWidth(w-20)
-settings:SetHeight(h-20)
-settings.frame:SetParent(interface.settings)
+settings:SetTitle("FGI Settings")
+settings:SetWidth(w + 200)
+settings:SetHeight(h)
 settings:SetLayout("NIL")
-settings:SetPoint("TOPLEFT", interface.settings, "TOPLEFT", 10, -10)
+settings.categories = {}
 
+settings.closeButton = GUI:Create('Button')
+local frame = settings.closeButton
+frame:SetText('X')
+frame:SetWidth(frame.frame:GetHeight())
+fn:closeBtn(frame)
+frame:SetCallback('OnClick', function()
+	interface.settings:Hide()
+end)
+settings:AddChild(frame)
+
+settings.menu = GUI:Create("GroupFrame")
+local menu = settings.menu
+menu:SetLayout("Flow")
+menu:SetWidth(220)
+menu:SetHeight(205)
+
+function settings.AddContent(categoryName, categoryLayout, content, width, height, xOffset, yOffset)
+	width = width or w
+	height = height or h
+	settings.categories[categoryName] = content
+	content:SetWidth(width)
+	content:SetHeight(height)
+	content:SetPoint("TOPLEFT", menu.frame, "TOPRIGHT", xOffset or 0, yOffset or -26)
+	content:Hide()
+	local button = GUI:Create("Button")
+	button:SetText(categoryLayout)
+	button:SetCallback("OnClick", function()
+		settings.ShowContent(categoryName)
+	end)
+	menu:AddChild(button)
+end
+function settings.ShowContent(categoryName)
+	for category,content in pairs(settings.categories) do
+		if (category == categoryName) then
+			content:Show()
+		else
+			content:Hide()
+		end
+	end
+end
+
+settings:AddChild(menu)
 
 settings.settingsCheckBoxGRP = GUI:Create("GroupFrame")
 local settingsCheckBoxGRP = settings.settingsCheckBoxGRP
 settingsCheckBoxGRP:SetLayout("NIL")
-settingsCheckBoxGRP:SetHeight(205)
-settingsCheckBoxGRP:SetWidth(size.settingsCheckBoxGRP)
-settingsCheckBoxGRP:SetPoint("TOPLEFT", settings.frame, "TOPLEFT", 0, 0)
 settings:AddChild(settingsCheckBoxGRP)
+settings.AddContent('Main', 'Main', settingsCheckBoxGRP, size.settingsCheckBoxGRP, 205)
 
 settingsCheckBoxGRP.addonMSG = GUI:Create("TCheckBox")
 local frame = settingsCheckBoxGRP.addonMSG
@@ -243,7 +196,7 @@ frame:SetCallback("OnValueChanged", function(key)
 	DB.global.clearDBtimes = settings.clearDBtimes:GetValue()
 end)
 frame:SetPoint("TOPLEFT", settings.settingsCheckBoxGRP.rememberAll.frame, "BOTTOMLEFT", 0, 0)
-settings:AddChild(frame)
+settingsCheckBoxGRP:AddChild(frame)
 
 settingsCheckBoxGRP.confirmSearchClear = GUI:Create("TCheckBox")
 local frame = settingsCheckBoxGRP.confirmSearchClear
@@ -304,6 +257,13 @@ local frame = CreateFrame('Frame')
 frame:RegisterEvent('PLAYER_LOGIN')
 frame:SetScript('OnEvent', function()
 	DB = addon.DB
+
+	interface.settings:SetPoint("CENTER", UIParent)
+	interface.settings:Hide()
+	menu:SetPoint("TOPLEFT", settings.frame, "TOPLEFT", 0, 0)
+
+	settings.closeButton:ClearAllPoints()
+	settings.closeButton:SetPoint("CENTER", settings.frame, "TOPRIGHT", -8, -8)
 
 	settingsCheckBoxGRP.addonMSG:SetValue(DB.global.addonMSG or false)
 	settingsCheckBoxGRP.systemMSG:SetValue(DB.realm.systemMSG or false)

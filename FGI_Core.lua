@@ -109,7 +109,7 @@ blacklist.frame.HandlesGlobalMouseEvent = HandlesGlobalMouseEvent
 blacklist:SetCallback('OnClick', function()
 	local name = f.name
 	fn:blackList(name)
-	interface.settings.Blacklist.content:update()
+	interface.settings.Blacklist:update()
 	if not DB.global.fastBlacklist then
 		StaticPopup_Show("FGI_BLACKLIST_CHANGE", _,_,  {name = name})
 	end
@@ -126,7 +126,7 @@ unblacklist.frame.HandlesGlobalMouseEvent = HandlesGlobalMouseEvent
 unblacklist:SetCallback('OnClick', function()
 	local name = f.name
 	fn:unblacklist(name)
-	interface.settings.Blacklist.content:update()
+	interface.settings.Blacklist:update()
 	CloseDropDownMenus()
 end)
 unblacklist:SetPoint("TOPLEFT", blacklist.frame, "BOTTOMLEFT", 0, 0)
@@ -210,13 +210,13 @@ frame:SetScript("OnEvent", function(_,_, msg,_,_,_,name,...)
 		local b,n,r = isCorrect(msg)
 		if r==nil then return end
 		-- fn:blackList(name)
-		-- interface.settings.Blacklist.content:update()
+		-- interface.settings.Blacklist:update()
 		print("test add",b,n,r)
 	elseif msg:find("^!blacklistDelete") then
 		msg = msg:gsub("!blacklistDelete ", '')
 		local b,n,r = isCorrect(msg)
 		-- fn:unblacklist(name)
-		-- interface.settings.Blacklist.content:update()
+		-- interface.settings.Blacklist:update()
 		print("test delete",b,n,r)
 	elseif msg:find("^!blacklistGetList") then
 		for k,v in pairs(DB.realm.blackList) do
@@ -242,7 +242,7 @@ function FastGuildInvite:OnEnable()
 
 	addon.debug = DB.global.debug
 	fn:blackListAutoKick()
-	local parent = interface.settings.filters.content.filtersFrame
+	local parent = interface.settings.filters.filtersFrame
 	local list = parent.filterList
 	fn:FiltersInit()
 	C_Timer.After(0.1, function()
@@ -481,7 +481,7 @@ function Console:FGIInput(str)
 		local name,reason = fn:parseBL("blacklist", str)
 		if not name then return print('Blacklist: nil name') end
 		fn:blackList(name, reason)
-		interface.settings.Blacklist.content:update()
+		interface.settings.Blacklist:update()
 		if not reason and not DB.global.fastBlacklist then
 			StaticPopup_Show("FGI_BLACKLIST_CHANGE", _,_,  {name = name})
 		end

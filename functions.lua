@@ -111,8 +111,8 @@ local RaceClassCombo = {
 ---
 ---@param filterName string
 function fn:FilterChange(filterName)
-	local filtersFrame = interface.settings.filters.content.filtersFrame
-	local addfilterFrame = interface.settings.filters.content.addfilterFrame
+	local filtersFrame = interface.settings.filters.filtersFrame
+	local addfilterFrame = interface.settings.filters.addfilterFrame
 	local filter = FGI.DB.realm.filtersList[filterName]
 	local class = filter.classFilter
 	local raceFilter = filter.raceFilter
@@ -585,13 +585,13 @@ function fn:SetKeybind(key, keyType)
 		DBkey[keyType] = false
 	end
 
-	interface.settings.KeyBind.content.invite:SetLabel(format(L["Назначить кнопку (%s)"], DBkey.invite or L["none"]))
-	interface.settings.KeyBind.content.invite:SetKey(DBkey.invite)
-	interface.settings.KeyBind.content.nextSearch:SetLabel(format(L["Назначить кнопку (%s)"], DBkey.nextSearch or L["none"]))
-	interface.settings.KeyBind.content.nextSearch:SetKey(DBkey.nextSearch)
+	interface.settings.KeyBind.invite:SetLabel(format(L["Назначить кнопку (%s)"], DBkey.invite or L["none"]))
+	interface.settings.KeyBind.invite:SetKey(DBkey.invite)
+	interface.settings.KeyBind.nextSearch:SetLabel(format(L["Назначить кнопку (%s)"], DBkey.nextSearch or L["none"]))
+	interface.settings.KeyBind.nextSearch:SetKey(DBkey.nextSearch)
 end
 function fn:FiltersInit()
-	local parent = interface.settings.filters.content.filtersFrame
+	local parent = interface.settings.filters.filtersFrame
 	local list = parent.filterList
 	for i=1, FGI_FILTERSLIMIT do
 		local frame = GUI:Create("FilterButton")
@@ -602,7 +602,7 @@ function fn:FiltersInit()
 end
 --- update filters state
 function fn:FiltersUpdate()
-	local list = interface.settings.filters.content.filtersFrame.filterList
+	local list = interface.settings.filters.filtersFrame.filterList
 	for i=1, FGI_FILTERSLIMIT do
 		list[i]:Hide()
 	end

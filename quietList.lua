@@ -17,13 +17,11 @@ local function btnText(frame)
 end
 
 local w,h = 623, 568
-interface.settings.QuietList.content = GUI:Create("SimpleGroup")
-QuietList = interface.settings.QuietList.content
-QuietList:SetWidth(w-20)
-QuietList:SetHeight(h-20)
-QuietList.frame:SetParent(interface.settings.QuietList)
+interface.settings.QuietList = GUI:Create("GroupFrame")
+QuietList = interface.settings.QuietList
 QuietList:SetLayout("NIL")
-QuietList:SetPoint("TOPLEFT", interface.settings.QuietList, "TOPLEFT", 10, -10)
+interface.settings:AddChild(QuietList)
+interface.settings.AddContent('QuietList', L["Тихие зоны"], QuietList, w-20, h-20)
 
 
 QuietList.list = GUI:Create("MultiLineEditBox")

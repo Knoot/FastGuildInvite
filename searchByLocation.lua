@@ -17,13 +17,11 @@ local function btnText(frame)
 end
 
 local w,h = 623, 568
-interface.settings.locations.content = GUI:Create("SimpleGroup")
-Locations = interface.settings.locations.content
-Locations:SetWidth(w-20)
-Locations:SetHeight(h-20)
-Locations.frame:SetParent(interface.settings.locations)
+interface.settings.locations = GUI:Create("GroupFrame")
+Locations = interface.settings.locations
 Locations:SetLayout("NIL")
-Locations:SetPoint("TOPLEFT", interface.settings.locations, "TOPLEFT", 10, -10)
+interface.settings:AddChild(Locations)
+interface.settings.AddContent('Locations', L["Поиск по локациям"], Locations, w-20, h-20)
 
 
 Locations.list = GUI:Create("MultiLineEditBox")

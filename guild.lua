@@ -46,13 +46,11 @@ local function EditBoxChange(frame)
 end
 
 local w,h = 623, 568
-interface.settings.Guild.content = GUI:Create("SimpleGroup")
-Guild = interface.settings.Guild.content
-Guild:SetWidth(w)
-Guild:SetHeight(h)
-Guild.frame:SetParent(interface.settings.Guild)
+interface.settings.Guild = GUI:Create("GroupFrame")
+Guild = interface.settings.Guild
 Guild:SetLayout("NIL")
-Guild:SetPoint("TOPLEFT", interface.settings.Guild, "TOPLEFT", 10, -10)
+interface.settings:AddChild(Guild)
+interface.settings.AddContent('Guild', L["Гильдия"], Guild, w, h)
 
 Guild.blacklistOfficer = GUI:Create("TCheckBox")
 local frame = Guild.blacklistOfficer

@@ -9,14 +9,11 @@ local fontSize = fn.fontSize
 local Security
 
 local w,h = 623-20, 568-20
-interface.settings.Security.content = GUI:Create("SimpleGroup")
-Security = interface.settings.Security.content
-Security:SetWidth(w)
-Security:SetHeight(h)
-Security.frame:SetParent(interface.settings.Security)
+interface.settings.Security = GUI:Create("GroupFrame")
+Security = interface.settings.Security
 Security:SetLayout("NIL")
-Security:SetPoint("TOPLEFT", interface.settings.Security, "TOPLEFT", 10, -10)
-
+interface.settings:AddChild(Security)
+interface.settings.AddContent('Security', L["Безопасность"], Security, w, h)
 
 Security.intro = GUI:Create("TLabel")
 local frame = Security.intro

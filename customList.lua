@@ -17,13 +17,11 @@ local function btnText(frame)
 end
 
 local w,h = 623, 568
-interface.settings.CustomList.content = GUI:Create("SimpleGroup")
-CustomList = interface.settings.CustomList.content
-CustomList:SetWidth(w-20)
-CustomList:SetHeight(h-20)
-CustomList.frame:SetParent(interface.settings.CustomList)
+interface.settings.CustomList = GUI:Create("GroupFrame")
+CustomList = interface.settings.CustomList
 CustomList:SetLayout("NIL")
-CustomList:SetPoint("TOPLEFT", interface.settings.CustomList, "TOPLEFT", 10, -10)
+interface.settings:AddChild(CustomList)
+interface.settings.AddContent('CustomList', L["Пользовательский список"], CustomList, w-20, h-20)
 
 
 CustomList.list = GUI:Create("MultiLineEditBox")

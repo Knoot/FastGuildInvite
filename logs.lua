@@ -7,13 +7,11 @@ local DB
 local Logs
 
 local w,h = 623-20, 568-20
-interface.settings.Logs.content = GUI:Create("SimpleGroup")
-Logs = interface.settings.Logs.content
-Logs:SetWidth(w)
-Logs:SetHeight(h)
-Logs.frame:SetParent(interface.settings.Logs)
+interface.settings.Logs = GUI:Create("GroupFrame")
+Logs = interface.settings.Logs
 Logs:SetLayout("NIL")
-Logs:SetPoint("TOPLEFT", interface.settings.Logs, "TOPLEFT", 10, -10)
+interface.settings:AddChild(Logs)
+interface.settings.AddContent('Logs', L["Логи"], Logs, w, h)
 
 
 

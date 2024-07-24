@@ -265,13 +265,11 @@ end
 
 local w,h = 623, 568
 
-interface.settings.filters.content = GUI:Create("SimpleGroup")
-filters = interface.settings.filters.content
-filters:SetWidth(w-20)
-filters:SetHeight(h-20-60)
-filters.frame:SetParent(interface.settings.filters)
+interface.settings.filters = GUI:Create("GroupFrame")
+filters = interface.settings.filters
 filters:SetLayout("NIL")
-filters:SetPoint("TOPLEFT", interface.settings.filters, "TOPLEFT", 10, -70)
+interface.settings:AddChild(filters)
+interface.settings.AddContent('filters', L["Фильтры"], filters, w-20, h-20-60, -10, -70)
 
 filters.setBtn = GUI:Create("Button")
 local frame = filters.setBtn
@@ -296,7 +294,7 @@ filters:AddChild(frame)
 
 filters.filtersFrame = GUI:Create("SimpleGroup")
 filtersFrame = filters.filtersFrame
-filtersFrame.frame:SetParent(interface.settings.filters)
+filtersFrame.frame:SetParent(interface.settings.filters.frame)
 filtersFrame:SetWidth(filters.frame:GetWidth())
 filtersFrame:SetHeight(h-20-60)
 filtersFrame:SetLayout("NIL")
@@ -316,7 +314,7 @@ filtersFrame:AddChild(frame)
 
 filters.addfilterFrame = GUI:Create("SimpleGroup")
 addfilterFrame = filters.addfilterFrame
-addfilterFrame.frame:SetParent(interface.settings.filters)
+addfilterFrame.frame:SetParent(interface.settings.filters.frame)
 addfilterFrame:SetWidth(filters.frame:GetWidth())
 addfilterFrame:SetHeight(h-20-60)
 addfilterFrame:SetLayout("NIL")
