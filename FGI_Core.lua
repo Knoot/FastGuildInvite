@@ -236,6 +236,7 @@ end
 
 function FastGuildInvite:OnEnable()
 	if DB.global.createMenuButtons then
+		-- 11.0 noname frame
 		DropDownList1:HookScript("OnShow", DropDownOnShow)
 		DropDownList1:HookScript("OnHide", DropDownOnHide)
 	end

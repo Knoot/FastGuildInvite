@@ -181,27 +181,18 @@ StaticPopupDialogs["FGI_BLACKLIST_CHANGE"] = {
 }
 
 local function AddHookClick(frame, parent)
-	local menu = {
-		{text = "Select an Option", isTitle = true},
-		{text = "Change", func = function()
-			StaticPopup_Show("FGI_BLACKLIST_CHANGE", _,_,  {name = frame.label:GetText(), frame = parent})
-		end},
-		{text = "Delete", func = function()
-			DB.realm.blackList[frame.label:GetText()] = nil
-			blackList:update()
-		end},
-		{text = "", isTitle = true},
-		{text = "Cancel", func = function()end},
-		--[[{ text = "More Options", hasArrow = true,
-			menuList = {
-				{ text = "Option 3", func = function() print("You've chosen option 3"); end }
-			} 
-		}]]
-	}
-	local menuFrame = CreateFrame("Frame", nil, UIParent, "UIDropDownMenuTemplate")
 	frame.frame:HookScript("OnMouseDown",function(self, button,...)
 		if button == "RightButton" then
-			EasyMenu(menu, menuFrame, "cursor", 0 , 0, "MENU");
+			local menu = MenuUtil.CreateContextMenu(parent, function(ownerRegion, rootDescription)
+				rootDescription:CreateTitle("Select an Option")
+				rootDescription:CreateButton("Change", function() StaticPopup_Show("FGI_BLACKLIST_CHANGE", _,_,  {name = frame.label:GetText(), frame = parent}) end)
+				rootDescription:CreateButton("Delete", function()
+					DB.realm.blackList[frame.label:GetText()] = nil
+					blackList:update()
+				end)
+				rootDescription:CreateButton("Cancel", function()end)
+			end)
+			menu:SetFrameStrata("TOOLTIP")
 		end
 	end)
 end
