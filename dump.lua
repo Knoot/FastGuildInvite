@@ -158,7 +158,7 @@ frame:SetCallback("OnClick", function()
 	local str = "Included addons\n";
 	for i=1,GetNumAddOns() do
 		local name, title, notes, loadable, reason, security, newVersion = GetAddOnInfo(i);
-		local version = GetAddOnMetadata(i, 'Version')
+		local version = C_AddOns.GetAddOnMetadata(i, 'Version')
 		if reason ~= "DISABLED" then
 			str = format("%s%s (%s) - %s\n", str, name, version or 'unknown', reason or 'ENABLED')	-- addon
 		end

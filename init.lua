@@ -25,9 +25,9 @@ addon.interface = {}
 addon.playerInfo = {
 	faction = UnitFactionGroup('player') == "Horde" and 2 or 1
 }
-addon.version = GetAddOnMetadata('FastGuildInvite', 'Version')
-addon.gversion = GetAddOnMetadata('FastGuildInvite', 'X-Interface')
-addon.versionN = tonumber(GetAddOnMetadata('FastGuildInvite', 'Version')) or 0
+addon.version = C_AddOns.GetAddOnMetadata('FastGuildInvite', 'Version')
+addon.gversion = C_AddOns.GetAddOnMetadata('FastGuildInvite', 'X-Interface')
+addon.versionN = tonumber(C_AddOns.GetAddOnMetadata('FastGuildInvite', 'Version')) or 0
 addon.whoQueryList = {}
 addon.color = {
 	WARRIOR='|cffc79c6e',
