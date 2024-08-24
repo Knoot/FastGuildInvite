@@ -300,14 +300,14 @@ searchRangeGRP:AddChild(frame)
 
 searchRangeGRP.lvlRangeMax = GUI:Create("TLabel")
 local frame = searchRangeGRP.lvlRangeMax
-frame:SetText(FGI_MAXLVL)
+frame:SetText(addon.maxLevel)
 frame.label:SetJustifyH("LEFT")
 frame:SetWidth(searchRangeGRP.lvlRangeMin.frame:GetWidth())
 fontSize(frame.label)
 frame.frame:SetScript("OnMouseWheel",function(self,delta)
 	local mod = IsShiftKeyDown() and 5 or 1
 	if delta > 0 then
-		DB.global.highLimit = math.min(FGI_MAXLVL, DB.global.highLimit + mod)
+		DB.global.highLimit = math.min(addon.maxLevel, DB.global.highLimit + mod)
 	else
 		DB.global.highLimit = math.max(DB.global.lowLimit, DB.global.highLimit - mod)
 	end

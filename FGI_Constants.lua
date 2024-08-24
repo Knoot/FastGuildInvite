@@ -131,20 +131,6 @@ FGISYNC_PREFIX_G = "FGI_SYNC"
 C_ChatInfo.RegisterAddonMessagePrefix(FGISYNC_PREFIX)
 C_ChatInfo.RegisterAddonMessagePrefix(FGISYNC_PREFIX_G)
 
-
---@version-classic@
-FGI_MAXLVL = 60
---@end-version-classic@
---@version-wrath@
-FGI_MAXLVL = 80
---@end-version-wrath@
---@version-cata@
-FGI_MAXLVL = 85
---@end-version-cata@
---@retail@
-FGI_MAXLVL = 70
---@end-retail@
-
 function FGI:GetLocale()
 	return FGI.L[GetLocale()]
 end

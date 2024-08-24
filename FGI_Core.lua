@@ -346,7 +346,7 @@ local defaultSettings =  {
 	global = {
 		inviteType = 1,
 		lowLimit = FGI_MINLVL,
-		highLimit = FGI_MAXLVL,
+		highLimit = 60,
 		keyBind = {invite = false, nextSearch = false},
 		clearDBtimes = 3,
 		minimap = {hide = false},
