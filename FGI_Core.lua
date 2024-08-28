@@ -346,7 +346,7 @@ local defaultSettings =  {
 	global = {
 		inviteType = 1,
 		lowLimit = FGI_MINLVL,
-		highLimit = 60,
+		highLimit = addon.maxLevel,
 		keyBind = {invite = false, nextSearch = false},
 		clearDBtimes = 3,
 		minimap = {hide = false},
